@@ -1,0 +1,7 @@
+/* En tu archivo CSS principal */
+.navbar-brand-custom {
+    height: 40px !important; /* Ajusta esta altura según tus necesidades */
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    min-height: 0 !important;
+}

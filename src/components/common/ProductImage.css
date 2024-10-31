@@ -1,0 +1,21 @@
+.card-image {
+    position: relative; /* Establece la posición relativa para que el botón se posicione en relación a este contenedor */
+}
+
+.add-button {
+    position: absolute; /* Posiciona el botón de manera absoluta */
+    top: 10px; /* Ajusta el espacio desde la parte superior */
+    right: 10px; /* Ajusta el espacio desde la derecha */
+    background-color: #fff; /* Color de fondo del botón */
+    border: none; /* Sin borde */
+    border-radius: 10%; /* Forma circular */
+    width: 40px; /* Ancho del botón */
+    height: 40px; /* Alto del botón */
+    font-size: 24px; /* Tamaño de la fuente */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para un efecto de profundidad */
+}
+
+.add-button:hover {
+    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+}
