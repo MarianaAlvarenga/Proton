@@ -11,7 +11,7 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
               <img
                 src={require("../../assets/images/SearchIcon.png")}
                 alt="SearchButton"
-                style={{ fill: 'white', color:'white' }}
+                style={{ fill: 'white', color:'white'}}
               />
             </div>
           )}

@@ -8,7 +8,7 @@ import ProductsAdmin from './pages/ProductsAdmin';
 function App() {
   return (
     <>
-      <ProductsAdmin></ProductsAdmin>
+      <Products></Products>
     </>
   );
 }

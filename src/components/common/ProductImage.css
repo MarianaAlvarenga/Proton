@@ -1,21 +1,52 @@
-.card-image {
-    position: relative; /* Establece la posición relativa para que el botón se posicione en relación a este contenedor */
+/* ProductImage.css */
+.card {
+    position: relative;
+}
+
+.buttonImage {
+    position: absolute;
+    top: 10px; /* Controla la distancia desde el borde superior */
+    background-color: #fff;
+    border: none;
+    border-radius: 5%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover {
+    background-color: #f0f0f0; 
 }
 
 .add-button {
-    position: absolute; /* Posiciona el botón de manera absoluta */
-    top: 10px; /* Ajusta el espacio desde la parte superior */
-    right: 10px; /* Ajusta el espacio desde la derecha */
-    background-color: #fff; /* Color de fondo del botón */
-    border: none; /* Sin borde */
-    border-radius: 10%; /* Forma circular */
-    width: 40px; /* Ancho del botón */
-    height: 40px; /* Alto del botón */
-    font-size: 24px; /* Tamaño de la fuente */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para un efecto de profundidad */
+    width: 30px;
+    height: 30px;
+    right: 10px; /* Controla la distancia desde el borde derecho */
+    transform: translateX(0); /* Asegura que no se desplace */
 }
 
-.add-button:hover {
-    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+.modify-button {
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 5%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    padding: 0; /* Elimina cualquier relleno interno */
+}
+
+.modify-button img {
+    width: 20px !important;
+    height: 20px !important;
 }
