@@ -13,14 +13,14 @@ const Login = () => {
               <div className="field" >
                    <label className="label">Usuario</label>
                    <div className="control">
-                     <input className="input" type="text" placeholder="CosmeFulanito" value=""/>
+                     <input className="input" type="text" placeholder="CosmeFulanito" />
                    </div>
                </div>
     
                <div className="field">
                    <label className="label">Contraseña</label>
                    <div className="control">
-                      <input className="input" type="password" placeholder="XXXXXXXXX" value= ""/>
+                      <input className="input" type="password" placeholder="XXXXXXXXX" />
                       </div>
                       <p className="help"> <a href="#">Olvidé mi contraseña</a> </p>
               </div>

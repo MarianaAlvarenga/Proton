@@ -1,0 +1,10 @@
+/* Cambiar el color de fondo del select cuando está enfocado */
+.select select:focus {
+    background-color: #f0f0f0 !important;  /* Cambia este color a lo que desees */
+    border-color: #008CBA !important;     /* Cambia el color del borde */
+}
+
+/* Cambiar el color de fondo del select cuando está desplegado */
+.select select option:checked {
+    background-color: #f0f0f0 !important;  /* Cambia este color al que desees */
+}

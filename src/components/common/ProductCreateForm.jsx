@@ -1,4 +1,5 @@
 import React from "react";
+import './ProductCreateForm.css';
 // COMPONENTIZAR BOTON**************
 // SEPARAR CSS**********************
 const ProductCreateForm = () => {
@@ -7,11 +8,11 @@ const ProductCreateForm = () => {
             <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>
                 <form onSubmit="#" style={{textAlign: 'left'}}>
 
-                    <div className="field" >
+                    <div className="field">
                         <label className="label">Categoría</label>
-                        <div class="select" style={{ width: '100%' }}>
-                            <select style={{ width: '100%', color: '#333' }}>
-                                <option style={{ width: '100%', backgroundColor:'white' }}>Select dropdown</option>
+                        <div className="select" style={{ width: '100%' }}>
+                            <select style={{ width: '100%' }}>
+                                <option>Select dropdown</option>
                                 <option>With options</option>
                             </select>
                         </div>
@@ -20,28 +21,28 @@ const ProductCreateForm = () => {
                     <div className="field" >
                         <label className="label">Nombre</label>
                         <div className="control">
-                        <input className="input" type="text" placeholder="Producto1" value=""/>
+                        <input className="input" type="text" placeholder="Producto1" />
                         </div>
                     </div>
 
                     <div className="field">
                         <label className="label">Precio de venta</label>
                         <div className="control">
-                            <input className="input" type="number" placeholder="$00.00" value= ""/>
+                            <input className="input" type="number" placeholder="$00.00"/>
                         </div>        
                     </div>
 
                     <div className="field">
                         <label className="label">Punto de reposición</label>
                         <div className="control">
-                            <input className="input" type="number" placeholder="200" value= ""/>
+                            <input className="input" type="number" placeholder="200" />
                         </div>        
                     </div>
 
                     <div className="field">
                         <label className="label">Stock</label>
                         <div className="control">
-                            <input className="input" type="number" placeholder="1500" value= ""/>
+                            <input className="input" type="number" placeholder="1500" />
                         </div>        
                     </div>
 
