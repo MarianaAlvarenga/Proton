@@ -1,31 +1,21 @@
 import React from "react";
-import "./ProductImage.css"; // Asegúrate de importar el archivo CSS
+import DefaultImage from '../../assets/images/DefaultImage.png'; // Importación estática de la imagen por defecto
 
-const ProductImage = ({ProductName = "Producto", ShowAddButton = false, ShowDeleteButton=false, ShowModifyButton=false}) => {
+const ProductImage = ({ urlImage = DefaultImage }) => { // Desestructuración correcta de props con valor por defecto
     return (
-        <div className="card" style={{borderRadius:'0%'}}>
-            <div className="card-image" style={{borderRadius:'0%'}}>
-                <figure className="image is-4by3">
-                    <img
-                        src="https://bulma.io/assets/images/placeholders/1280x960.png"
-                        alt="Placeholder image"
-                        style={{borderRadius:'0%'}}
-                    />
-                    {ShowAddButton && (<button className="buttonImage add-button">+</button>)}
-                    {ShowDeleteButton && (<button className="buttonImage delete-button">5</button>)}
-                    {ShowModifyButton && (<button className="buttonImage modify-button"><img
-                        src={require("../../assets/images/modify.png")}
-                        alt="ModifyButton"
-                        style={{ fill: 'black', color:'white'}}
-                    />
-                </button>)}
-                </figure>
-            </div>
-            <div className="card-content" style={{height:'2px'}}>
-                    {ProductName}
-            </div>
-        </div>
+        <a>
+            <figure className="image is-128x128" style={{ padding: '10px' }}> 
+                <img 
+                    src={urlImage} 
+                    style={{ 
+                        width: '100%', 
+                        height: 'auto',
+                    }}
+                    alt="Product" 
+                />
+            </figure>
+        </a>
     );
-};
+}
 
 export default ProductImage;

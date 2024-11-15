@@ -8,11 +8,13 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
           {/* Sección de búsqueda a la izquierda */}
           {showSearch && (
             <div className="navbar-item">
-              <img
-                src={require("../../assets/images/SearchIcon.png")}
-                alt="SearchButton"
-                style={{ fill: 'white', color:'white'}}
-              />
+              <a>
+                <img
+                  src={require("../../assets/images/SearchIcon.png")}
+                  alt="SearchButton"
+                  style={{ fill: 'white', color:'white'}}
+                />
+              </a>
             </div>
           )}
 

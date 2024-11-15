@@ -1,8 +1,8 @@
 import React from "react";
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
-import ProductImage from "../components/common/ProductImage";
-import Pagination from "../components/Pagination";
+import ProductImage from "../components/common/ProductCard";
+import Pagination from "../components/common/Pagination";
 
 const ProductsAdmin = () => {
     return(

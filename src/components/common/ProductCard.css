@@ -1,0 +1,35 @@
+.card {
+    position: relative;
+    background-color: white;
+}
+
+.buttonImage {
+    position: absolute;
+    width: 30px; /* Ajusta el tamaño del botón según necesites */
+    height: 30px;
+    border: none;
+    background-color: white;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.add-button {
+    top: 10px;
+    right: 10px;
+}
+
+.modify-button {
+    top: 10px !important;
+    left: 10px !important;
+}
+
+.modify-button img {
+    width: 12px !important; /* Ajusta el tamaño del ícono dentro del botón */
+    height: 12px !important;
+    pointer-events: none;
+    align-self: center;
+    justify-self: center;
+}
