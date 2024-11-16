@@ -2,8 +2,20 @@ import react from 'react';
 import './Login.css'
 const Login = () => {
    return (
-        <div className="container" style={{ maxWidth: '400px', marginTop: '50px', textAlign: 'center' }}>
-          <div className="box" style={{ backgroundColor: '#D9D0F0', borderRadius: '10px' }}>
+        <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
+          <div
+            className="box"
+            style={{
+              backgroundColor: '#D9D0F0',
+              borderRadius: '10px',
+              width: '100vw',
+              height: '100vh',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <figure className="image is-128x128 is-inline-block">
                 <img class="is-rounded" src={require('../assets/images/protiblanco.png')} style={{ margin: '0 auto' }}/>
             </figure>
@@ -15,14 +27,14 @@ const Login = () => {
                    <div className="control">
                      <input className="input" type="text" placeholder="CosmeFulanito" />
                    </div>
-               </div>
+              </div>
     
-               <div className="field">
-                   <label className="label">Contraseña</label>
-                   <div className="control">
-                      <input className="input" type="password" placeholder="XXXXXXXXX" />
-                      </div>
-                      <p className="help"> <a href="#">Olvidé mi contraseña</a> </p>
+              <div className="field">
+                  <label className="label">Contraseña</label>
+                  <div className="control">
+                    <input className="input" type="password" placeholder="XXXXXXXXX" />
+                    </div>
+                    <p className="help"> <a href="#">Olvidé mi contraseña</a> </p>
               </div>
     
               <div className="field">
