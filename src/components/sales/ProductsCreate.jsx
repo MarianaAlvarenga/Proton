@@ -1,8 +1,8 @@
 import React from "react";
-import NavBar from "../components/common/NavBar";
-import SubNavBar from "../components/common/SubNavBar";
-import ProductImage from "../components/common/ProductImage";
-import ProductCreateForm from "../components/common/ProductCreateForm";
+import NavBar from "../common/NavBar";
+import SubNavBar from "../common/SubNavBar";
+import ProductImage from "./ProductImage";
+import ProductCreateForm from "./ProductCreateForm";
 const ProductsCreate = () => {
     return(
         <>

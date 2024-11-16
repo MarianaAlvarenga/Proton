@@ -13,11 +13,17 @@
  * Menu admin ✔️
  * Mostrar productos admin ✔️
  * Modificar/Eliminar productos ✔️  
- * Modificar producto
+ * Modificar producto ✔️
  * Vista inicial de turnos
  * Pedido de datos del cliente desde el admin
  * Vista turno confirmado
  * Popup
+ * Modificar turno
+ * Cancelar turno
+ * Vista inicial Usuarios
+ * Alta usuario
+ * Baja/Modificacion usuario
+
 
  **Cliente**
 

@@ -4,13 +4,14 @@ import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
 
+//Permitir cambia URL de imagen*********************
 const SignUp = () => {
     return(
         <>
             <NavBar></NavBar>
             <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
                 
-                <div className="box" style={{ backgroundColor: '#D9D0F0', height:'100vh', borderRadius:'0%'}}>
+                <div className="box" style={{ backgroundColor: '#D9D0F0', height:'93vh', borderRadius:'0%'}}>
                     <UserImage></UserImage>
                     <section className="is-flex is-flex-direction-column is-justify-content-center">
                         <Label labelContent="Ingrese su nombre de usuario"></Label>

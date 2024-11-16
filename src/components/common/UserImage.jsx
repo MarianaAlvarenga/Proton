@@ -3,9 +3,10 @@ import DefaultUserImage from '../../assets/images/usuario.png'; // Importación 
 
 const UserImage = ({ urlImage = DefaultUserImage }) => {
     return(
-        <figure className="image is-64x64 is-inline-block" style={{ marginBottom: '20px', marginTop: '20px', paddingLeft: '20px' }}>
+        <figure className="image is-inline-block" style={{ marginBottom: '20px', marginTop: '20px', paddingLeft: '20px' }}>
             <img class="is-rounded" 
             src={urlImage} 
+            style={{height:'100px', width:'100px'}}
             />
         </figure>
     );
