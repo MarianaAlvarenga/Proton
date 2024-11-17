@@ -3,8 +3,9 @@ import NavBar from "./NavBar";
 import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
-
-//Permitir cambia URL de imagen*********************
+import ComboBox from "./ComboBox";
+// Permitir cambia URL de imagen*********************
+// Centrar la imagen*********************************
 const SignUp = () => {
     return(
         <>
@@ -13,7 +14,9 @@ const SignUp = () => {
                 
                 <div className="box" style={{ backgroundColor: '#D9D0F0', height:'93vh', borderRadius:'0%'}}>
                     <UserImage></UserImage>
+                    <ComboBox></ComboBox>
                     <section className="is-flex is-flex-direction-column is-justify-content-center">
+                        
                         <Label labelContent="Ingrese su nombre de usuario"></Label>
                         <Label labelContent="Ingrese su email"></Label>
                         <Label labelContent="Número de telefono"></Label>

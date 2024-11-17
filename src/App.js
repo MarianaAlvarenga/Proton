@@ -5,10 +5,11 @@ import Menu from './components/common/Menu';
 import SignUp from './components/common/SignUp';
 import ProductsCreate from './components/sales/ProductsCreate.jsx';
 import ProductsAdmin from './pages/ProductsAdmin';
+import Shifts from './pages/Shifts.jsx';
 function App() {
   return (
     <>
-      <SignUp></SignUp>
+      <Shifts></Shifts>
     </>
   );
 }
