@@ -14,6 +14,7 @@
  * Mostrar productos admin ✔️
  * Modificar/Eliminar productos ✔️  
  * Modificar producto ✔️
+ * Faltan categorias
  * Vista inicial de turnos ✔️
  * Pedido de datos del cliente desde el admin
  * Vista turno confirmado
@@ -28,9 +29,10 @@
  **Cliente**
  * Menu del cliente ✔️
  * Vista de turnos del cliente ✔️
- * Vista de ventas del cliente 
- * Agregar productos(categorias) al carrito
- * Modificar/eliminar productos del carrito
+ * Vista de ventas del cliente ✔️
+ * Agregar productos al carrito
+ * Faltan categorias
+ * Eliminar productos del carrito
  * Ver/modificar perfil
  * Historial de compras
  * Vista historial de turnos

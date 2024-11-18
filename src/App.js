@@ -7,10 +7,11 @@ import ProductsCreate from './components/sales/ProductsCreate.jsx';
 import ProductsAdmin from './pages/Products.jsx';
 import Shifts from './pages/Shifts.jsx';
 import MenuClient from './pages/MenuClient.jsx';
+import MenuGrommer from './pages/MenuGrommer.jsx';
 function App() {
   return (
     <>
-      <ProductsAdmin isAdmin></ProductsAdmin>
+      <MenuGrommer></MenuGrommer>
     </>
   );
 }
