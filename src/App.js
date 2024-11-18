@@ -4,13 +4,13 @@ import Login from './pages/Login';
 import Menu from './components/common/Menu';
 import SignUp from './components/common/SignUp';
 import ProductsCreate from './components/sales/ProductsCreate.jsx';
-import ProductsAdmin from './pages/ProductsAdmin';
+import ProductsAdmin from './pages/Products.jsx';
 import Shifts from './pages/Shifts.jsx';
 import MenuClient from './pages/MenuClient.jsx';
 function App() {
   return (
     <>
-      <Shifts userRole={"peluquero"}></Shifts>
+      <ProductsAdmin isAdmin></ProductsAdmin>
     </>
   );
 }

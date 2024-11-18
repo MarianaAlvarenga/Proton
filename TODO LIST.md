@@ -27,14 +27,14 @@
 
  **Cliente**
  * Menu del cliente ✔️
- * Vista de turnos del cliente
- * Vista historial de turnos
- * Vista de ventas del cliente
+ * Vista de turnos del cliente ✔️
+ * Vista de ventas del cliente 
  * Agregar productos(categorias) al carrito
  * Modificar/eliminar productos del carrito
  * Ver/modificar perfil
- * Ver bonos
  * Historial de compras
+ * Vista historial de turnos
+ * Ver bonos
 
 
  **Peluquero**

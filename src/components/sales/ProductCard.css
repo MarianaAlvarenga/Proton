@@ -25,11 +25,29 @@
     top: 10px !important;
     left: 10px !important;
 }
+.delete-button {
+    top: 10px !important;
+    left: 10px !important;
+}
 
+.add-button img {
+    width: 12px !important; /* Ajusta el tamaño del ícono dentro del botón */
+    height: 12px !important;
+    pointer-events: none;
+    align-self: center;
+    justify-self: center;
+}
 .modify-button img {
     width: 12px !important; /* Ajusta el tamaño del ícono dentro del botón */
     height: 12px !important;
     pointer-events: none;
     align-self: center;
     justify-self: center;
+}
+.delete-button img {
+    width: 15px !important; /* Ajusta el tamaño del ícono dentro del botón */
+    height: 15px !important;
+    pointer-events: none;
+    align-self: center;
+    justify-self: center
 }

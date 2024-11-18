@@ -11,14 +11,25 @@ const ProductCard = ({ProductName = "Producto", ShowAddButton = false, ShowDelet
                         alt="Placeholder image"
                         style={{borderRadius:'0%'}}
                     />
-                    {ShowAddButton && (<button className="buttonImage add-button">+</button>)}
-                    {ShowDeleteButton && (<button className="buttonImage delete-button">5</button>)}
+                    {ShowAddButton && (<button className="buttonImage add-button">
+                        <img
+                        src={require("../../assets/images/agregar.png")}
+                        alt="AddButton"
+                        style={{ fill: 'black', color:'white'}}
+                    />    
+                    </button>)}
+                    {ShowDeleteButton && (<button className="buttonImage delete-button"><img
+                        src={require("../../assets/images/delete.png")}
+                        alt="DeleteButton"
+                        style={{ fill: 'black', color:'white'}}
+                    />
+                    </button>)}
                     {ShowModifyButton && (<button className="buttonImage modify-button"><img
                         src={require("../../assets/images/modify.png")}
                         alt="ModifyButton"
                         style={{ fill: 'black', color:'white'}}
                     />
-                </button>)}
+                    </button>)}
                 </figure>
             </div>
             <div className="card-content" style={{height:'2px'}}>
