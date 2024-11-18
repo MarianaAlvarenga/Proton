@@ -6,6 +6,7 @@ import DateTimePicker from "../components/common/Calendar";
 import "../components/common/custom-calendar.css";
 
 // COMPONENTIZAR**************
+// SACAR EL PASO DEL BOTON, QUE SE VEA DIRECTAMENTE EL CALENDARIO**************************
 const Shifts = () => {
   const [dates, setDates] = useState([]);
 
@@ -25,7 +26,6 @@ const Shifts = () => {
 
       <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>
         <div style={{padding: "1em"}}>
-        <ComboBox></ComboBox>
         </div>
         <DateTimePicker onDatesChange={handleDatesChange}></DateTimePicker>
         <div style={{ marginTop: "1rem" }}>
