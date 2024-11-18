@@ -84,3 +84,11 @@ div.bulma-calendar .datetimepicker-dummy .is-primary {
     border-color: #9655C5 !important;
     color: #fff !important; /* Asegúrate de que el texto sea legible */
 }
+
+.save-close-button{
+    position: absolute;
+    bottom: 10px;  /* Asegura que quede en la parte inferior */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+}

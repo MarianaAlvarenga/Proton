@@ -10,7 +10,7 @@ import MenuClient from './pages/MenuClient.jsx';
 function App() {
   return (
     <>
-      <MenuClient></MenuClient>
+      <Shifts userRole={"peluquero"}></Shifts>
     </>
   );
 }
