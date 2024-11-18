@@ -40,8 +40,8 @@
 
 
  **Peluquero**
- * Menu peluquero
- * Ingreso disponibilidad
+ * Menu peluquero ✔️
+ * Ingreso disponibilidad ✔️
  * Vista calendario con turnos ya asignados
  * Sacar turno
  * Ingresar cliente

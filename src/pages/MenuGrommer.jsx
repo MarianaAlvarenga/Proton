@@ -1,5 +1,7 @@
 import React from "react";
 import NavBar from "../components/common/NavBar";
+import Alert from "../components/common/Alert";
+
 
 const MenuGrommer = () => {
     return (
@@ -31,11 +33,13 @@ const MenuGrommer = () => {
                         }}
                     >
                         <a role="button">
-                            <img
-                                src={require("../../src/assets/images/disponibilidad.png")}
-                                alt="Disponibilidad"
-                                style={{ width: "5em" }}
-                            />
+                        <img
+                            src={require("../../src/assets/images/disponibilidad.png")}
+                            alt="Disponibilidad"
+                            style={{ width: "5em" }}
+                        />
+
+
                             <h2 className="title is-2">Disponibilidad</h2>
                         </a>
                     </div>
