@@ -9,7 +9,7 @@ import Shifts from './pages/Shifts.jsx';
 function App() {
   return (
     <>
-      <Shifts></Shifts>
+      <SignUp></SignUp>
     </>
   );
 }
