@@ -12,11 +12,10 @@ const SignUp = () => {
             <NavBar></NavBar>
             <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
                 
-                <div className="box" style={{ backgroundColor: '#D9D0F0', height:'93vh', borderRadius:'0%'}}>
+                <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>
                     <UserImage></UserImage>
                     <ComboBox></ComboBox>
                     <section className="is-flex is-flex-direction-column is-justify-content-center">
-                        
                         <Label labelContent="Ingrese su nombre de usuario"></Label>
                         <Label labelContent="Ingrese su email"></Label>
                         <Label labelContent="Número de telefono"></Label>

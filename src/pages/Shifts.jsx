@@ -24,7 +24,9 @@ const Shifts = () => {
       <SubNavBar showBack></SubNavBar>
 
       <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>
+        <div style={{padding: "1em"}}>
         <ComboBox></ComboBox>
+        </div>
         <DateTimePicker onDatesChange={handleDatesChange}></DateTimePicker>
         <div style={{ marginTop: "1rem" }}>
           <button className="button button-save" onClick={handleSave}>
