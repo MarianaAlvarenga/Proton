@@ -8,10 +8,15 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  
+  const handleRegisterClick = () => {
+    navigate("/SignUp");
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); // Reinicia el estado de error al enviar
+  
 
     try {
       const response = await axios.post('http://localhost:8080/Proton/backend/actions/auth-chatsito.php', {
@@ -112,7 +117,7 @@ const Login = () => {
           </div>
         </form>
         <p className="has-text-centered">
-          Si no tenés cuenta, <a href="#">Regístrate</a>
+          Si no tenés cuenta, <a role="button" onClick={handleRegisterClick}>Regístrate</a>
         </p>
       </div>
     </div>
