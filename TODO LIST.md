@@ -57,3 +57,6 @@
 * Permitir registrar a clientes.
 * Venta de productos.
 
+ **General**
+* Agregar input para el buscador.
+* Menu hamburguesa.
