@@ -9,6 +9,7 @@ import ProductsAdmin from './pages/Products';
 import Shifts from './pages/Shifts';
 import MenuClient from './pages/MenuClient';
 import MenuGrommer from './pages/MenuGrommer';
+import MenuAdmin from './pages/MenuAdmin';
 
 function App() {
   return (
@@ -16,12 +17,13 @@ function App() {
       <Routes>
         {/* Define las rutas para cada componente */}
         <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/products-create" element={<ProductsCreate />} />
-        <Route path="/products-admin" element={<ProductsAdmin />} />
-        <Route path="/shifts" element={<Shifts />} />
+        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/ProductsCreate" element={<ProductsCreate />} />
+        <Route path="/ProductsAdmin" element={<ProductsAdmin />} />
+        <Route path="/Shifts" element={<Shifts />} />
         <Route path="/MenuClient" element={<MenuClient />} />
-        <Route path="/menu-grommer" element={<MenuGrommer />} />
+        <Route path="/MenuGroomer" element={<MenuGrommer />} />
+        <Route path="/MenuAdmin" element={<MenuAdmin />} />
       </Routes>
     </Router>
   );

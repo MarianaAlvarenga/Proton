@@ -9,7 +9,7 @@ const Menu = () => {
                 <div className="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center" style={{height:'11em', backgroundColor:'#EEE6FF', marginBottom:'1em'}}>
                     <a role="button">
                         <img
-                            src={require("../../assets/images/peluqueria.png")}
+                            src={require("../assets/images/peluqueria.png")}
                             alt="shiftsIcon"
                             style={{width:'5em'}}
                         />
@@ -20,7 +20,7 @@ const Menu = () => {
                 <div class="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center"  style={{height:'11em', backgroundColor:'#EEE6FF', marginBottom:'1em'}}>
                     <a role="button">
                         <img
-                            src={require("../../assets/images/ventas.png")}
+                            src={require("../assets/images/ventas.png")}
                             alt="salesIcon"
                             style={{width:'5em'}}
                         />  
@@ -30,7 +30,7 @@ const Menu = () => {
                 <div class="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center" style={{height:'11em', backgroundColor:'#EEE6FF', marginBottom:'1em'}}>
                     <a role="button">
                         <img
-                            src={require("../../assets/images/usuarios.png")}
+                            src={require("../assets/images/usuarios.png")}
                             alt="usersIcon"
                             style={{width:'5em'}}
                         />   

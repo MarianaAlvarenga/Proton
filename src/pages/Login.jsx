@@ -20,10 +20,27 @@ const Login = () => {
 
       if (response.data.success) {
         const userRole = parseInt(response.data.user.rol, 10); // Convertir a número
-        if (userRole === 1) {
-          navigate('/MenuClient');
-        } else {
-          setError('El usuario no tiene permisos de cliente.');
+        
+        switch (userRole) {
+          case 1:
+            navigate('/MenuClient');
+            break;
+          
+          case 2:
+            navigate('/MenuSeller');
+            break;
+          
+          case 3:
+            navigate('/MenuGrommer');
+            break;
+          
+          case 4:
+            navigate('/MenuAdmin');
+            break;
+          
+          default:
+            setError('El usuario no tiene permisos de cliente.');
+            break;
         }
       }
 
