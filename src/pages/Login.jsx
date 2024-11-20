@@ -84,7 +84,7 @@ const Login = () => {
         <h1 className="title is-3">Ingreso</h1>
         <form onSubmit={handleLogin} style={{ textAlign: 'left' }}>
           <div className="field">
-            <label className="label">Usuario</label>
+            <label className="label">Email</label>
             <div className="control">
               <input
                 className="input"

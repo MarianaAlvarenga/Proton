@@ -1,20 +1,20 @@
+// MenuAdmin.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";  // Importa useNavigate
 import NavBar from "../components/common/NavBar";
 
 const MenuAdmin = () => {
-  const navigate = useNavigate();  // Inicializa la función de navegación
+  const navigate = useNavigate();  // Inicializa el hook de navegación
 
-  // Función para manejar el clic en "Turnos"
-  const handleShiftsClick = () => {
-    navigate("/Shifts");  // Redirige a la ruta de Turnos
-  };
-
+  // Función para manejar el clic en "Ventas"
   const handleSalesClick = () => {
     const userRole = localStorage.getItem('userRole'); // Obtén el rol desde localStorage
     navigate("/Products", { state: { role: userRole } });
   };
-  
+
+  const handleShiftsClick = () => {
+    navigate("/Shifts");  // Redirige a la ruta de Turnos
+  };
 
   return (
     <>
@@ -28,7 +28,7 @@ const MenuAdmin = () => {
             className="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
             style={{ height: "11em", backgroundColor: "#EEE6FF", marginBottom: "1em" }}
           >
-            <a role="button" onClick={handleShiftsClick}> {/* Asocia la función al clic */}
+            <a role="button" onClick={handleShiftsClick}>
               <img
                 src={require("../assets/images/peluqueria.png")}
                 alt="shiftsIcon"
