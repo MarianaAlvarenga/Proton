@@ -13,9 +13,9 @@ CREATE TABLE carrito (
  id_carrito INT NOT NULL AUTO_INCREMENT,
  fecha_carrito DATE NOT NULL,
  hora_carrito TIME NOT NULL,
- cliente_id_usuario1 INT NOT NULL,
- vendedor_id_usuario INT NOT NULL,
- administrador_id_usuario INT NOT NULL,
+ cliente_id_usuario1 INT,
+ vendedor_id_usuario INT,
+ administrador_id_usuario INT,
  PRIMARY KEY (id_carrito)
 );
 
@@ -153,8 +153,8 @@ CREATE TABLE vendedor (
 
 CREATE TABLE cliente (
     id_usuario INT NOT NULL,
-    fecha_nac DATE NOT NULL,
-    vendedor_id_usuario INT NOT NULL,
+    fecha_nac DATE,
+    vendedor_id_usuario INT,
     UNIQUE (vendedor_id_usuario),
     PRIMARY KEY (id_usuario),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
