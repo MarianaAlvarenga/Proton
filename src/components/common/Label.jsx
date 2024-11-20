@@ -1,27 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Label = ({ labelContent = "example" }) => {
-  // Estado para almacenar el valor del input
-  const [inputValue, setInputValue] = useState("");
-
-  // Manejador para actualizar el estado cuando cambia el valor del input
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
-
+const Label = ({ labelContent = "example", inputName, inputValue, handleChange, type = "text" }) => {
   return (
     <div className="field" style={{ margin: "1em" }}>
       <div className="control">
         <input
           className="input"
-          type="email"
+          type={type}
           placeholder={labelContent}
-          value={inputValue} // Vincula el estado al valor del input
-          onChange={handleChange} // Escucha los cambios y actualiza el estado
+          name={inputName}
+          value={inputValue}
+          onChange={handleChange}
         />
       </div>
-      {/* Mostrar el valor ingresado (solo para pruebas, puedes eliminarlo) */}
-      <p>Valor ingresado: {inputValue}</p>
     </div>
   );
 };

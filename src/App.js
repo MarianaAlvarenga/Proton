@@ -11,7 +11,7 @@ import MenuGrommer from './pages/MenuGrommer.jsx';
 function App() {
   return (
     <>
-      <MenuGrommer></MenuGrommer>
+      <SignUp></SignUp>
     </>
   );
 }
