@@ -20,7 +20,7 @@ function App() {
         <Route path="/products-create" element={<ProductsCreate />} />
         <Route path="/products-admin" element={<ProductsAdmin />} />
         <Route path="/shifts" element={<Shifts />} />
-        <Route path="/menu-client" element={<MenuClient />} />
+        <Route path="/MenuClient" element={<MenuClient />} />
         <Route path="/menu-grommer" element={<MenuGrommer />} />
       </Routes>
     </Router>

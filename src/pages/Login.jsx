@@ -17,7 +17,20 @@ const Login = () => {
         email,
         contrasenia: password,
       });
+
       if (response.data.success) {
+        const userRole = parseInt(response.data.user.rol, 10); // Convertir a número
+        if (userRole === 1) {
+          navigate('/MenuClient');
+        } else {
+          setError('El usuario no tiene permisos de cliente.');
+        }
+      }
+
+      /*if (response.data.success) {
+        
+        console.log(response.data);
+        
         if (response.data.user.rol === 1) {
           navigate('/MenuClient');
         } else {
@@ -25,7 +38,7 @@ const Login = () => {
         }
       } else {
         setError(response.data.message);
-      }
+      }*/
     } catch (err) {
       setError('Error al conectar con el servidor.');
     }

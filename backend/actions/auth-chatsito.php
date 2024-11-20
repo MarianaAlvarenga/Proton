@@ -94,8 +94,16 @@ function loginUser($data, $conn) {
         unset($user['contrasenia']); // Eliminar la contraseña del resultado
         echo json_encode(["success" => true, "message" => "Inicio de sesión exitoso", "user" => $user]);
     } else {
-        echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
+        echo json_encode([
+            "success" => false, 
+            "message" => "Contraseña incorrecta",
+            "debug" => [
+                "password_input" => $password,
+                "password_db" => $user['contrasenia']
+            ]
+        ]);
     }
+    
 }
 
 ?>
