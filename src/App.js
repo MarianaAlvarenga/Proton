@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import SignUp from './components/common/SignUp';
 import ProductsCreate from './components/sales/ProductsCreate';
-import ProductsAdmin from './pages/Products';
+import Products from './pages/Products';
 import Shifts from './pages/Shifts';
 import MenuClient from './pages/MenuClient';
 import MenuGrommer from './pages/MenuGrommer';
@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/ProductsCreate" element={<ProductsCreate />} />
-        <Route path="/ProductsAdmin" element={<ProductsAdmin />} />
+        <Route path="/Products" element={<Products />} />
         <Route path="/Shifts" element={<Shifts />} />
         <Route path="/MenuClient" element={<MenuClient />} />
         <Route path="/MenuGroomer" element={<MenuGrommer />} />

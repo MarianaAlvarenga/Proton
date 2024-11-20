@@ -11,8 +11,10 @@ const MenuAdmin = () => {
   };
 
   const handleSalesClick = () => {
-    navigate("/ProductsAdmin");
-  }
+    const userRole = localStorage.getItem('userRole'); // Obtén el rol desde localStorage
+    navigate("/Products", { state: { role: userRole } });
+  };
+  
 
   return (
     <>

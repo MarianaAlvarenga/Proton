@@ -11,6 +11,8 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(''); // Reinicia el estado de error al enviar
+
     try {
       const response = await axios.post('http://localhost:8080/Proton/backend/actions/auth-chatsito.php', {
         action: 'login',
@@ -19,43 +21,33 @@ const Login = () => {
       });
 
       if (response.data.success) {
-        const userRole = parseInt(response.data.user.rol, 10); // Convertir a número
-        
-        switch (userRole) {
+        const { rol, nombre } = response.data.user;
+
+        // Almacenar datos relevantes en localStorage
+        localStorage.setItem('userRole', rol);
+        localStorage.setItem('userName', nombre);
+
+        // Redirigir según el rol del usuario
+        switch (parseInt(rol, 10)) {
           case 1:
             navigate('/MenuClient');
             break;
-          
           case 2:
             navigate('/MenuSeller');
             break;
-          
           case 3:
             navigate('/MenuGrommer');
             break;
-          
           case 4:
             navigate('/MenuAdmin');
             break;
-          
           default:
-            setError('El usuario no tiene permisos de cliente.');
+            setError('El usuario no tiene permisos válidos.');
             break;
         }
-      }
-
-      /*if (response.data.success) {
-        
-        console.log(response.data);
-        
-        if (response.data.user.rol === 1) {
-          navigate('/MenuClient');
-        } else {
-          setError('El usuario no tiene permisos de cliente.');
-        }
       } else {
-        setError(response.data.message);
-      }*/
+        setError(response.data.message || 'Error desconocido.');
+      }
     } catch (err) {
       setError('Error al conectar con el servidor.');
     }
@@ -77,7 +69,12 @@ const Login = () => {
         }}
       >
         <figure className="image is-128x128 is-inline-block">
-          <img className="is-rounded" src={require('../assets/images/protiblanco.png')} style={{ margin: '0 auto' }} />
+          <img
+            className="is-rounded"
+            src={require('../assets/images/protiblanco.png')}
+            alt="Logo"
+            style={{ margin: '0 auto' }}
+          />
         </figure>
         <h1 className="title is-3">Ingreso</h1>
         <form onSubmit={handleLogin} style={{ textAlign: 'left' }}>
@@ -114,7 +111,9 @@ const Login = () => {
             </button>
           </div>
         </form>
-        <p className="has-text-centered">Si no tenés cuenta, <a href="#">Regístrate</a></p>
+        <p className="has-text-centered">
+          Si no tenés cuenta, <a href="#">Regístrate</a>
+        </p>
       </div>
     </div>
   );

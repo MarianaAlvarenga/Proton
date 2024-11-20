@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
 import ProductImage from "../components/sales/ProductCard";
 import Pagination from "../components/common/Pagination";
 
-// POR DEFECTO SE MUESTRA LA PANTALLA DE PRODUCTOS NO ADMIN (SOLO PUEDE AGREGAR Y ELIMINAR PRODUCTOS DEL CARRITO)
-// ESTO SE INDICA MEDIANTE LA PROPIEDAD isAdmin
-const ProductsAdmin = ({ isAdmin = false }) => {
+const Products = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Recuperar el rol del usuario desde localStorage
+    const userRole = parseInt(localStorage.getItem("userRole"), 10);
+    // Definir si el usuario es admin (asumiendo que el rol 4 es admin)
+    setIsAdmin(userRole === 4);
+  }, []);
+
   return (
     <>
       <NavBar showMenu showSearch />
@@ -64,4 +71,4 @@ const ProductsAdmin = ({ isAdmin = false }) => {
   );
 };
 
-export default ProductsAdmin;
+export default Products;
