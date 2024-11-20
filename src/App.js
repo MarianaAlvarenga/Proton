@@ -1,18 +1,29 @@
 import './App.css';
-import Modal from './components/common/Modal';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Importa tus componentes
 import Login from './pages/Login';
-import Menu from './components/common/Menu';
 import SignUp from './components/common/SignUp';
-import ProductsCreate from './components/sales/ProductsCreate.jsx';
-import ProductsAdmin from './pages/Products.jsx';
-import Shifts from './pages/Shifts.jsx';
-import MenuClient from './pages/MenuClient.jsx';
-import MenuGrommer from './pages/MenuGrommer.jsx';
+import ProductsCreate from './components/sales/ProductsCreate';
+import ProductsAdmin from './pages/Products';
+import Shifts from './pages/Shifts';
+import MenuClient from './pages/MenuClient';
+import MenuGrommer from './pages/MenuGrommer';
+
 function App() {
   return (
-    <>
-      <SignUp></SignUp>
-    </>
+    <Router>
+      <Routes>
+        {/* Define las rutas para cada componente */}
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/products-create" element={<ProductsCreate />} />
+        <Route path="/products-admin" element={<ProductsAdmin />} />
+        <Route path="/shifts" element={<Shifts />} />
+        <Route path="/menu-client" element={<MenuClient />} />
+        <Route path="/menu-grommer" element={<MenuGrommer />} />
+      </Routes>
+    </Router>
   );
 }
 

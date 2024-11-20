@@ -72,7 +72,6 @@ function registerUser($data, $conn) {
 }
 
 function loginUser($data, $conn) {
-    // Validar datos
     if (empty($data['email']) || empty($data['contrasenia'])) {
         echo json_encode(["success" => false, "message" => "Email y contraseña son obligatorios"]);
         return;
@@ -81,8 +80,7 @@ function loginUser($data, $conn) {
     $email = $conn->real_escape_string($data['email']);
     $password = $data['contrasenia'];
 
-    // Verificar usuario
-    $query = "SELECT * FROM usuario WHERE email = '$email'";
+    $query = "SELECT id_usuario, nombre, apellido, email, rol, contrasenia FROM usuario WHERE email = '$email'";
     $result = $conn->query($query);
 
     if ($result->num_rows === 0) {
@@ -93,9 +91,11 @@ function loginUser($data, $conn) {
     $user = $result->fetch_assoc();
 
     if (password_verify($password, $user['contrasenia'])) {
+        unset($user['contrasenia']); // Eliminar la contraseña del resultado
         echo json_encode(["success" => true, "message" => "Inicio de sesión exitoso", "user" => $user]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
     }
 }
+
 ?>
