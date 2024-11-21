@@ -10,6 +10,9 @@ import Shifts from './pages/Shifts';
 import MenuClient from './pages/MenuClient';
 import MenuGrommer from './pages/MenuGrommer';
 import MenuAdmin from './pages/MenuAdmin';
+import UsersAdmin from './pages/UsersAdmin';
+
+
 
 function App() {
   return (
@@ -24,6 +27,7 @@ function App() {
         <Route path="/MenuClient" element={<MenuClient />} />
         <Route path="/MenuGroomer" element={<MenuGrommer />} />
         <Route path="/MenuAdmin" element={<MenuAdmin />} />
+        <Route path="/Users" element={<UsersAdmin />} />
       </Routes>
     </Router>
   );
