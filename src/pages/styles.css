@@ -1,0 +1,60 @@
+/* Estilos base para el cuerpo */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para el nav */
+.navbar {
+    background-color: #333;
+    padding: 10px 20px;
+}
+
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-menu li {
+    position: relative;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 15px;
+    display: block;
+}
+
+.nav-menu a:hover {
+    background-color: #575757;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #444;
+    min-width: 150px;
+    display: none; /* Oculto por defecto */
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li a {
+    padding: 10px 15px;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #575757;
+}
+
+/* Mostrar menú solo cuando tiene la clase "show" */
+.dropdown-menu.show {
+    display: block;
+}
