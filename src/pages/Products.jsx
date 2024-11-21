@@ -17,7 +17,7 @@ const Products = () => {
   return (
     <>
       <NavBar showMenu showSearch />
-      <SubNavBar showBack showCart />
+      <SubNavBar showBack showCart currentPage="Productos"/>
       <section className="section" style={{ margin: "0px", padding: "1.5rem 1.5rem" }}>
         <div className="container" style={{ margin: "0px" }}>
           <div className="columns is-mobile is-multiline" style={{ margin: "0px" }}>

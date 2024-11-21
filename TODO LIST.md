@@ -16,6 +16,9 @@
  * Modificar producto ✔️
  * Faltan categorias
  * Vista inicial de turnos ✔️
+ * Boton de realizar compra en la vista de ventas.
+ * Agregar precio a la card de producto.
+ * Boton de agregar producto fuera de la card.
  * Pedido de datos del cliente desde el admin
  * Vista turno confirmado
  * Popup
@@ -38,6 +41,7 @@
  * Historial de compras
  * Vista historial de turnos
  * Ver bonos
+ 
 
 
  **Peluquero**
@@ -61,3 +65,4 @@
  **General**
 * Agregar input para el buscador.
 * Menu hamburguesa.
+* Texto en el subnav que indique la seccion actual.
