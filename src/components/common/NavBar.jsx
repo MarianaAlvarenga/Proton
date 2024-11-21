@@ -1,5 +1,5 @@
 import React from "react";
-
+import MenuDesplegable from "C:/xampp/htdocs/Proton/src/components/common/MenuDesplegable"
 const NavBar = ({ showMenu = false, showSearch = false }) => {
   return (
     <>
@@ -35,6 +35,11 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
             
           </a>
               )}
+               <div className="navbar-end">
+          <div className="navbar-item">
+            <MenuDesplegable/>
+          </div>
+        </div>
         </div>
       </nav>
     </>

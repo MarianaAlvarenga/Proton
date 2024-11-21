@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./styles.css"; // Asegúrate de incluir el archivo CSS
+import "./stilaso.css"; // Asegúrate de incluir el archivo CSS
 
 const Desplegable = () => {
     // Estado para controlar si el menú desplegable está visible
@@ -37,17 +37,20 @@ const Desplegable = () => {
                         className="dropdown-toggle"
                         onClick={toggleDropdown}
                     >
-                        Productos
+                        ☰
                     </a>
                     <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>
                         <li>
-                            <a href="#producto1">Producto 1</a>
+                            <a href="#Perfil">Perfil</a>
                         </li>
                         <li>
-                            <a href="#producto2">Producto 2</a>
+                            <a href="#Peluqueria">Peluqueria</a>
                         </li>
                         <li>
-                            <a href="#producto3">Producto 3</a>
+                            <a href="#Productos">Productos</a>
+                        </li>
+                        <li>
+                            <a href="#Cerrar">Cerrar Sesion</a>
                         </li>
                     </ul>
                 </li>
