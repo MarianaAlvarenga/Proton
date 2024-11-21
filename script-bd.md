@@ -176,6 +176,25 @@ ALTER TABLE carrito ADD FOREIGN KEY (administrador_id_usuario) REFERENCES admini
 ALTER TABLE mascota ADD FOREIGN KEY (cliente_vendedor_id_usuario) REFERENCES cliente(id_usuario);
 ALTER TABLE producto ADD FOREIGN KEY (categoria_id_categoria) REFERENCES categoria(id_categoria);
 
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Alimento para Perros");
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Alimento para Gatos");
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Otros Alimentos");
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Accesorios");
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Estética e Higiene");
+INSERT INTO categoria (nombre_categoria)
+VALUES ("Snacks");
+
+ALTER TABLE productos
+ADD COLUMN precio_producto INT(4) NOT NULL;
+ALTER TABLE producto
+ADD COLUMN image_url VARCHAR(255) NOT NULL;
+
+
 INSERT INTO rol (id, rol) VALUES 
 (1, 'cliente'),
 (2, 'vendedor'),
