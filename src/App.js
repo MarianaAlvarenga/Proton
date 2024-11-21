@@ -11,6 +11,7 @@ import MenuClient from './pages/MenuClient';
 import MenuGrommer from './pages/MenuGrommer';
 import MenuAdmin from './pages/MenuAdmin';
 import UsersAdmin from './pages/UsersAdmin';
+import ProductCreateForm from './components/sales/ProductCreateForm';
 
 
 

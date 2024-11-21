@@ -7,7 +7,7 @@ const ProductCard = ({ ProductName = "Producto", ProductPrice = "0.00", ProductI
 
   // Función para manejar la redirección al formulario de creación
   const handleAddClick = () => {
-    navigate("/ProductCreateForm");
+    navigate("/ProductsCreate");
   };
 
   return (
