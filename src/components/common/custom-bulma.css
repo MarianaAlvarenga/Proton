@@ -1,0 +1,34 @@
+:root {
+    --bulma-primary-h: 275deg;
+    --bulma-primary-s: 49%;
+    --bulma-primary-l: 55%;
+    --bulma-link-h: 275deg;
+    --bulma-link-s: 49%;
+    --bulma-link-l: 55%;
+    --bulma-info-h: 296deg;
+    --bulma-info-s: 49%;
+    --bulma-info-l: 55%;
+    --bulma-danger-l: 59%;
+  }
+  
+  .is-selected{
+    color: white !important;
+  }
+
+  
+  .table {
+    margin: 0 auto !important; /* Centra la tabla horizontalmente */
+    width: 90% !important;     /* Ajusta el ancho según lo necesario */
+    border-collapse: collapse !important; /* Elimina los espacios entre celdas */
+  }
+
+  /* Cambiar el color del borde cuando el checkbox está seleccionado */
+input[type="checkbox"]:checked {
+  background-color: #9655C5; /* Cambiar a cualquier color que prefieras */
+  border-color: #9655C5; /* Cambiar el borde al mismo color */
+}
+
+/* Estilo adicional para hacer más visible el cambio */
+input[type="checkbox"] {
+  accent-color: #9655C5; /* Cambiar color del check a verde */
+}

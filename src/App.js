@@ -10,7 +10,9 @@ import Shifts from './pages/Shifts';
 import MenuClient from './pages/MenuClient';
 import MenuGrommer from './pages/MenuGrommer';
 import MenuAdmin from './pages/MenuAdmin';
-import ProductCreateForm from './components/sales/ProductCreateForm';
+import UsersAdmin from './pages/UsersAdmin';
+
+
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="/MenuGroomer" element={<MenuGrommer />} />
         <Route path="/MenuAdmin" element={<MenuAdmin />} />
         <Route path="/ProductCreateForm" element={<ProductCreateForm />} />
+        <Route path="/Users" element={<UsersAdmin />} />
       </Routes>
     </Router>
   );

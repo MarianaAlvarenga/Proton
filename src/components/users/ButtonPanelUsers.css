@@ -1,0 +1,15 @@
+/* Contenedor de los botones */
+.button-container {
+    display: flex;                /* Usamos Flexbox para la distribución */
+    justify-content: flex-end;    /* Alinea los botones a la derecha */
+    gap: 20px;                    /* Aumenta el espacio entre los botones */
+    margin-top: 20px;             /* Márgenes superiores */
+    margin-bottom: 20px;          /* Márgenes inferiores */
+}
+
+/* Estilo para cada botón (si quieres ajustar el estilo de los botones) */
+.button-container button {
+    padding: 10px 20px;           /* Tamaño del botón */
+    font-size: 16px;               /* Tamaño de la fuente del botón */
+    margin: 0;                     /* Elimina márgenes adicionales si los hay */
+}
