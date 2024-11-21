@@ -3,7 +3,7 @@ import "./styles.css"
 import { useNavigate } from "react-router-dom";  // Importa useNavigate
 
 
-const SubNavBar = ({ showBack = false, showCart = false }) => {
+const SubNavBar = ({ showBack = false, showCart = false, currentPage='Cargando...' }) => {
     
     const navigate = useNavigate();  // Inicializa el hook de navegación
     
@@ -36,7 +36,7 @@ const SubNavBar = ({ showBack = false, showCart = false }) => {
                     )}
                 </a>
             </div>
-
+            <h1 style={{justifySelf:'center', alignSelf:'center', color:'white'}}>{currentPage}</h1>
             <div className="navbar-item">
                 <a>
                     {showCart && (

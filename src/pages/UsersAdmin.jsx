@@ -8,7 +8,7 @@ const UsersAdmin = () => {
     return(
         <div>
             <NavBar showMenu showSearch></NavBar>
-            <SubNavBar showBack></SubNavBar>
+            <SubNavBar showBack currentPage="Gestión de usuarios"></SubNavBar>
             <ButtonPanelUsers></ButtonPanelUsers>
             <Table></Table>
         </div>

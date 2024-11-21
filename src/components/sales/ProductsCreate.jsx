@@ -7,7 +7,7 @@ const ProductsCreate = () => {
     return(
         <>
             <NavBar showMenu showSearch></NavBar>
-            <SubNavBar showBack></SubNavBar>
+            <SubNavBar showBack currentPage="Ingreso productos"></SubNavBar>
             <ProductImage></ProductImage>
             <ProductCreateForm></ProductCreateForm>
         </>
