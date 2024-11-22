@@ -1,60 +1,58 @@
-/* Estilos base para el cuerpo */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+.menu-container {
+    position: absolute; /* Control independiente sobre la posición */
+    top: 0; /* Alineado al borde superior del nav */
+    left: 240px; /* Separado ligeramente del borde derecho */
+    z-index: 1000; /* Encima de otros elementos si hay superposición */
 }
 
-/* Estilos para el nav */
-.navbar {
-    background-color: #333;
-    padding: 10px 20px;
-}
-
-.nav-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-.nav-menu li {
-    position: relative;
-}
-
-.nav-menu a {
+.menu-icon {
+    cursor: pointer;
+    font-size: 24px;
     text-decoration: none;
     color: white;
+    background-color: #9655C5;
     padding: 10px 15px;
-    display: block;
-}
-
-.nav-menu a:hover {
-    background-color: #575757;
+    border-radius: 4px;
 }
 
 /* Dropdown menu */
 .dropdown-menu {
     list-style: none;
     position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #444;
+    top: 100%; /* Justo debajo del icono */
+    right: 200px; /* Alineado hacia adentro respecto al contenedor */
+    background-color: #9655C5;
     min-width: 150px;
     display: none; /* Oculto por defecto */
     padding: 0;
     margin: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 4px;
+    transform: translateX(-80px); /* Desplazar hacia adentro */
 }
 
+/* Estilos para los enlaces del dropdown */
 .dropdown-menu li a {
     padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    display: block;
 }
 
 .dropdown-menu li a:hover {
-    background-color: #575757;
+    background-color: #7e3fa4;
 }
 
-/* Mostrar menú solo cuando tiene la clase "show" */
+/* Mostrar menú cuando está activo */
 .dropdown-menu.show {
     display: block;
+    animation: slideDown 0.3s ease-in-out; /* Agregar animación */
 }
+
+/* Animación para mostrar el menú hacia abajo */
+@keyframes slideDown {
+        opacity: 1;
+        transform: translateY(0); /* Terminar en su posición */
+    }
+

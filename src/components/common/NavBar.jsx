@@ -17,25 +17,7 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
               </a>
             </div>
           )}
-
-          {/* Esto es necesario para que el menú móvil funcione */}
-          {showMenu && (
-          <a
-            role="button"
-            className="navbar-burger"
-            aria-label="menu"
-            aria-expanded="false"
-            data-target="navbarBasicExample"
-            style={{color:'white', backgroundColor:'#9655C5'}}
-          >
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            
-          </a>
-              )}
-               <div className="navbar-end">
+          <div className="navbar-end">
           <div className="navbar-item">
             <MenuDesplegable/>
           </div>
