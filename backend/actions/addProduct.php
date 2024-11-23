@@ -1,4 +1,14 @@
 <?php
+// Encabezados CORS
+header("Access-Control-Allow-Origin: http://localhost:3000"); // Cambiar para producción
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Métodos permitidos
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // Encabezados permitidos
+
+// Manejar preflight (OPTIONS)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 header("Content-Type: application/json");
 
 $host = "localhost:3307";

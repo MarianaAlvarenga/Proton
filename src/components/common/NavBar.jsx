@@ -1,5 +1,6 @@
 import React from "react";
-import MenuDesplegable from "C:/xampp/htdocs/Proton/src/components/common/MenuDesplegable"
+import MenuDesplegable from "./MenuDesplegable.jsx"
+import './NavBar.css';
 const NavBar = ({ showMenu = false, showSearch = false }) => {
   return (
     <>
@@ -15,6 +16,7 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
                   style={{ fill: 'white', color:'white'}}
                 />
               </a>
+              <input type="text" className="input-text"></input>
             </div>
           )}
           <div className="navbar-end">
