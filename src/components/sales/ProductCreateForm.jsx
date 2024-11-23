@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './ProductCreateForm.css';
+//import './ProductCreateForm.css';
 import OkButton from "../common/OkButton";
 import CancelButton from "../common/CancelButton";
 import { useNavigate } from "react-router-dom";
