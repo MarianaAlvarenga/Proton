@@ -8,7 +8,6 @@ const ProductsCreate = () => {
         <>
             <NavBar showMenu showSearch></NavBar>
             <SubNavBar showBack currentPage="Ingreso productos"></SubNavBar>
-            <ProductImage></ProductImage>
             <ProductCreateForm></ProductCreateForm>
         </>
     );

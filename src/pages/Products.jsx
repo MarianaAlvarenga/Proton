@@ -17,9 +17,10 @@ const Products = () => {
     // Obtener productos desde el backend
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost/api/products.php"); // Cambia la URL si es necesario
+        const response = await fetch("http://localhost:8080/proton/backend/actions/getProducts.php"); // Cambia la URL si es necesario
         const data = await response.json();
         setProducts(data);
+        console.log("Productos recibidos:", data);
       } catch (error) {
         console.error("Error al obtener los productos:", error);
       }
@@ -43,7 +44,7 @@ const Products = () => {
                 <ProductImage
                   ProductName={product.nombre_producto}
                   ProductPrice={product.precio_producto} // Pasamos el precio como prop
-                  ImageUrl={product.image_url} // Pasamos la URL de la imagen como prop
+                  ProductImage={product.image_url} // Pasamos la URL de la imagen como prop
                   ShowAddButton
                   {...(isAdmin
                     ? { ShowModifyButton: true }

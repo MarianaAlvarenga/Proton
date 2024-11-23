@@ -66,3 +66,5 @@
 * Agregar input para el buscador.
 * Menu hamburguesa.
 * Texto en el subnav que indique la seccion actual.
+
+* ajustar tamaño de imagenes que se suben en Products.jsx

@@ -132,7 +132,7 @@ CREATE TABLE usuario (
     apellido VARCHAR(20) NOT NULL,
     telefono VARCHAR(20),
     email VARCHAR(30),
-    contrasenia VARCHAR(10) NOT NULL,
+    contrasenia VARCHAR(255) NOT NULL,
     rol INT NOT NULL,
     PRIMARY KEY (id_usuario),
     FOREIGN KEY (rol) REFERENCES rol(id)
@@ -189,10 +189,10 @@ VALUES ("Estética e Higiene");
 INSERT INTO categoria (nombre_categoria)
 VALUES ("Snacks");
 
-ALTER TABLE productos
+ALTER TABLE producto
 ADD COLUMN precio_producto INT(4) NOT NULL;
 ALTER TABLE producto
-ADD COLUMN image_url VARCHAR(255) NOT NULL;
+ADD COLUMN image_url VARCHAR(255);
 
 
 INSERT INTO rol (id, rol) VALUES 

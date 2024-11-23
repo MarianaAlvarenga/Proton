@@ -1,4 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
 // Configuración de la base de datos
 $host = 'localhost:3307';
 $dbname = 'proton'; // Cambia esto por tu base de datos
@@ -12,7 +16,7 @@ if ($conn->connect_error) {
 }
 
 // Consulta para obtener los productos
-$sql = "SELECT codigo_producto, nombre_producto AS ProductName, precio_producto AS ProductPrice, image_url AS ProductImage FROM products";
+$sql = "SELECT codigo_producto AS id, nombre_producto, precio_producto, image_url FROM producto";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
