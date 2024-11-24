@@ -8,15 +8,9 @@ const SubNavBar = ({ showBack = false, showCart = false, currentPage='Cargando..
     const navigate = useNavigate();  // Inicializa el hook de navegación
     
     const backForward = () => {
-        const userRole = localStorage.getItem('userRole'); // Obtén el rol desde localStorage
-      
-        // Verifica si el rol es administrador (rol nro 4)
-        if (userRole === "4") {
-          navigate("/menuadmin"); // Si es administrador, redirige a /menuadmin.jsx
-        } else {
-          navigate("/menuclient"); // Si no es administrador, redirige a /menuclient.jsx
-        }
-      };
+        navigate(-1); // Navega a la página anterior en el historial
+    };
+          
 
     return (
         <nav

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
 import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
+import SubNavBar from "./SubNavBar";
 
 const SignUp = () => {
   // Estados para manejar los datos del formulario
@@ -17,6 +18,25 @@ const SignUp = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [userRole, setUserRole] = useState(null); // Estado para almacenar el rol del usuario
+  const [loading, setLoading] = useState(true); // Estado para manejar la carga inicial
+
+  // Simulación de una llamada para obtener el rol del usuario
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUserRole.php");
+        const data = await response.json();
+        setUserRole(data.role); // Supongamos que el backend devuelve { role: 4 } o un número diferente
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage("Error al obtener el rol del usuario");
+        setLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
 
   // Manejador para actualizar los datos del formulario
   const handleChange = (e) => {
@@ -75,14 +95,18 @@ const SignUp = () => {
     }
   };
 
+  if (loading) return <p>Cargando...</p>;
+
   return (
     <>
       <NavBar />
+      <SubNavBar showBack currentPage="" />
       <div className="container" style={{ maxWidth: "400px", textAlign: "center" }}>
         <div className="box" style={{ paddingTop: "0px", paddingBottom: "0px" }}>
           <UserImage />
           <form onSubmit={handleRegister}>
             <section className="is-flex is-flex-direction-column is-justify-content-center">
+              {/* Campos visibles para todos */}
               <Label
                 labelContent="Ingrese su nombre"
                 inputName="nombre"
@@ -102,27 +126,32 @@ const SignUp = () => {
                 handleChange={handleChange}
                 type="email"
               />
-              <Label
-                labelContent="Número de teléfono"
-                inputName="telefono"
-                inputValue={formData.telefono}
-                handleChange={handleChange}
-                type="tel"
-              />
-              <Label
-                labelContent="Contraseña"
-                inputName="contrasenia"
-                inputValue={formData.contrasenia}
-                handleChange={handleChange}
-                type="password"
-              />
-              <Label
-                labelContent="Repita su contraseña"
-                inputName="confirmarContrasenia"
-                inputValue={formData.confirmarContrasenia}
-                handleChange={handleChange}
-                type="password"
-              />
+              {/* Campos visibles solo si el rol no es 4 */}
+              {userRole !== 4 && (
+                <>
+                  <Label
+                    labelContent="Número de teléfono"
+                    inputName="telefono"
+                    inputValue={formData.telefono}
+                    handleChange={handleChange}
+                    type="tel"
+                  />
+                  <Label
+                    labelContent="Contraseña"
+                    inputName="contrasenia"
+                    inputValue={formData.contrasenia}
+                    handleChange={handleChange}
+                    type="password"
+                  />
+                  <Label
+                    labelContent="Repita su contraseña"
+                    inputName="confirmarContrasenia"
+                    inputValue={formData.confirmarContrasenia}
+                    handleChange={handleChange}
+                    type="password"
+                  />
+                </>
+              )}
             </section>
             <LargeButton textButton="Registrar" />
           </form>

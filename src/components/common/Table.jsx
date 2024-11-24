@@ -1,8 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './custom-bulma.css';
 
-// Se le puede agregar la clase is-selected
 const Table = () => {
+  const [users, setUsers] = useState([]); // Estado para almacenar los datos de los usuarios
+  const [loading, setLoading] = useState(true); // Estado de carga
+  const [error, setError] = useState(null); // Estado de error
+
+  useEffect(() => {
+    // Función para obtener los datos de los usuarios desde el backend
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUsers.php"); // Cambia la URL si es necesario
+        if (!response.ok) {
+          throw new Error("Error al obtener los datos.");
+        }
+        const data = await response.json();
+        setUsers(data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  if (loading) return <p>Cargando usuarios...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <table className="table">
       <thead>
@@ -14,156 +40,16 @@ const Table = () => {
           <th><abbr title="seleccionar">Sel</abbr></th>
         </tr>
       </thead>
-      <tfoot>
-        <tr>
-          <th>ID</th>
-          <th><abbr title="nombre">Nombre</abbr></th>
-          <th><abbr title="apellido">Apellido</abbr></th>
-          <th><abbr title="rol">Rol</abbr></th>
-          <th><abbr title="seleccionar">Sel</abbr></th>
-        </tr>
-      </tfoot>
       <tbody>
-        <tr>
-          <td>38</td>
-          <td>Pepito</td>
-          <td>Gonzales</td>
-          <td>68</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Lolita</td>
-          <td>Perez</td>
-          <td>65</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Menganito</td>
-          <td>Basualdo</td>
-          <td>69</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Susanito</td>
-          <td>Rodriguez</td>
-          <td>71</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Protoncito</td>
-          <td>Garcia Alvarenga</td>
-          <td>49</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Morita</td>
-          <td>Hiede</td>
-          <td>59</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Peluquita</td>
-          <td>Suarez</td>
-          <td>65</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Caselita</td>
-          <td>Casella</td>
-          <td>63</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Rubencito</td>
-          <td>Alvarenga</td>
-          <td>41</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Gaston</td>
-          <td>Garcia Bauer</td>
-          <td>59</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Mariana</td>
-          <td>Alvarenga</td>
-          <td>59</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Anita</td>
-          <td>Hiede</td>
-          <td>42</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Juancito</td>
-          <td>Moranelli</td>
-          <td>40</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Marito</td>
-          <td>Garcia</td>
-          <td>34</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Susanita</td>
-          <td>Bauer</td>
-          <td>39</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Danielito</td>
-          <td>Graiber</td>
-          <td>45</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Carito</td>
-          <td>Garcia</td>
-          <td>48</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>385</td>
-          <td>Facundito</td>
-          <td>Alvarenga</td>
-          <td>44</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Adita</td>
-          <td>Fernandez</td>
-          <td>39</td>
-          <td><input type="checkbox" /></td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>Teresita</td>
-          <td>Reynoso</td>
-          <td>27</td>
-          <td><input type="checkbox" /></td>
-        </tr>
+        {users.map((user) => (
+          <tr key={user.id}>
+            <td>{user.id_usuario}</td>
+            <td>{user.nombre}</td>
+            <td>{user.apellido}</td>
+            <td>{user.rol}</td>
+            <td><input type="checkbox" /></td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

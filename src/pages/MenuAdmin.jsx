@@ -16,6 +16,10 @@ const MenuAdmin = () => {
     navigate("/Shifts");  // Redirige a la ruta de Turnos
   };
 
+  const handleUsersClick = () => {
+    navigate("/Users");  // Redirige a la ruta de Turnos
+  };
+
   return (
     <>
       <div
@@ -56,7 +60,7 @@ const MenuAdmin = () => {
             className="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
             style={{ height: "11em", backgroundColor: "#EEE6FF", marginBottom: "1em" }}
           >
-            <a role="button">
+            <a role="button" onClick={handleUsersClick}>
               <img
                 src={require("../assets/images/usuarios.png")}
                 alt="usersIcon"
