@@ -1,42 +1,15 @@
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 5px;
-}
-
-.pagination-list {
-  list-style: none;
-  display: flex;
-  padding: 0;
-  margin: 0;
-}
-
-.pagination-link {
-  display: inline-block;
-  padding: 10px 15px;
-  font-size: 16px;
-  color: #007bff;
-  text-decoration: none;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.pagination-link:hover {
-  background-color: #007bff;
+.pagination-link.custom-color,
+.pagination-previous.custom-color,
+.pagination-next.custom-color {
+  background-color: #9655C5; /* Cambia este color al que prefieras */
   color: white;
-  cursor: pointer;
+  border-color: #9655C5;
 }
 
-.pagination-link.is-current {
-  background-color: #007bff;
+.pagination-link.custom-color:hover,
+.pagination-previous.custom-color:hover,
+.pagination-next.custom-color:hover {
+  background-color: hsl(275, 74%, 39%); /* Color de hover */
   color: white;
-  pointer-events: none;
-}
-
-.custom-color {
-  font-weight: bold;
-  text-transform: uppercase;
+  border-color: #6e1aab;
 }

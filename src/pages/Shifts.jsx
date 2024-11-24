@@ -24,7 +24,7 @@ const Shifts = ({ userRole }) => {
   return (
     <div>
       <NavBar showMenu></NavBar>
-      <SubNavBar showBack></SubNavBar>
+      <SubNavBar showBack currentPage='Turnos'></SubNavBar>
               
         <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>
           {/* Pasamos el parámetro isRange al Calendar */}
