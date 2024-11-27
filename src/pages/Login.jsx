@@ -65,8 +65,8 @@ const Login = () => {
         style={{
           backgroundColor: '#D9D0F0',
           borderRadius: '10px',
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          minHeight: '100vh',  // Ajuste aquí para que ocupe toda la altura sin pasarse
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

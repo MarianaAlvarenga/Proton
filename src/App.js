@@ -12,27 +12,22 @@ import MenuGrommer from './pages/MenuGrommer';
 import MenuAdmin from './pages/MenuAdmin';
 import UsersAdmin from './pages/UsersAdmin';
 import ProductCreateForm from './components/sales/ProductCreateForm';
-
-
-
-
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Define las rutas para cada componente */}
-        <Route path="/" element={<Login />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        <Route path="/ProductsCreate" element={<ProductsCreate />} />
-        <Route path="/Products" element={<Products />} />
-        <Route path="/Shifts" element={<Shifts />} />
-        <Route path="/MenuClient" element={<MenuClient />} />
-        <Route path="/MenuGroomer" element={<MenuGrommer />} />
-        <Route path="/MenuAdmin" element={<MenuAdmin />} />
-        <Route path="/ProductCreateForm" element={<ProductCreateForm />} />
-        <Route path="/Users" element={<UsersAdmin />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/ProductsCreate" element={<ProductsCreate />} />
+          <Route path="/Products" element={<Products />} />
+          <Route path="/Shifts" element={<Shifts />} />
+          <Route path="/MenuClient" element={<MenuClient />} />
+          <Route path="/MenuGroomer" element={<MenuGrommer />} />
+          <Route path="/MenuAdmin" element={<MenuAdmin />} />
+          <Route path="/ProductCreateForm" element={<ProductCreateForm />} />
+          <Route path="/Users" element={<UsersAdmin />} />
+        </Routes>
+      </Router>
   );
 }
 
