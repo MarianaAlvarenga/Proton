@@ -71,3 +71,9 @@
 * ajustar tamaño de imagenes que se suben en Products.jsx
 * Responsive
 * Menu desplegable
+
+
+
+**----------------------BACKEND-----------------------------**
+
+* Darle funcionalidad a los botones de redes

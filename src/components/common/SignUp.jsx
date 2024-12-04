@@ -4,8 +4,10 @@ import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
+import ComboBox from "./ComboBox";
+import './SignUp.css';
 
-const SignUp = () => {
+const SignUp = ({IsAdmin = true}) => {
   // Estados para manejar los datos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
@@ -101,10 +103,38 @@ const SignUp = () => {
     <>
       <NavBar />
       <SubNavBar showBack currentPage="" />
-      <div className="container" style={{ maxWidth: "400px", textAlign: "center" }}>
-        <div className="box" style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-          <UserImage />
-          <form onSubmit={handleRegister}>
+        <div
+        className="container"
+        style={{
+          maxWidth: "400px",
+          margin: "0 auto", // Centrar horizontalmente todo el contenedor
+          textAlign: "center",
+          minHeight: "100vh", // Asegura que ocupe al menos toda la pantalla
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          padding: "10px",
+          boxSizing: "border-box",
+          overflowY: "auto", // Permite scroll si el contenido excede la altura
+        }}
+      >
+        <div
+          style={{
+            margin: "0",
+            padding: "0",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center", // Centra la imagen horizontalmente
+          }}
+        >
+          <UserImage
+            style={{
+              margin: "10px 0", // Menos espacio arriba y abajo
+              padding: "0",
+            }}
+          />
+          <form onSubmit={handleRegister} style={{ marginBottom: "20px" }}>
+            {IsAdmin && <ComboBox className="is-fullwidth" />}
             <section className="is-flex is-flex-direction-column is-justify-content-center">
               {/* Campos visibles para todos */}
               <Label
@@ -153,12 +183,15 @@ const SignUp = () => {
                 </>
               )}
             </section>
-            <LargeButton textButton="Registrar" />
+            <LargeButton textButton="Registrar" className="is-fullwidth" />
           </form>
           {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
         </div>
       </div>
+
+
+
     </>
   );
 };
