@@ -1,1 +1,21 @@
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evita el scroll no deseado */
+  }
+  
+  .container {
+    max-height: 100%; /* Limita la altura del contenedor */
+    overflow-y: auto; /* Habilita el scroll si el contenido excede */
+    display: flex;
+    flex-direction: column; /* Organiza los elementos verticalmente */
+    padding: 1rem;
+  }
+  
+  .box {
+    flex: 1; /* Permite que el formulario ocupe el espacio disponible */
+    overflow-y: auto; /* Habilita el scroll interno para el formulario */
+  }
+  

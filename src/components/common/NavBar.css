@@ -19,3 +19,35 @@
     background-color: rgba(255, 255, 255, 0.2); /* Fondo ligeramente más visible al enfocar */
     border-color: rgba(255, 255, 255, 0.5); /* Borde más definido al enfocar */
 }
+
+.navbar-brand {
+    display: flex;
+    justify-content: space-between; /* Separa los elementos */
+    align-items: center; /* Centra verticalmente */
+    flex-wrap: wrap; /* Permite que los elementos se apilen */
+    padding: 10px;
+}
+
+.navbar-item img {
+    max-width: 24px; /* Asegura que las imágenes no sean demasiado grandes */
+    height: auto;
+}
+
+@media (min-width: 768px) {
+    .navbar-brand {
+        flex-wrap: nowrap; /* Mantén los elementos en una línea */
+    }
+}
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Apila los elementos */
+    }
+
+    .signup-container {
+        padding: 5px;
+    }
+
+    form {
+        padding: 10px; /* Agrega espacio dentro del formulario */
+    }
+}

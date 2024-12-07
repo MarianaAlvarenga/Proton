@@ -1,7 +1,7 @@
 .pagination-link.custom-color,
 .pagination-previous.custom-color,
 .pagination-next.custom-color {
-  background-color: #9655C5; /* Cambia este color al que prefieras */
+  background-color: #9655C5; 
   color: white;
   border-color: #9655C5;
 }
@@ -9,7 +9,7 @@
 .pagination-link.custom-color:hover,
 .pagination-previous.custom-color:hover,
 .pagination-next.custom-color:hover {
-  background-color: hsl(275, 74%, 39%); /* Color de hover */
+  background-color: hsl(275, 74%, 39%); 
   color: white;
   border-color: #6e1aab;
 }

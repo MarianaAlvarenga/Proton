@@ -1,0 +1,37 @@
+/* Ajuste general para el wrapper principal */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ocupa toda la pantalla */
+    overflow: hidden; /* Evita desbordes globales */
+  }
+  
+  /* Sección principal */
+  .products-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Ocupa el espacio restante */
+    overflow: hidden; /* Evita desbordes */
+  }
+  
+  /* Contenedor de productos con scroll */
+  .products-container {
+    flex: 1; /* Ocupa todo el espacio vertical disponible */
+    overflow-y: auto; /* Permite el desplazamiento vertical */
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Configuración de columnas */
+  .columns {
+    margin: 0;
+  }
+  
+  /* Contenedor de paginación fijo */
+  .pagination-container {
+    padding: 1rem 0;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+  }
+  

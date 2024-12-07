@@ -112,10 +112,10 @@ const ProductCreateForm = () => {
 
     return (
         <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
+
             <ProductImage onImageUpload={handleFileChange} />
-            <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-                <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-                    {/* Dropdown de categorías */}
+            <div className="box">
+                <form onSubmit={handleSubmit}>
                     <div className="field">
                         <label className="label">Categoría</label>
                         <div className="select" style={{ width: '100%' }}>
@@ -123,25 +123,19 @@ const ProductCreateForm = () => {
                                 name="categoria_id_categoria"
                                 value={formData.categoria_id_categoria}
                                 onChange={handleChange}
-                                style={{ width: '100%' }}
                                 required
                             >
                                 <option value="">Seleccionar categoría</option>
-                                {categories.length > 0 ? (
-                                    categories.map((category) => (
-                                        <option key={category.id_categoria} value={category.id_categoria}>
-                                            {category.nombre_categoria}
-                                        </option>
-                                    ))
-                                ) : (
-                                    <option>Cargando...</option>
-                                )}
+                                {categories.map(category => (
+                                    <option key={category.id_categoria} value={category.id_categoria}>
+                                        {category.nombre_categoria}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>
-
-                    {/* Nombre del producto */}
-                    <div className="field">
+                                      {/* Nombre del producto */}
+                                      <div className="field">
                         <label className="label">Nombre del producto</label>
                         <div className="control">
                             <input
@@ -239,9 +233,7 @@ const ProductCreateForm = () => {
                     {/* Botones */}
                     <div style={{
                         display: "flex",
-                        width: "100%",
                         justifyContent: "space-between",
-                        alignItems: "center"
                     }}>
                         <CancelButton />
                         <OkButton NameButton={productId ? "Actualizar" : "Agregar"} />

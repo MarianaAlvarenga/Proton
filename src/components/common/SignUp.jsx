@@ -4,8 +4,10 @@ import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
+import ComboBox from "./ComboBox";
+import './SignUp.css';
 
-const SignUp = () => {
+const SignUp = ({IsAdmin = true}) => {
   // Estados para manejar los datos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
@@ -101,64 +103,87 @@ const SignUp = () => {
     <>
       <NavBar />
       <SubNavBar showBack currentPage="" />
-      <div className="container" style={{ maxWidth: "400px", textAlign: "center" }}>
-        <div className="box" style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-          <UserImage />
-          <form onSubmit={handleRegister}>
-            <section className="is-flex is-flex-direction-column is-justify-content-center">
-              {/* Campos visibles para todos */}
-              <Label
-                labelContent="Ingrese su nombre"
-                inputName="nombre"
-                inputValue={formData.nombre}
-                handleChange={handleChange}
-              />
-              <Label
-                labelContent="Ingrese su apellido"
-                inputName="apellido"
-                inputValue={formData.apellido}
-                handleChange={handleChange}
-              />
-              <Label
-                labelContent="Ingrese su email"
-                inputName="email"
-                inputValue={formData.email}
-                handleChange={handleChange}
-                type="email"
-              />
-              {/* Campos visibles solo si el rol no es 4 */}
-              {userRole !== 4 && (
-                <>
-                  <Label
-                    labelContent="Número de teléfono"
-                    inputName="telefono"
-                    inputValue={formData.telefono}
-                    handleChange={handleChange}
-                    type="tel"
-                  />
-                  <Label
-                    labelContent="Contraseña"
-                    inputName="contrasenia"
-                    inputValue={formData.contrasenia}
-                    handleChange={handleChange}
-                    type="password"
-                  />
-                  <Label
-                    labelContent="Repita su contraseña"
-                    inputName="confirmarContrasenia"
-                    inputValue={formData.confirmarContrasenia}
-                    handleChange={handleChange}
-                    type="password"
-                  />
-                </>
-              )}
-            </section>
-            <LargeButton textButton="Registrar" />
-          </form>
-          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-          {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-        </div>
+      <div className="container">
+  <div
+    className="columns is-centered is-vcentered"
+    style={{
+      minHeight: "100vh", // Asegura que ocupe toda la altura de la pantalla
+      padding: "10px",
+    }}
+  >
+    <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
+      <div
+        className="box"
+        style={{
+          padding: "20px",
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <UserImage
+          style={{
+            margin: "0 auto 20px", // Centra la imagen y añade espacio debajo
+            display: "block",
+          }}
+        />
+        <form onSubmit={handleRegister}>
+          {IsAdmin && <ComboBox className="is-fullwidth" />}
+          <section className="is-flex is-flex-direction-column">
+            {/* Campos visibles para todos */}
+            <Label
+              labelContent="Ingrese su nombre"
+              inputName="nombre"
+              inputValue={formData.nombre}
+              handleChange={handleChange}
+            />
+            <Label
+              labelContent="Ingrese su apellido"
+              inputName="apellido"
+              inputValue={formData.apellido}
+              handleChange={handleChange}
+            />
+            <Label
+              labelContent="Ingrese su email"
+              inputName="email"
+              inputValue={formData.email}
+              handleChange={handleChange}
+              type="email"
+            />
+            {/* Campos visibles solo si el rol no es 4 */}
+            {userRole !== 4 && (
+              <>
+                <Label
+                  labelContent="Número de teléfono"
+                  inputName="telefono"
+                  inputValue={formData.telefono}
+                  handleChange={handleChange}
+                  type="tel"
+                />
+                <Label
+                  labelContent="Contraseña"
+                  inputName="contrasenia"
+                  inputValue={formData.contrasenia}
+                  handleChange={handleChange}
+                  type="password"
+                />
+                <Label
+                  labelContent="Repita su contraseña"
+                  inputName="confirmarContrasenia"
+                  inputValue={formData.confirmarContrasenia}
+                  handleChange={handleChange}
+                  type="password"
+                />
+              </>
+            )}
+          </section>
+          <LargeButton textButton="Registrar" className="is-fullwidth mt-3" />
+        </form>
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       </div>
+    </div>
+  </div>
+</div>
+
     </>
   );
 };
