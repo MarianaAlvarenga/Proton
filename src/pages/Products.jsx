@@ -38,7 +38,7 @@ const Products = () => {
   return (
     <div className="page-wrapper">
       <NavBar showMenu showSearch />
-      <SubNavBar showBack currentPage="Productos" />
+      <div><SubNavBar showBack currentPage="Productos" /></div>
       <section
         className="section"
         style={{ margin: "0px", padding: "1.5rem 1.5rem" }}

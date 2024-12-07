@@ -32,7 +32,7 @@ const ProductCreateForm = () => {
         
         if (productId) {
             // Si estamos editando un producto, obtener los datos de ese producto
-            axios.get(`http://localhost:8080/Proton/backend/actions/getProduct.php?id=${productId}`)
+            axios.get(`http://localhost:8080/Proton/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -112,7 +112,6 @@ const ProductCreateForm = () => {
 
     return (
         <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
-
             <ProductImage onImageUpload={handleFileChange} />
             <div className="box">
                 <form onSubmit={handleSubmit}>
@@ -134,8 +133,9 @@ const ProductCreateForm = () => {
                             </select>
                         </div>
                     </div>
-                                      {/* Nombre del producto */}
-                                      <div className="field">
+
+                    {/* Nombre del producto */}
+                    <div className="field">
                         <label className="label">Nombre del producto</label>
                         <div className="control">
                             <input

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";  // Importar Link para navegación
 import "./stilaso.css"; // Incluye tu archivo CSS
 
 const Desplegable = () => {
@@ -34,8 +35,9 @@ const Desplegable = () => {
                 ☰
             </a>
             <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>
+                {/* Usamos Link en lugar de a para navegar entre componentes */}
                 <li>
-                    <a href="#Perfil">Perfil</a>
+                    <Link to="/productscreate">Agregar Producto</Link>
                 </li>
                 <li>
                     <a href="#Peluqueria">Peluquería</a>
@@ -52,3 +54,4 @@ const Desplegable = () => {
 };
 
 export default Desplegable;
+

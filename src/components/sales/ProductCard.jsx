@@ -17,48 +17,13 @@ const ProductCard = ({
   const handleAddClick = () => {
     navigate("/ProductsCreate");
   };
+  
+  // Función para manejar la redirección al formulario de edición
 
-const handleUpdateClick = async () => {
-  // Redirigir al formulario de actualización de producto
-  // Usamos `navigate` para ir a una página de edición donde puedes actualizar los datos
-  navigate(`/ProductsUpdate/${ProductId}`);  // Suponiendo que el formulario de actualización usa el ID del producto
-
-  // Si deseas realizar la actualización directamente aquí, puedes hacer un fetch similar al de la eliminación
-  try {
-    const updatedProduct = {
-      id: ProductId,
-      name: ProductName,  // Aquí deberías tomar los datos del formulario de actualización
-      price: ProductPrice,
-      image_url: ProductImage,
-      // Agrega otros campos que desees actualizar
-    };
-
-    const response = await fetch("http://localhost:8080/Proton/backend/actions/updateProduct.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Asegúrate de enviar JSON
-      },
-      body: JSON.stringify(updatedProduct), // Enviar los datos del producto actualizado
-    });
-
-    const result = await response.json(); // Esperar la respuesta en formato JSON
-
-    if (result.success) {
-      alert(result.message);
-      // Aquí puedes hacer lo que necesites tras la actualización (recargar página, redirigir, etc.)
-      // Recargar la página para mostrar los productos actualizados
-      window.location.reload();
-    } else {
-      alert(result.message);
-    }
-  } catch (error) {
-    console.error("Error al actualizar el producto:", error);
-    alert("Error al actualizar el producto.");
-  }
-};
-
-
-  // Función para manejar la eliminación del producto
+  const handleUpdateClick = () => {
+    navigate(`/ProductCreateForm/${ProductId}`); // Redirige a ProductCreateForm con el productId
+  };
+  
  // Función para manejar la eliminación del producto
 const handleDeleteClick = async () => {
   const confirmDelete = window.confirm(`¿Estás seguro de que deseas eliminar el producto "${ProductName}"?`);
