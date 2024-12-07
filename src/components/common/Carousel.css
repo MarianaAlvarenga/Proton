@@ -1,0 +1,56 @@
+/* Estilos del carrusel */
+.carousel {
+    display: block;
+    width: 100%;
+    height: 100vh; /* Asegura que el carrusel ocupe toda la altura de la pantalla */
+    overflow: hidden; /* Evita que se muestren partes cortadas de las imágenes */
+    position: relative; /* Para que las flechas se posicionen correctamente */
+  }
+  
+  /* Las imágenes deben ocupar todo el espacio sin distorsionarse */
+  .carousel img {
+    width: 100%; /* Ocupa el 100% del ancho */
+    height: 100%; /* Ocupa el 100% de la altura */
+    object-fit: cover; /* Asegura que la imagen cubra toda el área sin distorsionarse */
+  }
+  
+  /* Ocultamos las partes de la imagen que quedan fuera del área visible */
+  .carousel-item {
+    flex: 0 0 100%; /* Hace que cada imagen ocupe todo el ancho del contenedor */
+    display: block;
+    overflow: hidden; /* Evita que se muestren partes de la imagen que se salgan de la pantalla */
+  }
+  
+  /* Aseguramos que no haya scroll horizontal */
+  .carousel-container {
+    overflow-x: hidden; /* Evita que aparezca la barra de desplazamiento horizontal */
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Estilo para las flechas del carrusel */
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .carousel-button-left {
+    left: 10px;
+  }
+  
+  .carousel-button-right {
+    right: 10px;
+  }
+  
+  /* Asegura que no haya desbordamiento horizontal en el contenedor */
+  .carousel {
+    overflow-x: hidden; /* Elimina el desplazamiento horizontal */
+  }
+  

@@ -183,7 +183,6 @@ const SignUp = ({IsAdmin = true}) => {
     </div>
   </div>
 </div>
-
     </>
   );
 };
