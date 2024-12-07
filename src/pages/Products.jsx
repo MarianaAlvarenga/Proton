@@ -48,6 +48,7 @@ const Products = () => {
         style={{ margin: "0px", padding: "1.5rem 1.5rem" }}
       >
         <div className="container" style={{ margin: "0px" }}>
+        {console.log("Productos cargados:", products)}
           <div
             className="columns is-mobile is-multiline"
             style={{ margin: "0px" }}
@@ -58,9 +59,10 @@ const Products = () => {
                   ProductName={product.nombre_producto}
                   ProductPrice={product.precio_producto} // Pasamos el precio como prop
                   ProductImage={product.image_url} // Pasamos la URL de la imagen como prop
+                  ProductId={product.id}
                   ShowAddButton
                   {...(isAdmin
-                    ? { ShowModifyButton: true }
+                    ? { ShowModifyButton: true, ShowDeleteButton: true }
                     : { ShowDeleteButton: true })}
                 />
               </div>

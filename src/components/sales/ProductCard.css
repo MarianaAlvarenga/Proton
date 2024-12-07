@@ -18,12 +18,12 @@
 
 .add-button {
     top: 10px;
-    right: 10px;
+    left: 10px;
 }
 
 .modify-button {
     top: 10px !important;
-    left: 10px !important;
+    right: 10px !important;
 }
 .delete-button {
     top: 10px !important;
