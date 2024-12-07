@@ -2,7 +2,6 @@
 
 * Armar archivos css
 * Componentizar el menu
-* Componente popup
 
 # VENTANAS DE FRONT A CREAR
 **En comun**
@@ -22,7 +21,7 @@
  * Boton de agregar producto fuera de la card.
  * Pedido de datos del cliente desde el admin
  * Vista turno confirmado
- * Popup
+ * Popup✔️
  * Modificar turno
  * Cancelar turno
  * Vista inicial Usuarios

@@ -15,58 +15,81 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Cantidad de productos por página
-$itemsPerPage = 4;
+// Verificar si se recibe el parámetro de id
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $productId = $_GET['id'];
 
-// Verificar si se recibe el parámetro de número de página
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
-
-// Calcular el inicio para la consulta
-$offset = ($page - 1) * $itemsPerPage;
-
-// Consulta para obtener los productos con paginación
-$sql = "SELECT codigo_producto AS id, nombre_producto, precio_producto, image_url 
-        FROM producto 
-        LIMIT $itemsPerPage OFFSET $offset";
-
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    $products = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $products[] = $row;
+    // Consulta para obtener un solo producto basado en el id
+    $sql = "SELECT * FROM producto WHERE codigo_producto = $productId";
+    
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0) {
+        $product = $result->fetch_assoc();
+        
+        // Respuesta con el producto encontrado
+        header('Content-Type: application/json');
+        echo json_encode($product);
+    } else {
+        // Si no se encuentra el producto
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Producto no encontrado']);
     }
-
-    // Consulta adicional para obtener el total de productos
-    $countSql = "SELECT COUNT(*) AS total FROM producto";
-    $countResult = $conn->query($countSql);
-    $totalProducts = $countResult->fetch_assoc()['total'];
-    $totalPages = ceil($totalProducts / $itemsPerPage);
-
-    // Respuesta con datos y metadatos de paginación
-    header('Content-Type: application/json');
-    echo json_encode([
-        'products' => $products,
-        'pagination' => [
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'itemsPerPage' => $itemsPerPage,
-            'totalItems' => $totalProducts
-        ]
-    ]);
 } else {
-    // Respuesta si no hay productos
-    header('Content-Type: application/json');
-    echo json_encode([
-        'products' => [],
-        'pagination' => [
-            'currentPage' => $page,
-            'totalPages' => 0,
-            'itemsPerPage' => $itemsPerPage,
-            'totalItems' => 0
-        ]
-    ]);
+    // Si no se pasa un id, se hace la consulta paginada
+    // Cantidad de productos por página
+    $itemsPerPage = 4;
+
+    // Verificar si se recibe el parámetro de número de página
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
+
+    // Calcular el inicio para la consulta
+    $offset = ($page - 1) * $itemsPerPage;
+
+    // Consulta para obtener los productos con paginación
+    $sql = "SELECT codigo_producto AS id, nombre_producto, precio_producto, image_url 
+            FROM producto 
+            LIMIT $itemsPerPage OFFSET $offset";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $products = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $products[] = $row;
+        }
+
+        // Consulta adicional para obtener el total de productos
+        $countSql = "SELECT COUNT(*) AS total FROM producto";
+        $countResult = $conn->query($countSql);
+        $totalProducts = $countResult->fetch_assoc()['total'];
+        $totalPages = ceil($totalProducts / $itemsPerPage);
+
+        // Respuesta con datos y metadatos de paginación
+        header('Content-Type: application/json');
+        echo json_encode([
+            'products' => $products,
+            'pagination' => [
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'itemsPerPage' => $itemsPerPage,
+                'totalItems' => $totalProducts
+            ]
+        ]);
+    } else {
+        // Respuesta si no hay productos
+        header('Content-Type: application/json');
+        echo json_encode([
+            'products' => [],
+            'pagination' => [
+                'currentPage' => $page,
+                'totalPages' => 0,
+                'itemsPerPage' => $itemsPerPage,
+                'totalItems' => 0
+            ]
+        ]);
+    }
 }
 
 $conn->close();

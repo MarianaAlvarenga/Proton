@@ -38,19 +38,27 @@ const Products = () => {
   return (
     <div className="page-wrapper">
       <NavBar showMenu showSearch />
-      <SubNavBar showBack currentPage="Productos" />
-      <section className="products-section">
-        <div className="products-container">
-          <div className="columns is-mobile is-multiline">
+      <div><SubNavBar showBack currentPage="Productos" /></div>
+      <section
+        className="section"
+        style={{ margin: "0px", padding: "1.5rem 1.5rem" }}
+      >
+        <div className="container" style={{ margin: "0px" }}>
+        {console.log("Productos cargados:", products)}
+          <div
+            className="columns is-mobile is-multiline"
+            style={{ margin: "0px" }}
+          >
             {products.map((product) => (
               <div className="column is-half" key={product.id}>
                 <ProductImage
                   ProductName={product.nombre_producto}
-                  ProductPrice={product.precio_producto}
-                  ProductImage={product.image_url}
+                  ProductPrice={product.precio_producto} // Pasamos el precio como prop
+                  ProductImage={product.image_url} // Pasamos la URL de la imagen como prop
+                  ProductId={product.id}
                   ShowAddButton
                   {...(isAdmin
-                    ? { ShowModifyButton: true }
+                    ? { ShowModifyButton: true, ShowDeleteButton: true }
                     : { ShowDeleteButton: true })}
                 />
               </div>
