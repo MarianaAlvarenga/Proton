@@ -1,5 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import 'bulma-carousel/dist/css/bulma-carousel.min.css';
+
 
 // Importa tus componentes
 import Login from './pages/Login';

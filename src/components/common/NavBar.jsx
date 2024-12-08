@@ -20,9 +20,9 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
             </div>
           )}
           <div className="navbar-end">
-          <div className="navbar-item">
+          {/*<div className="navbar-item">
             <MenuDesplegable/>
-          </div>
+          </div>*/}
         </div>
         </div>
       </nav>
