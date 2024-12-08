@@ -36,6 +36,7 @@ const Products = () => {
   };
 
   return (
+    
     <div className="page-wrapper">
       <NavBar showMenu showSearch />
       <div><SubNavBar showBack currentPage="Productos" /></div>
@@ -64,14 +65,15 @@ const Products = () => {
               </div>
             ))}
           </div>
-        </div>
-        <div className="pagination-container">
+      <div className="pagination-container">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
         </div>
+        </div>
+        
       </section>
     </div>
   );
