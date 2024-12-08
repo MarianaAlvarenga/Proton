@@ -29,7 +29,9 @@
  * Baja/Modificacion usuario
  * Agregar datos de mascota
  * En Shifts falta front para asignar el turno a un cliente (lista de usuarios - buscador)
-
+ * Agregar cerrar sesion
+ * Agregar pie de pagina 
+ 
  **Cliente**
  * Menu del cliente ✔️
  * Vista de turnos del cliente ✔️
