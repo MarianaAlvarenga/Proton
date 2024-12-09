@@ -23,8 +23,7 @@ const MenuAdmin = () => {
     navigate("/Users");
   };
 
-  console.log('Screen Width:', width); // Verifica el valor de width
-  console.log('Is Mobile:', isMobile); // Verifica si se está detectando correctamente el modo móvil
+
 
   return (
     <div className="container" style={{ width: "100%", maxWidth: "100%", margin: "0 auto", height: "100vh", textAlign: "center", backgroundColor: "white" }}>
