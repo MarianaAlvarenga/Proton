@@ -19,10 +19,12 @@ const NavBar = ({ showMenu = false, showSearch = false }) => {
               <input type="text" className="input-text"></input>
             </div>
           )}
+          <div className="navbar-item">
+            {showMenu && (
+              <MenuDesplegable/>
+            )}
+          </div>
           <div className="navbar-end">
-          {/*<div className="navbar-item">
-            <MenuDesplegable/>
-          </div>*/}
         </div>
         </div>
       </nav>

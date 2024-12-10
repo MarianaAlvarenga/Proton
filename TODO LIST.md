@@ -15,7 +15,7 @@
  * Modificar producto ✔️
  * Faltan categorias
  * Vista inicial de turnos ✔️
- * Sign up con combo de roles
+ * Sign up con combo de roles ✔️
  * Boton de realizar compra en la vista de ventas.
  * Agregar precio a la card de producto.
  * Boton de agregar producto fuera de la card.

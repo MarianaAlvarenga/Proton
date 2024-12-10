@@ -38,7 +38,7 @@ const Products = () => {
   return (
     
     <div className="page-wrapper">
-      <NavBar showMenu showSearch />
+      <NavBar showSearch />
       <div><SubNavBar showBack currentPage="Productos" /></div>
       <section
         className="section"
