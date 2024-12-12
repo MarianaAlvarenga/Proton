@@ -31,7 +31,6 @@ const ModifyButton = ({ urlImage = ModifyImage, onClick }) => {
   );
 };
 
-// Componente para el botón de modificación
 const AddButton = ({ urlImage = AddImage, onClick }) => {
   const navigate = useNavigate();  // Inicializa el hook de navegación
   
