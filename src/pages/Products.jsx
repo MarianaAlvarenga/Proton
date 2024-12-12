@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom"; // Hook para obtener la ubicación actual
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
 import ProductImage from "../components/sales/ProductCard";
@@ -11,15 +12,26 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [totalPages, setTotalPages] = useState(1); // Total de páginas
   const [searchQuery, setSearchQuery] = useState(""); // Texto de búsqueda
+  const [selectedCategory, setSelectedCategory] = useState(""); // Categoría seleccionada
 
+  const location = useLocation(); // Obtén la información de la ubicación actual
+
+  // Extraer el parámetro de categoría de la URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    setSelectedCategory(category || ""); // Actualiza la categoría seleccionada
+  }, [location.search]);
+
+  // Obtener productos desde el backend
   useEffect(() => {
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
     setIsAdmin(userRole === 4);
 
-    const fetchProducts = async (page, query = "") => {
+    const fetchProducts = async (page, query = "", category = "") => {
       try {
         const response = await fetch(
-          `http://localhost:8080/proton/backend/actions/getProducts.php?page=${page}&search=${query}`
+          `http://localhost:8080/proton/backend/actions/getProducts.php?page=${page}&search=${query}&category=${category}`
         );
         const data = await response.json();
         setProducts(data.products);
@@ -29,8 +41,8 @@ const Products = () => {
       }
     };
 
-    fetchProducts(currentPage, searchQuery); // Actualiza productos en base a búsqueda y página
-  }, [currentPage, searchQuery]);
+    fetchProducts(currentPage, searchQuery, selectedCategory); // Actualiza productos en base a búsqueda, categoría y página
+  }, [currentPage, searchQuery, selectedCategory]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -51,32 +63,41 @@ const Products = () => {
       >
         <div className="container" style={{ margin: "0px" }}>
           {console.log("Productos cargados:", products)}
-          <div
-            className="columns is-mobile is-multiline"
-            style={{ margin: "0px" }}
-          >
-            {products.map((product) => (
-              <div className="column is-half" key={product.id}>
-                <ProductImage
-                  ProductName={product.nombre_producto}
-                  ProductPrice={product.precio_producto}
-                  ProductImage={product.image_url}
-                  ProductId={product.id}
-                  ShowAddButton
-                  {...(isAdmin
-                    ? { ShowModifyButton: true, ShowDeleteButton: true }
-                    : { ShowDeleteButton: false })}
+          {/* Mostrar mensaje si no hay productos */}
+          {products.length === 0 ? (
+            <div className="no-products-message">
+              <h2>Categoría sin productos actualmente</h2>
+            </div>
+          ) : (
+            <>
+              <div
+                className="columns is-mobile is-multiline"
+                style={{ margin: "0px" }}
+              >
+                {products.map((product) => (
+                  <div className="column is-half" key={product.id}>
+                    <ProductImage
+                      ProductName={product.nombre_producto}
+                      ProductPrice={product.precio_producto}
+                      ProductImage={product.image_url}
+                      ProductId={product.id}
+                      ShowAddButton
+                      {...(isAdmin
+                        ? { ShowModifyButton: true, ShowDeleteButton: true }
+                        : { ShowDeleteButton: false })}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="pagination-container">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
                 />
               </div>
-            ))}
-          </div>
-          <div className="pagination-container">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
+            </>
+          )}
         </div>
       </section>
     </div>
@@ -84,4 +105,3 @@ const Products = () => {
 };
 
 export default Products;
-
