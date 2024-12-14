@@ -6,9 +6,26 @@ import { useNavigate } from "react-router-dom";  // Importa useNavigate
 
 
 // Componente para el botón de eliminación
-const DeleteButton = ({ urlImage = DeleteImage, onClick }) => {
+const DeleteButton = ({ urlImage = DeleteImage, onDelete }) => {
+  const handleDelete = () => {
+    // Verifica si hay un usuario seleccionado
+    const selectedCheckbox = document.querySelector('input[type="checkbox"][name="uniqueCheckbox"]:checked');
+    
+    if (!selectedCheckbox) {
+      alert("No ha seleccionado ningún usuario para eliminar.");
+      return;
+    }
+
+    // Muestra la confirmación de eliminación
+    const confirmDelete = window.confirm("¿Está seguro de que desea eliminar este usuario?");
+    if (confirmDelete) {
+      const userId = selectedCheckbox.id.split('-')[1]; // Extrae el ID del checkbox (asume el formato 'checkbox-{id}')
+      onDelete(userId); // Llama a la función pasada como prop
+    }
+  };
+
   return (
-    <figure className="image is-inline-block" onClick={onClick}>
+    <figure className="image is-inline-block" onClick={handleDelete}>
       <img 
         src={urlImage} 
         alt="Eliminar"

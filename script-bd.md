@@ -221,3 +221,14 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+***líneas agregadas al script (14/12/2024):***
+
+ALTER TABLE cliente
+DROP FOREIGN KEY cliente_ibfk_1;
+
+ALTER TABLE cliente
+ADD CONSTRAINT cliente_ibfk_1
+FOREIGN KEY (id_usuario)
+REFERENCES usuario (id_usuario)
+ON DELETE CASCADE;
