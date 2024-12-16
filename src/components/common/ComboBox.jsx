@@ -27,8 +27,9 @@ const ComboBox = ({ onChange }) => {
   return (
     <div className="field" style={{ margin: '1em' }}>
       <div className="select is-fullwidth">
-        <select onChange={(e) => onChange(e.target.value)}>
-          <option value="">Seleccione un rol</option>
+        <select onChange={(e) => onChange(e.target.value)} defaultValue="">
+          {/* Opción inicial como leyenda */}
+          <option value="" disabled hidden>Seleccione un rol</option>
           {roles.length > 0 ? (
             roles.map((rol) => (
               <option key={rol.id} value={rol.id}>
@@ -42,6 +43,8 @@ const ComboBox = ({ onChange }) => {
       </div>
     </div>
   );
+  
+  
 };
 
 export default ComboBox;
