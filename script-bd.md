@@ -232,3 +232,32 @@ ADD CONSTRAINT cliente_ibfk_1
 FOREIGN KEY (id_usuario)
 REFERENCES usuario (id_usuario)
 ON DELETE CASCADE;
+
+***líneas agregadas al script (16/12/2024):***
+
+ALTER TABLE vendedor
+DROP FOREIGN KEY vendedor_ibfk_1;
+
+ALTER TABLE vendedor
+ADD CONSTRAINT vendedor_ibfk_1
+FOREIGN KEY (id_usuario)
+REFERENCES usuario (id_usuario)
+ON DELETE CASCADE;
+
+ALTER TABLE administrador
+DROP FOREIGN KEY administrador_ibfk_1;
+
+ALTER TABLE administrador
+ADD CONSTRAINT administrador_ibfk_1
+FOREIGN KEY (id_usuario)
+REFERENCES usuario (id_usuario)
+ON DELETE CASCADE;
+
+ALTER TABLE peluquero
+DROP FOREIGN KEY peluquero_ibfk_1;
+
+ALTER TABLE peluquero
+ADD CONSTRAINT peluquero_ibfk_1
+FOREIGN KEY (id_usuario)
+REFERENCES usuario (id_usuario)
+ON DELETE CASCADE;

@@ -52,7 +52,7 @@ const AddButton = ({ urlImage = AddImage, onClick }) => {
   const navigate = useNavigate();  // Inicializa el hook de navegación
   
   const handleAddUser = () => {
-    navigate("/SignUp");
+    navigate('/SignUp', { state: { showComboBox: true } });
   }
   
   return (
