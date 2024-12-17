@@ -78,3 +78,9 @@
 **----------------------BACKEND-----------------------------**
 
 * Darle funcionalidad a los botones de redes
+
+# Cosas para cambiar del modo editar-usuario siendo admin #
+
+* Rol: (nombre de rol en lugar de nro.)
+* Teléfono: Agregar el campo
+* Botón: Actualizar en lugar de Registrarse  

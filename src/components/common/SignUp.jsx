@@ -23,14 +23,54 @@ const SignUp = () => {
     rol: 1, // Por defecto, rol de cliente
   });
 
+  const [isEditMode, setIsEditMode] = useState(false); // Estado para verificar si es edición
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
 
+  // Estado para almacenar los roles
+  const [roles, setRoles] = useState([]);
+
+  // Asegurarse de que isEditMode y showComboBox se actualicen correctamente al recibir los datos desde location.state
   useEffect(() => {
-    // Lee el estado de navegación para decidir si mostrar el ComboBox
-    if (location.state?.showComboBox) {
-      setShowComboBox(location.state.showComboBox);
+    // Obtener los roles del backend
+    const fetchRoles = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
+        const data = await response.json();
+        if (data.error) {
+          console.error(data.message);
+        } else {
+          setRoles(data); // Guardamos los roles en el estado
+        }
+      } catch (error) {
+        console.error("Error al obtener los roles:", error);
+      }
+    };
+
+    // Llamamos a la función para obtener los roles
+    fetchRoles();
+
+    // Revisamos si hay datos en location.state
+    if (location.state) {
+      const { userData, isEditMode, showComboBox } = location.state;
+      setShowComboBox(showComboBox || false);
+
+      // Si hay datos del usuario, significa que estamos en modo edición
+      if (userData) {
+        setFormData({
+          nombre: userData.nombre || "",
+          apellido: userData.apellido || "",
+          email: userData.email || "",
+          telefono: userData.telefono || "",
+          contrasenia: "", // La contraseña no se rellena por seguridad
+          confirmarContrasenia: "", // Tampoco se rellena
+          rol: userData.rol || 1,
+        });
+
+        setIsEditMode(isEditMode || false);
+        setShowComboBox(showComboBox || false);
+      }
     }
   }, [location]);
 
@@ -40,71 +80,68 @@ const SignUp = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Manejador para actualizar el rol seleccionado en el ComboBox
-  const handleComboBoxChange = (value) => {
-    setFormData({ ...formData, rol: parseInt(value, 10) });
-  };
-
   // Manejador para enviar los datos al backend
-  const handleRegister = async (e) => {
-    e.preventDefault(); // Evitar el envío por defecto del formulario
-    setErrorMessage(""); // Limpiar mensajes anteriores
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
     setSuccessMessage("");
 
-    // Validaciones básicas
-    if (formData.contrasenia !== formData.confirmarContrasenia) {
-      setErrorMessage("Las contraseñas no coinciden");
-      return;
+    if (!isEditMode) {
+      if (formData.contrasenia !== formData.confirmarContrasenia) {
+        setErrorMessage("Las contraseñas no coinciden");
+        return;
+      }
     }
 
-    // Crear el payload para enviar al backend
+    const endpoint = isEditMode
+      ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
+      : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
+
     const userData = {
-      action: "register",
-      nombre: formData.nombre,
-      apellido: formData.apellido,
-      email: formData.email,
-      telefono: formData.telefono,
-      contrasenia: formData.contrasenia,
-      rol: formData.rol, // Se incluye el rol seleccionado
+      ...formData,
+      action: isEditMode ? "update" : "register",
+      id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/Proton/backend/actions/auth-chatsito.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        }
-      );
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
       const result = await response.json();
 
       if (result.success) {
-        setSuccessMessage("Usuario registrado exitosamente");
-        setFormData({
-          nombre: "",
-          apellido: "",
-          email: "",
-          telefono: "",
-          contrasenia: "",
-          confirmarContrasenia: "",
-          rol: 1, // Restablecer al rol por defecto
-        });
+        setSuccessMessage(
+          isEditMode
+            ? "Usuario actualizado correctamente"
+            : "Usuario registrado exitosamente"
+        );
+
+        setTimeout(() => {
+          navigate("/UsersAdmin");
+        }, 1500);
       } else {
-        setErrorMessage(result.message || "Error al registrar el usuario");
+        setErrorMessage(result.message || "Error al procesar la solicitud");
       }
     } catch (error) {
       setErrorMessage("Error de conexión con el servidor");
     }
   };
 
+  // Buscar el nombre del rol por el id
+  const getRoleName = (roleId) => {
+    const role = roles.find((r) => r.id === roleId);
+    return role ? role.rol : "Rol desconocido"; // Devuelve el nombre del rol o "Rol desconocido" si no se encuentra
+  };
+
   return (
     <>
       <NavBar />
-      <SubNavBar showBack currentPage="" />
+      <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
       <div className="container">
         <div
           className="columns is-centered is-vcentered"
@@ -127,16 +164,21 @@ const SignUp = () => {
                   display: "block",
                 }}
               />
-              <form onSubmit={handleRegister}>
-                {/* Mostrar ComboBox solo si está habilitado */}
-                {showComboBox && (
-                  <ComboBox
+              <form onSubmit={handleSubmit}>
+                <p>El valor de combobox es: {showComboBox ? 'true' : 'false'}</p>
+                {showComboBox && !isEditMode && (
+                  <ComboBox 
                     className="is-fullwidth"
-                    onChange={handleComboBoxChange} // Pasa la función para actualizar el rol
+                    onChange={(value) =>
+                      setFormData({ ...formData, rol: parseInt(value, 10) })
+                    }
                   />
                 )}
+
+                {!showComboBox && isEditMode && (
+                  <p>Rol: {getRoleName(formData.rol)}</p> // Muestra el nombre del rol
+                )}
                 <section className="is-flex is-flex-direction-column">
-                  {/* Campos visibles para todos */}
                   <Label
                     labelContent="Ingrese su nombre"
                     inputName="nombre"
@@ -163,21 +205,24 @@ const SignUp = () => {
                     handleChange={handleChange}
                     type="tel"
                   />
-                  <Label
-                    labelContent="Contraseña"
-                    inputName="contrasenia"
-                    inputValue={formData.contrasenia}
-                    handleChange={handleChange}
-                    type="password"
-                  />
-                  <Label
-                    labelContent="Confirmar contraseña"
-                    inputName="confirmarContrasenia"
-                    inputValue={formData.confirmarContrasenia}
-                    handleChange={handleChange}
-                    type="password"
-                  />
-                  {/* Mostrar mensajes de error o éxito */}
+                  {!isEditMode && (
+                    <>
+                      <Label
+                        labelContent="Contraseña"
+                        inputName="contrasenia"
+                        inputValue={formData.contrasenia}
+                        handleChange={handleChange}
+                        type="password"
+                      />
+                      <Label
+                        labelContent="Confirmar contraseña"
+                        inputName="confirmarContrasenia"
+                        inputValue={formData.confirmarContrasenia}
+                        handleChange={handleChange}
+                        type="password"
+                      />
+                    </>
+                  )}
                   {errorMessage && (
                     <p className="has-text-danger">{errorMessage}</p>
                   )}
@@ -185,10 +230,11 @@ const SignUp = () => {
                     <p className="has-text-success">{successMessage}</p>
                   )}
                   <LargeButton
-                    textContent="Registrarse"
+                    textButton={isEditMode ? "Actualizar" : "Registrarse"}
                     buttonType="submit"
                     className="is-fullwidth"
                   />
+                  <p>El valor de isEditMode es: {isEditMode ? 'true' : 'false'}</p>
                 </section>
               </form>
             </div>

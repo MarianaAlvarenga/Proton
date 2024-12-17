@@ -29,7 +29,7 @@ function App() {
           <Route path="/MenuGroomer" element={<MenuGrommer />} />
           <Route path="/MenuAdmin" element={<MenuAdmin />} />
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
-          <Route path="/Users" element={<UsersAdmin />} />
+          <Route path="/UsersAdmin" element={<UsersAdmin />} />
           <Route path= "/Alert" element={<Alert/>} />
         </Routes>
       </Router>

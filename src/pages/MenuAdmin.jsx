@@ -15,7 +15,7 @@ const MenuAdmin = () => {
   const links = [
     { label: "Turnos", path: "/Shifts", icon: "peluqueria.png" },
     { label: "Ventas", path: "/Products", icon: "ventas.png" },
-    { label: "Usuarios", path: "/Users", icon: "usuarios.png" },
+    { label: "Usuarios", path: "/UsersAdmin", icon: "usuarios.png" },
   ];
 
   return (
