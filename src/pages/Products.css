@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     height: 100vh; /* Ocupa toda la pantalla */
-    overflow: hidden; /* Evita desbordes globales */
   }
   
   /* Sección principal */
@@ -26,12 +25,31 @@
   .columns {
     margin: 0;
   }
-  
-  /* Contenedor de paginación fijo */
-  .pagination-container {
-    padding: 1rem 0;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
+/* Asegura que el SubNavBar no se vea cortado */
+.navbar-brand-custom {
+  min-height: 50px; /* Asegura un tamaño mínimo */
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: space-between; /* Espaciado entre elementos */
+  width: 100%; /* Ocupar todo el ancho */
+  overflow: hidden; /* Evita contenido desbordado */
+}
+
+/* Asegura visibilidad en todas las pantallas */
+.navbar-brand-custom span {
+  flex-grow: 1;
+  text-align: center; /* Centra el texto */
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ajustes específicos para pantallas pequeñas */
+@media (max-width: 768px) {
+  .navbar-brand-custom {
+    padding: 0.5em; /* Espaciado para evitar cortes */
   }
+}
+
   

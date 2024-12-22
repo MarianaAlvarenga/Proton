@@ -31,7 +31,7 @@ const MenuAdmin = () => {
       }}
     >
       {/* Navbar principal */}
-      <NavBar showMenu />
+      <NavBar/>
 
       {/* Mostrar contenido según el modo */}
       {!isMobile ? (
@@ -43,13 +43,13 @@ const MenuAdmin = () => {
       ) : (
         // Vista para móviles
         <div
-          className="columns is-mobile"
-          style={{
-            marginTop: "1em",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-          }}
+        className="columns is-mobile"
+        style={{
+          marginTop: "1em",
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
         >
           {links.map((link, index) => (
             <div

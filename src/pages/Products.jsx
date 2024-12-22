@@ -7,9 +7,9 @@ import './Products.css';
 
 const Products = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [products, setProducts] = useState([]); // Estado para almacenar los productos
-  const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const [totalPages, setTotalPages] = useState(1); // Total de páginas
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
@@ -35,45 +35,37 @@ const Products = () => {
     setCurrentPage(page);
   };
 
-  return (
-    
+  return (  
     <div className="page-wrapper">
-      <NavBar showSearch />
-      <div><SubNavBar showBack currentPage="Productos" /></div>
-      <section
-        className="section"
-        style={{ margin: "0px", padding: "1.5rem 1.5rem" }}
-      >
+      <section className="section" style={{ margin: "0px" }}>
+          <NavBar showSearch showMenu/>
+          <SubNavBar showBack currentPage="Productos"/>
         <div className="container" style={{ margin: "0px" }}>
-        {console.log("Productos cargados:", products)}
-          <div
-            className="columns is-mobile is-multiline"
-            style={{ margin: "0px" }}
-          >
-            {products.map((product) => (
-              <div className="column is-half" key={product.id}>
-                <ProductImage
-                  ProductName={product.nombre_producto}
-                  ProductPrice={product.precio_producto} // Pasamos el precio como prop
-                  ProductImage={product.image_url} // Pasamos la URL de la imagen como prop
-                  ProductId={product.id}
-                  ShowAddButton
-                  {...(isAdmin
-                    ? { ShowModifyButton: true, ShowDeleteButton: true }
-                    : { ShowDeleteButton: true })}
-                />
-              </div>
-            ))}
+        <div className="columns is-mobile is-multiline products-container">
+          {products.map((product) => (
+            <div className="column is-full-mobile is-half-tablet is-one-quarter-desktop" key={product.id}>
+              <ProductImage
+                ProductName={product.nombre_producto}
+                ProductPrice={product.precio_producto}
+                ProductImage={product.image_url}
+                ProductId={product.id}
+                ShowAddButton
+                {...(isAdmin
+                  ? { ShowModifyButton: true, ShowDeleteButton: true }
+                  : { ShowDeleteButton: true, ShowAddButton: true })}
+              />
+            </div>
+          ))}
+        </div>
+
+          <div className="pagination-container">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
-      <div className="pagination-container">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
-        </div>
-        
+        </div>  
       </section>
     </div>
   );

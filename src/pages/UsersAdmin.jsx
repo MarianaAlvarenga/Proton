@@ -7,7 +7,7 @@ import ButtonPanelUsers from "../components/users/ButtonPanelUsers";
 const UsersAdmin = () => {
     return(
         <div>
-            <NavBar showMenu showSearch></NavBar>
+            <NavBar showSearch></NavBar>
             <SubNavBar showBack currentPage="Gestión de usuarios"></SubNavBar>
             <ButtonPanelUsers></ButtonPanelUsers>
             <Table></Table>

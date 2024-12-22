@@ -1,70 +1,55 @@
 import React from "react";
-import "./styles.css";
 import { useNavigate } from "react-router-dom";
+import "./styles.css";
 
-const SubNavBar = ({ showBack = false, showCart = false, links = [] }) => {
-    const navigate = useNavigate();
+const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage = "" }) => {
+  const navigate = useNavigate();
 
-    return (
-        <nav
-            className="navbar is-flex is-justify-content-space-between px-3 navbar-brand-custom"
-            style={{ backgroundColor: "black" }}
-        >
-            {/* Espacio izquierdo para el botón 'Volver' */}
-            <div className="navbar-item">
-                {showBack && (
-                    <div className="navbar-item">
-                    <a>
-                        {showBack && (
-                            <div role="button" onClick={() => navigate(-1)}>
-                                <img
-                                    src={require("../../assets/images/atras.png")}
-                                    alt="BackButton"
-                                    style={{ filter: 'invert(100%)', width: '16px', height: '16px' }}
-                                />
-                            </div>
-                        )}
-                    </a>
-                </div>
-                )}
-            </div>
+  return (
+    <nav className="navbar-brand-custom">
+      {/* Verificación de 'showBack' para mostrar el botón de 'Back' */}
+      {showBack && (
+        <div className="navbar-item-back">
+          <div role="button" onClick={() => navigate(-1)}>
+            <img
+              src={require("../../assets/images/atras.png")}  // Asegúrate de que el path sea correcto
+              alt="BackButton"
+            />
+          </div>
+        </div>
+      )}
 
-            {/* Links de navegación */}
-            <div
-                className="navbar-item is-flex is-align-items-center"
-                style={{
-                    gap: "1em", // Espacio reducido entre los links
-                }}
+      {/* Si hay enlaces, mostrarlos, sino mostrar el texto de la página actual */}
+      {links.length > 0 ? (
+        <div style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+          {links.map((link, index) => (
+            <a
+              key={index}
+              onClick={() => navigate(link.path)}
+              className="navbar-link"
+              style={{ margin: "0 10px", color: "white", textDecoration: "none" }}
             >
-                {links.map((link, index) => (
-                    <a
-                        key={index}
-                        onClick={() => navigate(link.path)}
-                        className="navbar-link"
-                    >
-                        {link.label}
-                    </a>
-                ))}
-            </div>
+              {link.label}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <span className="current-page">{currentPage}</span>
+      )}
 
-            {/* Espacio derecho para el carrito */}
-            <div className="navbar-item">
-                {showCart && (
-                    <div role="button">
-                        <img
-                            src={require("../../assets/images/carrito.png")}
-                            alt="CartButton"
-                            style={{
-                                filter: "invert(100%)",
-                                width: "16px",
-                                height: "16px",
-                            }}
-                        />
-                    </div>
-                )}
-            </div>
-        </nav>
-    );
+      {/* Verificación de 'showCart' para mostrar el carrito */}
+      {showCart && (
+        <div className="navbar-item-cart">
+          <div role="button">
+            <img
+              src={require("../../assets/images/carrito.png")}
+              alt="CartButton"
+            />
+          </div>
+        </div>
+      )}
+    </nav>
+  );
 };
 
 export default SubNavBar;

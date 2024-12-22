@@ -1,47 +1,67 @@
-/* En tu archivo CSS principal */
+/* Navbar principal */
 .navbar-brand-custom {
-    height: 40px !important; /* Ajusta esta altura según tus necesidades */
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-    min-height: 0 !important;
-}
-  
-/* General de los links */
-.navbar-link {
-    color: white; /* Letra blanca */
-    text-decoration: none; /* Sin subrayado */
-    font-size: 1rem; /* Tamaño base */
-    transition: color 0.2s ease, font-size 0.2s ease; /* Animación suave */
+  display: flex;
+  justify-content: space-between; /* Separación de los elementos */
+  align-items: center; /* Centrado vertical */
+  background-color: black; /* Fondo negro */
+  height: 50px; /* Ajusta el tamaño según necesites */
+  padding: 0 15px; /* Espaciado horizontal */
+  width: 100%;
 }
 
-/* General de los links */
-.navbar-link {
-    color: white; /* Letra blanca */
-    text-decoration: none; /* Sin subrayado */
-    font-size: 1rem; /* Tamaño base */
-    transition: color 0.2s ease, font-size 0.2s ease; /* Animación suave */
-    background-color: transparent !important; /* Fondo transparente forzado */
+/* Estilo para el botón de 'back' */
+.navbar-item-back {
+  display: flex;
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  width: auto; /* Ajusta el tamaño al contenido */
+  flex: 0 0 auto; /* Asegura que no se estire */
 }
 
-.navbar-link:hover {
-    color: #b0b0b0; /* Gris más claro al hover */
-    font-size: 1.05rem; /* Aumenta apenas el tamaño */
-    cursor: pointer; /* Muestra el cursor de mano */
-    background-color: transparent !important; /* Asegura fondo transparente */
+.navbar-item-back img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%) brightness(100%);
 }
 
-/* Elimina cualquier decoración automática */
-.navbar-link:focus,
-.navbar-link:visited {
-    outline: none; /* Sin contorno al seleccionar */
-    background: none; /* Sin fondo extraño */
+/* Estilo para el 'currentPage' */
+.current-page {
+  color: white;
+  font-size: 1rem;
+  white-space: nowrap; /* Evita que se corte el texto */
+  text-align: center;
+  flex-grow: 1; /* Asegura que ocupe el espacio disponible */
+  line-height: 50px; /* Centrado vertical */
 }
 
-/* Elimina decoraciones adicionales */
-.navbar-link::before,
-.navbar-link::after {
-    content: none !important;
+/* Estilo para el carrito */
+.navbar-item-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto; /* Ajusta el tamaño al contenido */
 }
 
+.navbar-item-cart img {
+  width: 20px;
+  height: 20px;
+}
 
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+  .navbar-brand-custom {
+      height: 60px; /* Ajusta la altura para móviles */
+      padding: 0 10px;
+  }
 
+  .navbar-item-back img,
+  .navbar-item-cart img {
+      width: 18px;
+      height: 18px;
+      color: white;
+  }
+
+  .current-page {
+      font-size: 0.9rem; /* Ajusta el tamaño de la fuente en móviles */
+  }
+}
