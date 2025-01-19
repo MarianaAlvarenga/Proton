@@ -5,7 +5,8 @@ const Table = () => {
   const [users, setUsers] = useState([]); // Estado para almacenar los datos de los usuarios
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState(null); // Estado de error
-
+  const [selectedCheckbox, setSelectedCheckbox] = useState(null); // Estado para manejar el checkbox seleccionado
+  
   useEffect(() => {
     // Función para obtener los datos de los usuarios desde el backend
     const fetchUsers = async () => {
@@ -22,13 +23,17 @@ const Table = () => {
         setLoading(false);
       }
     };
-
+    
     fetchUsers();
   }, []);
-
+  
   if (loading) return <p>Cargando usuarios...</p>;
   if (error) return <p>Error: {error}</p>;
-
+  
+  const handleCheckboxChange = (id) => {
+    setSelectedCheckbox(id === selectedCheckbox ? null : id); // Permite deseleccionar si el mismo checkbox se marca
+  };
+  
   return (
     <table className="table">
       <thead>
@@ -42,12 +47,20 @@ const Table = () => {
       </thead>
       <tbody>
         {users.map((user) => (
-          <tr key={user.id}>
+          <tr key={user.id_usuario}>
             <td>{user.id_usuario}</td>
             <td>{user.nombre}</td>
             <td>{user.apellido}</td>
             <td>{user.rol}</td>
-            <td><input type="checkbox" /></td>
+            <td>
+              <input 
+                type="checkbox" 
+                name="uniqueCheckbox" 
+                id={`checkbox-${user.id_usuario}`} 
+                checked={selectedCheckbox === user.id_usuario}
+                onChange={() => handleCheckboxChange(user.id_usuario)}
+              />
+            </td>
           </tr>
         ))}
       </tbody>

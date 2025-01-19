@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import UserImage from "./UserImage";
 import Label from "./Label";
 import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
-import './SignUp.css';
+import "./SignUp.css";
 
-const SignUp = ({IsAdmin = true}) => {
+const SignUp = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Estados para manejar los datos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
@@ -16,29 +20,59 @@ const SignUp = ({IsAdmin = true}) => {
     telefono: "",
     contrasenia: "",
     confirmarContrasenia: "",
+    rol: 1, // Por defecto, rol de cliente
   });
 
+  const [isEditMode, setIsEditMode] = useState(false); // Estado para verificar si es edición
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [userRole, setUserRole] = useState(null); // Estado para almacenar el rol del usuario
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga inicial
+  const [showComboBox, setShowComboBox] = useState(false);
 
-  // Simulación de una llamada para obtener el rol del usuario
+  // Estado para almacenar los roles
+  const [roles, setRoles] = useState([]);
+
+  // Asegurarse de que isEditMode y showComboBox se actualicen correctamente al recibir los datos desde location.state
   useEffect(() => {
-    const fetchUserRole = async () => {
+    // Obtener los roles del backend
+    const fetchRoles = async () => {
       try {
-        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUserRole.php");
+        const response = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
         const data = await response.json();
-        setUserRole(data.role); // Supongamos que el backend devuelve { role: 4 } o un número diferente
-        setLoading(false);
+        if (data.error) {
+          console.error(data.message);
+        } else {
+          setRoles(data); // Guardamos los roles en el estado
+        }
       } catch (error) {
-        setErrorMessage("Error al obtener el rol del usuario");
-        setLoading(false);
+        console.error("Error al obtener los roles:", error);
       }
     };
 
-    fetchUserRole();
-  }, []);
+    // Llamamos a la función para obtener los roles
+    fetchRoles();
+
+    // Revisamos si hay datos en location.state
+    if (location.state) {
+      const { userData, isEditMode, showComboBox } = location.state;
+      setShowComboBox(showComboBox || false);
+
+      // Si hay datos del usuario, significa que estamos en modo edición
+      if (userData) {
+        setFormData({
+          nombre: userData.nombre || "",
+          apellido: userData.apellido || "",
+          email: userData.email || "",
+          telefono: userData.telefono || "",
+          contrasenia: "", // La contraseña no se rellena por seguridad
+          confirmarContrasenia: "", // Tampoco se rellena
+          rol: userData.rol || 1,
+        });
+
+        setIsEditMode(isEditMode || false);
+        setShowComboBox(showComboBox || false);
+      }
+    }
+  }, [location]);
 
   // Manejador para actualizar los datos del formulario
   const handleChange = (e) => {
@@ -47,29 +81,30 @@ const SignUp = ({IsAdmin = true}) => {
   };
 
   // Manejador para enviar los datos al backend
-  const handleRegister = async (e) => {
-    e.preventDefault(); // Evitar el envío por defecto del formulario
-    setErrorMessage(""); // Limpiar mensajes anteriores
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
     setSuccessMessage("");
 
-    // Validaciones básicas
-    if (formData.contrasenia !== formData.confirmarContrasenia) {
-      setErrorMessage("Las contraseñas no coinciden");
-      return;
+    if (!isEditMode) {
+      if (formData.contrasenia !== formData.confirmarContrasenia) {
+        setErrorMessage("Las contraseñas no coinciden");
+        return;
+      }
     }
 
-    // Crear el payload para enviar al backend
+    const endpoint = isEditMode
+      ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
+      : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
+
     const userData = {
-      action: "register",
-      nombre: formData.nombre,
-      apellido: formData.apellido,
-      email: formData.email,
-      telefono: formData.telefono,
-      contrasenia: formData.contrasenia,
+      ...formData,
+      action: isEditMode ? "update" : "register",
+      id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
     };
 
     try {
-      const response = await fetch("http://localhost:8080/Proton/backend/actions/auth-chatsito.php", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,109 +115,132 @@ const SignUp = ({IsAdmin = true}) => {
       const result = await response.json();
 
       if (result.success) {
-        setSuccessMessage("Usuario registrado exitosamente");
-        setFormData({
-          nombre: "",
-          apellido: "",
-          email: "",
-          telefono: "",
-          contrasenia: "",
-          confirmarContrasenia: "",
-        });
+        setSuccessMessage(
+          isEditMode
+            ? "Usuario actualizado correctamente"
+            : "Usuario registrado exitosamente"
+        );
+
+        setTimeout(() => {
+          navigate("/UsersAdmin");
+        }, 1500);
       } else {
-        setErrorMessage(result.message || "Error al registrar el usuario");
+        setErrorMessage(result.message || "Error al procesar la solicitud");
       }
     } catch (error) {
       setErrorMessage("Error de conexión con el servidor");
     }
   };
 
-  if (loading) return <p>Cargando...</p>;
+  // Buscar el nombre del rol por el id
+  const getRoleName = (roleId) => {
+    const role = roles.find((r) => r.id === roleId);
+    return role ? role.rol : "Rol desconocido"; // Devuelve el nombre del rol o "Rol desconocido" si no se encuentra
+  };
 
   return (
     <>
       <NavBar />
-      <SubNavBar showBack currentPage="" />
+      <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
       <div className="container">
-  <div
-    className="columns is-centered is-vcentered"
-    style={{
-      minHeight: "100vh", // Asegura que ocupe toda la altura de la pantalla
-      padding: "10px",
-    }}
-  >
-    <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
-      <div
-        className="box"
-        style={{
-          padding: "20px",
-          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <UserImage
+        <div
+          className="columns is-centered is-vcentered"
           style={{
-            margin: "0 auto 20px", // Centra la imagen y añade espacio debajo
-            display: "block",
+            minHeight: "100vh",
+            padding: "10px",
           }}
-        />
-        <form onSubmit={handleRegister}>
-          {IsAdmin && <ComboBox className="is-fullwidth" />}
-          <section className="is-flex is-flex-direction-column">
-            {/* Campos visibles para todos */}
-            <Label
-              labelContent="Ingrese su nombre"
-              inputName="nombre"
-              inputValue={formData.nombre}
-              handleChange={handleChange}
-            />
-            <Label
-              labelContent="Ingrese su apellido"
-              inputName="apellido"
-              inputValue={formData.apellido}
-              handleChange={handleChange}
-            />
-            <Label
-              labelContent="Ingrese su email"
-              inputName="email"
-              inputValue={formData.email}
-              handleChange={handleChange}
-              type="email"
-            />
-            {/* Campos visibles solo si el rol no es 4 */}
-            {userRole !== 4 && (
-              <>
-                <Label
-                  labelContent="Número de teléfono"
-                  inputName="telefono"
-                  inputValue={formData.telefono}
-                  handleChange={handleChange}
-                  type="tel"
-                />
-                <Label
-                  labelContent="Contraseña"
-                  inputName="contrasenia"
-                  inputValue={formData.contrasenia}
-                  handleChange={handleChange}
-                  type="password"
-                />
-                <Label
-                  labelContent="Repita su contraseña"
-                  inputName="confirmarContrasenia"
-                  inputValue={formData.confirmarContrasenia}
-                  handleChange={handleChange}
-                  type="password"
-                />
-              </>
-            )}
-          </section>
-          <LargeButton textButton="Registrar" className="is-fullwidth mt-3" />
-        </form>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+        >
+          <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
+            <div
+              className="box"
+              style={{
+                padding: "20px",
+                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <UserImage
+                style={{
+                  margin: "0 auto 20px",
+                  display: "block",
+                }}
+              />
+              <form onSubmit={handleSubmit}>
+                <p>El valor de combobox es: {showComboBox ? 'true' : 'false'}</p>
+                {showComboBox && !isEditMode && (
+                  <ComboBox 
+                    className="is-fullwidth"
+                    onChange={(value) =>
+                      setFormData({ ...formData, rol: parseInt(value, 10) })
+                    }
+                  />
+                )}
+
+                {!showComboBox && isEditMode && (
+                  <p>Rol: {getRoleName(formData.rol)}</p> // Muestra el nombre del rol
+                )}
+                <section className="is-flex is-flex-direction-column">
+                  <Label
+                    labelContent="Ingrese su nombre"
+                    inputName="nombre"
+                    inputValue={formData.nombre}
+                    handleChange={handleChange}
+                  />
+                  <Label
+                    labelContent="Ingrese su apellido"
+                    inputName="apellido"
+                    inputValue={formData.apellido}
+                    handleChange={handleChange}
+                  />
+                  <Label
+                    labelContent="Ingrese su email"
+                    inputName="email"
+                    inputValue={formData.email}
+                    handleChange={handleChange}
+                    type="email"
+                  />
+                  <Label
+                    labelContent="Número de teléfono"
+                    inputName="telefono"
+                    inputValue={formData.telefono}
+                    handleChange={handleChange}
+                    type="tel"
+                  />
+                  {!isEditMode && (
+                    <>
+                      <Label
+                        labelContent="Contraseña"
+                        inputName="contrasenia"
+                        inputValue={formData.contrasenia}
+                        handleChange={handleChange}
+                        type="password"
+                      />
+                      <Label
+                        labelContent="Confirmar contraseña"
+                        inputName="confirmarContrasenia"
+                        inputValue={formData.confirmarContrasenia}
+                        handleChange={handleChange}
+                        type="password"
+                      />
+                    </>
+                  )}
+                  {errorMessage && (
+                    <p className="has-text-danger">{errorMessage}</p>
+                  )}
+                  {successMessage && (
+                    <p className="has-text-success">{successMessage}</p>
+                  )}
+                  <LargeButton
+                    textButton={isEditMode ? "Actualizar" : "Registrarse"}
+                    buttonType="submit"
+                    className="is-fullwidth"
+                  />
+                  <p>El valor de isEditMode es: {isEditMode ? 'true' : 'false'}</p>
+                </section>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
     </>
   );
 };

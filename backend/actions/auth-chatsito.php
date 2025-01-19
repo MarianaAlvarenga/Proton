@@ -1,4 +1,6 @@
 <?php
+session_start(); // Inicia la sesión
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
@@ -59,7 +61,7 @@ function registerUser($data, $conn) {
     $nombre = $conn->real_escape_string($data['nombre']);
     $apellido = $conn->real_escape_string($data['apellido']);
     $telefono = $conn->real_escape_string($data['telefono']);
-    $rol = 1; // Rol por defecto
+    $rol = isset($data['rol']) ? intval($data['rol']) : 1; // Usa el rol enviado o 1 por defecto
     $hashedPassword = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
 
     $insertQuery = "INSERT INTO usuario (nombre, apellido, telefono, email, rol, contrasenia) VALUES ('$nombre', '$apellido', '$telefono', '$email', '$rol', '$hashedPassword')";
@@ -70,6 +72,7 @@ function registerUser($data, $conn) {
         echo json_encode(["success" => false, "message" => "Error al registrar el usuario: " . $conn->error]);
     }
 }
+
 
 function loginUser($data, $conn) {
     if (empty($data['email']) || empty($data['contrasenia'])) {
@@ -91,19 +94,20 @@ function loginUser($data, $conn) {
     $user = $result->fetch_assoc();
 
     if (password_verify($password, $user['contrasenia'])) {
+        // Configura la sesión
+        $_SESSION['user_id'] = $user['id_usuario'];
+        $_SESSION['user_name'] = $user['nombre'];
+        $_SESSION['user_role'] = $user['rol'];
+
+
         unset($user['contrasenia']); // Eliminar la contraseña del resultado
         echo json_encode(["success" => true, "message" => "Inicio de sesión exitoso", "user" => $user]);
     } else {
-        echo json_encode([
-            "success" => false, 
-            "message" => "Contraseña incorrecta",
-            "debug" => [
-                "password_input" => $password,
-                "password_db" => $user['contrasenia']
-            ]
-        ]);
+        echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
     }
-    
+    error_log(session_save_path());
+    error_log(json_encode($_SESSION));
+
 }
 
 ?>

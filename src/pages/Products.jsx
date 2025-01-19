@@ -1,41 +1,79 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
 import ProductImage from "../components/sales/ProductCard";
 import Pagination from "../components/common/Pagination";
-import './Products.css';
+import "./Products.css";
 
 const Products = () => {
+
+  const location = useLocation();
   const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
+  // Configurar estado inicial según parámetros de la URL
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    setSelectedCategory(category || "");
+  
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
-    setIsAdmin(userRole === 4);
+  
+    // Asignar valor por defecto solo si location.state es null
+    const purchaseMode = location.state?.purchaseMode ?? false; // Si null o undefined, usa false
+    console.log("location.state:", location.state);
+    console.log("purchaseMode:", purchaseMode);
+    console.log("userRole:", userRole);
+  
+    if (purchaseMode) {
+      setIsAdmin(false);
+    } else {
+      setIsAdmin(userRole === 4);
+    }
+  }, [location.search, location.state]);
+  
 
-    const fetchProducts = async (page) => {
+  // Obtener productos desde el backend
+  useEffect(() => {
+    const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/proton/backend/actions/getProducts.php?page=${page}`
+          `http://localhost:8080/proton/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
         );
+
+        if (!response.ok) {
+          throw new Error("Error al obtener los productos");
+        }
+
         const data = await response.json();
-        setProducts(data.products);
-        setTotalPages(data.pagination.totalPages);
+        setProducts(data.products || []);
+        setTotalPages(data.pagination?.totalPages || 1);
       } catch (error) {
         console.error("Error al obtener los productos:", error);
       }
     };
 
-    fetchProducts(currentPage);
-  }, [currentPage]);
+    fetchProducts();
+  }, [currentPage, searchQuery, selectedCategory]);
 
+  // Manejo de búsqueda
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  // Manejo de paginación
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  return (  
+  return (
+    
     <div className="page-wrapper">
       <section className="section" style={{ margin: "0px" }}>
           <NavBar showSearch showMenu/>
@@ -66,6 +104,42 @@ const Products = () => {
             />
           </div>
         </div>  
+      <NavBar showMenu showSearch onSearch={handleSearch} />
+      <SubNavBar showBack currentPage="Productos" />
+
+      <section className="section" style={{ margin: "0px", padding: "1.5rem" }}>
+        <div className="container">
+          {products.length === 0 ? (
+            <div className="no-products-message">
+              <h2>Categoría sin productos actualmente</h2>
+            </div>
+          ) : (
+            <>
+              <div className="columns is-mobile is-multiline">
+                {products.map((product) => (
+                  <div className="column is-half" key={product.id}>
+                    <ProductImage
+                      ProductName={product.nombre_producto}
+                      ProductPrice={product.precio_producto}
+                      ProductImage={product.image_url}
+                      ProductId={product.id}
+                      ShowAddButton
+                      ShowModifyButton={isAdmin && !location.state?.purchaseMode}
+                      ShowDeleteButton={isAdmin && !location.state?.purchaseMode}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="pagination-container">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            </>
+          )}
+        </div>
       </section>
     </div>
   );

@@ -14,6 +14,8 @@ import MenuGrommer from './pages/MenuGrommer';
 import MenuAdmin from './pages/MenuAdmin';
 import UsersAdmin from './pages/UsersAdmin';
 import ProductCreateForm from './components/sales/ProductCreateForm';
+import Alert from './components/common/Alert';
+
 function App() {
   return (
       <Router>
@@ -27,7 +29,8 @@ function App() {
           <Route path="/MenuGroomer" element={<MenuGrommer />} />
           <Route path="/MenuAdmin" element={<MenuAdmin />} />
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
-          <Route path="/Users" element={<UsersAdmin />} />
+          <Route path="/UsersAdmin" element={<UsersAdmin />} />
+          <Route path= "/Alert" element={<Alert/>} />
         </Routes>
       </Router>
   );
