@@ -41,7 +41,7 @@ const Desplegable = () => {
     }, []);
 
     return (
-        <div>
+        <div className="menu-container">
             <a
                 href="#menu"
                 className="menu-icon"

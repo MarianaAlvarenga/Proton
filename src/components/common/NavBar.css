@@ -51,14 +51,15 @@
         padding: 10px; /* Agrega espacio dentro del formulario */
     }
 }
-/* Ajusta la estructura del navbar */
+  
 .navbar {
     display: flex;
     justify-content: space-between; /* Separación entre elementos principales */
     align-items: center;
     padding: 0.5rem 1rem; /* Espaciado interno */
-  }
-  
+    height: 60px; /* Altura fija */
+}
+
   /* Elementos del lado derecho del navbar */
   .navbar-end {
     display: flex;

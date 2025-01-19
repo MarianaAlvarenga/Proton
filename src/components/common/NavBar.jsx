@@ -1,6 +1,7 @@
 import React from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
+import { useState } from "react";
 
 const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
   const [searchText, setSearchText] = useState("");

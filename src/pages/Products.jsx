@@ -76,25 +76,26 @@ const Products = () => {
     
     <div className="page-wrapper">
       <section className="section" style={{ margin: "0px" }}>
-          <NavBar showSearch showMenu/>
-          <SubNavBar showBack currentPage="Productos"/>
-        <div className="container" style={{ margin: "0px" }}>
-        <div className="columns is-mobile is-multiline products-container">
-          {products.map((product) => (
-            <div className="column is-full-mobile is-half-tablet is-one-quarter-desktop" key={product.id}>
-              <ProductImage
-                ProductName={product.nombre_producto}
-                ProductPrice={product.precio_producto}
-                ProductImage={product.image_url}
-                ProductId={product.id}
-                ShowAddButton
-                {...(isAdmin
-                  ? { ShowModifyButton: true, ShowDeleteButton: true }
-                  : { ShowDeleteButton: true, ShowAddButton: true })}
-              />
-            </div>
-          ))}
-        </div>
+            <NavBar showSearch showMenu/>
+            <SubNavBar showBack currentPage="Productos"/>
+          <div className="container" style={{ margin: "0px" }}>
+            <div className="columns is-mobile is-multiline products-container">
+              {products.map((product) => (
+                <div className="column is-full-mobile is-half-tablet is-one-quarter-desktop" key={product.id}>
+                  <ProductImage
+                    ProductName={product.nombre_producto}
+                    ProductPrice={product.precio_producto}
+                    ProductImage={product.image_url}
+                    ProductId={product.id}
+                    ShowAddButton
+                    {...(isAdmin
+                      ? { ShowModifyButton: true, ShowDeleteButton: true }
+                      : { ShowDeleteButton: true, ShowAddButton: true })}
+                  />
+                </div>
+              ))}
+            </div>  
+          </div>
 
           <div className="pagination-container">
             <Pagination
@@ -103,43 +104,6 @@ const Products = () => {
               onPageChange={handlePageChange}
             />
           </div>
-        </div>  
-      <NavBar showMenu showSearch onSearch={handleSearch} />
-      <SubNavBar showBack currentPage="Productos" />
-
-      <section className="section" style={{ margin: "0px", padding: "1.5rem" }}>
-        <div className="container">
-          {products.length === 0 ? (
-            <div className="no-products-message">
-              <h2>Categoría sin productos actualmente</h2>
-            </div>
-          ) : (
-            <>
-              <div className="columns is-mobile is-multiline">
-                {products.map((product) => (
-                  <div className="column is-half" key={product.id}>
-                    <ProductImage
-                      ProductName={product.nombre_producto}
-                      ProductPrice={product.precio_producto}
-                      ProductImage={product.image_url}
-                      ProductId={product.id}
-                      ShowAddButton
-                      ShowModifyButton={isAdmin && !location.state?.purchaseMode}
-                      ShowDeleteButton={isAdmin && !location.state?.purchaseMode}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="pagination-container">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
-            </>
-          )}
-        </div>
       </section>
     </div>
   );
