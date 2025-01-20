@@ -23,7 +23,7 @@ const Shifts = ({ userRole }) => {
 
   return (
     <div>
-      <NavBar showMenu></NavBar>
+      <NavBar></NavBar>
       <SubNavBar showBack currentPage='Turnos'></SubNavBar>
               
         <div className="box" style={{ paddingTop:'0px', paddingBottom:'0px' }}>

@@ -42,7 +42,11 @@ const Desplegable = () => {
 
     return (
         <div className="menu-container">
-            <a href="#menu" className="menu-icon" onClick={toggleDropdown}>
+            <a
+                href="#menu"
+                className="menu-icon"
+                onClick={toggleDropdown}
+            >
                 ☰
             </a>
             <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>

@@ -1,47 +1,31 @@
 /* Ajuste general para el wrapper principal */
 .page-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Ocupa toda la pantalla */
-    overflow: hidden; /* Evita desbordes globales */
-  }
-  
-  /* Sección principal */
-  .products-section {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Ocupa el espacio restante */
-    overflow: hidden; /* Evita desbordes */
-  }
-  
-  /* Contenedor de productos con scroll */
-  .products-container {
-    flex: 1; /* Ocupa todo el espacio vertical disponible */
-    overflow-y: auto; /* Permite el desplazamiento vertical */
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-  
-  /* Configuración de columnas */
-  .columns {
-    margin: 0;
-  }
-  
-  /* Contenedor de paginación fijo */
-  .pagination-container {
-    padding: 1rem 0;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-top: 1px solid #ddd;
-  }
-  .no-products-message {
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 1.5rem;
-    color: #555;
-    background-color: #f9f9f9;
-    padding: 2rem;
-    border-radius: 8px;
-  }
-  
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ocupa toda la pantalla */
+  margin: 0; /* Elimina márgenes alrededor */
+  padding: 0; /* Elimina cualquier padding alrededor */
+  overflow: hidden; /* Evita desbordes */
+}
+
+/* Sección principal */
+.section {
+  margin: 0; /* Elimina márgenes alrededor de la sección */
+  padding: 0; /* Elimina el padding de la sección */
+  flex: 1; /* Asegura que la sección ocupe el espacio restante */
+}
+
+/* Contenedor de productos con scroll */
+.products-container {
+  flex: 1; /* Ocupa todo el espacio vertical disponible */
+  overflow-y: auto; /* Permite el desplazamiento vertical */
+  padding: 1rem;
+  box-sizing: border-box;
+  margin: 0; /* Elimina márgenes dentro del contenedor */
+}
+
+/* Configuración de columnas */
+.columns {
+  margin: 0; /* Elimina márgenes entre columnas */
+  padding: 0; /* Elimina padding entre columnas */
+}
