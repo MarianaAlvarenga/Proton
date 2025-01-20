@@ -26,7 +26,7 @@ const Calendar = ({ isRange, isMultiple, onDatesChange, onClose }) => {
       // Inicializa el calendario
       const calendar = bulmaCalendar.attach(input, {
         type: "datetime",
-        dateFormat: "YYYY-MM-DD",
+        dateFormat: "yyyy-mm-dd",
         timeFormat: "HH:mm:ss",
         lang: "es",
         isRange: isRange, // Habilitar/deshabilitar rango
