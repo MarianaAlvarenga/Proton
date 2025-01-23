@@ -1,3 +1,4 @@
+// Products.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
@@ -16,29 +17,21 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  // Configurar estado inicial según parámetros de la URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
     setSelectedCategory(category || "");
   
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
-  
-    // Asignar valor por defecto solo si location.state es null
-    const purchaseMode = location.state?.purchaseMode ?? false; // Si null o undefined, usa false
-    console.log("location.state:", location.state);
-    console.log("purchaseMode:", purchaseMode);
-    console.log("userRole:", userRole);
-  
+    const purchaseMode = location.state?.purchaseMode ?? false;
+    
     if (purchaseMode) {
       setIsAdmin(false);
     } else {
       setIsAdmin(userRole === 4);
     }
   }, [location.search, location.state]);
-  
 
-  // Obtener productos desde el backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -61,51 +54,49 @@ const Products = () => {
     fetchProducts();
   }, [currentPage, searchQuery, selectedCategory]);
 
-  // Manejo de búsqueda
   const handleSearch = (query) => {
     setSearchQuery(query);
     setCurrentPage(1);
   };
 
-  // Manejo de paginación
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   return (
-    
     <div className="page-wrapper">
-      <section className="section" style={{ margin: "0px" }}>
-            <NavBar showSearch showMenu/>
-            <SubNavBar showBack currentPage="Productos"/>
-          <div className="container" style={{ margin: "0px" }}>
-            <div className="columns is-mobile is-multiline products-container">
+      <section className="section">
+        <NavBar showSearch showMenu onSearch={handleSearch} />
+        <SubNavBar showBack currentPage="Productos" />
+          <div className="products-container">
+            <div className="columns is-mobile is-multiline">
               {products.map((product) => (
-                <div className="column is-full-mobile is-half-tablet is-one-quarter-desktop" key={product.id}>
-                  <ProductImage
-                    ProductName={product.nombre_producto}
-                    ProductPrice={product.precio_producto}
-                    ProductImage={product.image_url}
-                    ProductId={product.id}
-                    ShowAddButton
-                    {...(isAdmin
-                      ? { ShowModifyButton: true, ShowDeleteButton: true }
-                      : { ShowDeleteButton: true, ShowAddButton: true })}
-                  />
-                </div>
-              ))}
-            </div>  
+              <div
+                className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
+                key={product.id}
+              >
+                <ProductImage
+                  ProductName={product.nombre_producto}
+                  ProductPrice={product.precio_producto}
+                  ProductImage={product.image_url}
+                  ProductId={product.id}
+                  ShowAddButton
+                  {...(isAdmin
+                    ? { ShowModifyButton: true, ShowDeleteButton: true }
+                    : { ShowDeleteButton: true, ShowAddButton: true })
+                  }/>
+              </div>
+            ))}
           </div>
-
-          <div className="pagination-container">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-      </section>
-    </div>
+        </div>
+        <div className="pagination-container">  
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}/>
+        </div>
+        </section>
+      </div>
   );
 };
 

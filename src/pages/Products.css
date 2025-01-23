@@ -3,29 +3,44 @@
   display: flex;
   flex-direction: column;
   height: 100vh; /* Ocupa toda la pantalla */
-  margin: 0; /* Elimina márgenes alrededor */
-  padding: 0; /* Elimina cualquier padding alrededor */
-  overflow: hidden; /* Evita desbordes */
+  overflow: hidden; /* Oculta cualquier desbordamiento horizontal */
 }
 
 /* Sección principal */
 .section {
-  margin: 0; /* Elimina márgenes alrededor de la sección */
-  padding: 0; /* Elimina el padding de la sección */
   flex: 1; /* Asegura que la sección ocupe el espacio restante */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evita desbordamiento externo */
 }
 
 /* Contenedor de productos con scroll */
 .products-container {
   flex: 1; /* Ocupa todo el espacio vertical disponible */
-  overflow-y: auto; /* Permite el desplazamiento vertical */
+  overflow-y: auto; /* Activa el desplazamiento vertical */
   padding: 1rem;
   box-sizing: border-box;
-  margin: 0; /* Elimina márgenes dentro del contenedor */
 }
 
 /* Configuración de columnas */
 .columns {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0; /* Elimina márgenes entre columnas */
   padding: 0; /* Elimina padding entre columnas */
+}
+
+/* Asegura que la paginación sea visible y centrada */
+.pagination-container {
+  padding: 1rem;
+  background-color: #f8f8f8;
+  text-align: center; /* Centra los botones horizontalmente */
+  border-top: 1px solid #ddd;
+  position: sticky; /* Fija la paginación en la parte inferior */
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center; /* Mantiene los botones centrados */
+  align-items: center; /* Alinea los botones verticalmente */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
 }

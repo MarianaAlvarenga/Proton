@@ -48,6 +48,10 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@vizuaalog/bulmajs": "^0.12.2"
+    "@eslint/js": "^9.18.0",
+    "@vizuaalog/bulmajs": "^0.12.2",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^15.14.0"
   }
 }
