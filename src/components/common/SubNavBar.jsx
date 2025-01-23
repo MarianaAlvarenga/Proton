@@ -41,9 +41,11 @@ const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage
       {showCart && (
         <div className="navbar-item-cart">
           <div role="button">
+            
             <img
               src={require("../../assets/images/carrito.png")}
               alt="CartButton"
+              className="cart"
             />
           </div>
         </div>

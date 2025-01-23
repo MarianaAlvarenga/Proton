@@ -15,6 +15,7 @@ import MenuAdmin from './pages/MenuAdmin';
 import UsersAdmin from './pages/UsersAdmin';
 import ProductCreateForm from './components/sales/ProductCreateForm';
 import Alert from './components/common/Alert';
+import Cart from './components/sales/Cart';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
           <Route path="/UsersAdmin" element={<UsersAdmin />} />
           <Route path= "/Alert" element={<Alert/>} />
+          <Route path= "/Cart" element={<Cart/>} />
         </Routes>
       </Router>
   );

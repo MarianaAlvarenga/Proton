@@ -65,11 +65,11 @@ const Products = () => {
 
   return (
     <div className="page-wrapper">
-      <section className="section">
-        <NavBar showSearch showMenu onSearch={handleSearch} />
-        <SubNavBar showBack currentPage="Productos" />
-          <div className="products-container">
-            <div className="columns is-mobile is-multiline">
+      <section className="section" style={{ margin: "0px" }}>
+            <NavBar showSearch showMenu onSearch={handleSearch}/>
+            <SubNavBar showBack showCart currentPage="Productos"/>
+          <div className="container" style={{ margin: "0px" }}>
+            <div className="columns is-mobile is-multiline products-container">
               {products.map((product) => (
               <div
                 className="column is-full-mobile is-half-tablet is-one-quarter-desktop"

@@ -1,0 +1,70 @@
+/* Asegura que la página sea scrollable */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Esto asegura que ocupe toda la pantalla */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevenir desbordes dentro del wrapper */
+}
+
+/* Sección que contiene las cards */
+.section {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    overflow-y: auto; /* Habilita el scroll solo para esta sección */
+    padding-bottom: 2rem; /* Añadimos un poco de espacio al fondo para la paginación */
+}
+
+/* Contenedor de las tarjetas */
+.products-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 tarjetas por fila en pantallas grandes */
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Adaptación para pantallas medianas */
+@media (max-width: 1023px) {
+    .products-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila en pantallas medianas */
+    }
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 767px) {
+    .products-container {
+        grid-template-columns: 1fr; /* 1 tarjeta por fila en pantallas móviles */
+    }
+}
+
+/* Asegura que las tarjetas se ajusten al tamaño correcto */
+.column {
+    box-sizing: border-box;
+}
+
+/* Paginación */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #f9f9f9; /* Puedes ajustar el color según tu diseño */
+    width: 100%;
+}
+
+.ButtonsPanel{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100px;
+    width: 100vw;
+}
+
+.button{
+    width: 10vw !important;
+    align-self: flex-end !important;
+}

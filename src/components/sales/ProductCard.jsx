@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 
@@ -10,20 +10,19 @@ const ProductCard = ({
   ShowAddButton = false,
   ShowDeleteButton = false,
   ShowModifyButton = false,
+  ShowCount = false,
 }) => {
   const navigate = useNavigate();
+  const [productCount, setProductCount] = useState(0);
 
-  // Función para manejar la redirección al formulario de creación
   const handleAddClick = () => {
     navigate("/ProductsCreate");
   };
 
-  // Función para manejar la redirección al formulario de edición
   const handleUpdateClick = () => {
-    navigate(`/ProductCreateForm/${ProductId}`); // Redirige a ProductCreateForm con el productId
+    navigate(`/ProductCreateForm/${ProductId}`);
   };
 
-  // Función para manejar la eliminación del producto
   const handleDeleteClick = async () => {
     const confirmDelete = window.confirm(
       `¿Estás seguro de que deseas eliminar el producto "${ProductName}"?`
@@ -31,27 +30,24 @@ const ProductCard = ({
     if (!confirmDelete) return;
 
     try {
-      console.log("Código del producto a eliminar:", ProductId); // Mostrar el ID del producto en la consola
-
-      // Realizar la petición al backend para eliminar el producto
-      const payload = { codigo_producto: ProductId }; // Asegúrate de enviar el ID correcto
+      console.log("Código del producto a eliminar:", ProductId);
+      const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
         "http://localhost:8080/Proton/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json", // Asegúrate de enviar JSON
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload), // Enviar el ID como JSON
+          body: JSON.stringify(payload),
         }
       );
 
-      const result = await response.json(); // Esperar la respuesta en formato JSON
+      const result = await response.json();
 
       if (result.success) {
         alert(result.message);
-        // Recargar la página para actualizar la lista de productos
         window.location.reload();
       } else {
         alert(result.message);
@@ -59,6 +55,16 @@ const ProductCard = ({
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
       alert("Error al eliminar el producto.");
+    }
+  };
+
+  const incrementCount = () => {
+    setProductCount((prevCount) => prevCount + 1);
+  };
+
+  const decrementCount = () => {
+    if (productCount > 0) {
+      setProductCount((prevCount) => prevCount - 1);
     }
   };
 
@@ -116,6 +122,13 @@ const ProductCard = ({
         <p className="product-price" style={{ color: "gray" }}>
           ${ProductPrice}
         </p>
+        {ShowCount && (
+          <div className="product-counter">
+            <button className="counter-button" onClick={decrementCount}>-</button>
+            <span className="counter-value">{productCount}</span>
+            <button className="counter-button" onClick={incrementCount}>+</button>
+          </div>
+          )}
       </div>
     </div>
   );

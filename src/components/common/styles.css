@@ -10,12 +10,17 @@
 }
 
 /* Estilo para el botón de 'back' */
-.navbar-item-back {
+.navbar-item-back,  .navbar-item-cart{
   display: flex;
   align-items: center; /* Centrado vertical */
   justify-content: center; /* Centrado horizontal */
   width: auto; /* Ajusta el tamaño al contenido */
   flex: 0 0 auto; /* Asegura que no se estire */
+  color: white;
+}
+
+.cart{
+  color: white;
 }
 
 .navbar-item-back img {
@@ -42,9 +47,10 @@
   width: auto; /* Ajusta el tamaño al contenido */
 }
 
-.navbar-item-cart img {
+.cart {
   width: 20px;
   height: 20px;
+  filter: brightness(0) invert(1);
 }
 
 /* Responsividad para móviles */
