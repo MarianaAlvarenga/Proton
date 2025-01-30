@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../common/NavBar";
 import SubNavBar from "../common/SubNavBar";
 import CancelButton from "../common/CancelButton";
@@ -7,6 +7,18 @@ import OkButton from "../common/OkButton";
 const UserSaleInfo = () => {
     const [isRegistered, setIsRegistered] = useState(false);
     const [email, setEmail] = useState(""); // Estado para el textbox
+    
+    const [cartProducts, setCartProducts] = useState([]);
+    
+      useEffect(() => {
+        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+        setCartProducts(storedCart);
+      }, []);
+
+    const clearCart = () => {
+        setCartProducts([]); // Limpia el estado del carrito
+        localStorage.removeItem("cart"); // Borra el carrito del localStorage
+      };
 
     return (
         <div style={{
@@ -144,8 +156,8 @@ const UserSaleInfo = () => {
                 padding: "1rem",
                 borderTop: "1px solid #ccc",
             }}>
-                <CancelButton />
-                <OkButton NameButton="Finalizar compra" />
+                <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
+                <OkButton NameButton="Finalizar compra" cartProducts={cartProducts} clearCart={clearCart} />
             </div>
         </div>
     );

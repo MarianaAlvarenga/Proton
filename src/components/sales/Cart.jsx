@@ -55,7 +55,7 @@ const Cart = () => {
 
         <div className="ButtonsPanel">
           <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
-          <CancelButton className="button" NameButton="Finalizar compra" />
+          <CancelButton className="end-button" NameButton="Finalizar compra" />
         </div>
 
         <div className="pagination-container">
