@@ -16,6 +16,7 @@ import UsersAdmin from './pages/UsersAdmin';
 import ProductCreateForm from './components/sales/ProductCreateForm';
 import Alert from './components/common/Alert';
 import Cart from './components/sales/Cart';
+import UserSaleInfo from './components/sales/UserSaleInfo';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/UsersAdmin" element={<UsersAdmin />} />
           <Route path= "/Alert" element={<Alert/>} />
           <Route path= "/Cart" element={<Cart/>} />
+          <Route path= "/UserSaleInfo" element={<UserSaleInfo/>} />
         </Routes>
       </Router>
   );
