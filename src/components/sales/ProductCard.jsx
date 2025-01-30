@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 
@@ -11,12 +11,69 @@ const ProductCard = ({
   ShowDeleteButton = false,
   ShowModifyButton = false,
   ShowCount = false,
+  setCartProducts = () => {}, // Evita errores si no se pasa la función
 }) => {
   const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
 
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProduct = cart.find((item) => item.id === ProductId);
+    setProductCount(existingProduct ? existingProduct.quantity : 0);
+  }, [ProductId]);
+
+  const updateCart = (cart) => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    if (typeof setCartProducts === "function") {
+      setCartProducts([...cart]);
+    }
+  };
+
   const handleAddClick = () => {
-    navigate("/ProductsCreate");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProductIndex = cart.findIndex((item) => item.id === ProductId);
+
+    if (existingProductIndex !== -1) {
+      cart[existingProductIndex].quantity += 1;
+    } else {
+      cart.push({
+        id: ProductId,
+        name: ProductName,
+        price: parseFloat(ProductPrice),
+        image: ProductImage,
+        quantity: 1,
+      });
+    }
+
+    updateCart(cart);
+    setProductCount(cart.find((item) => item.id === ProductId).quantity);
+    navigate("/Cart");
+  };
+
+  const incrementCount = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProduct = cart.find((item) => item.id === ProductId);
+
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+      updateCart(cart);
+      setProductCount(existingProduct.quantity);
+    }
+  };
+
+  const decrementCount = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingProductIndex = cart.findIndex((item) => item.id === ProductId);
+
+    if (existingProductIndex !== -1) {
+      if (cart[existingProductIndex].quantity > 1) {
+        cart[existingProductIndex].quantity -= 1;
+      } else {
+        cart.splice(existingProductIndex, 1);
+      }
+      updateCart(cart);
+      setProductCount(cart.find((item) => item.id === ProductId)?.quantity || 0);
+    }
   };
 
   const handleUpdateClick = () => {
@@ -58,77 +115,42 @@ const ProductCard = ({
     }
   };
 
-  const incrementCount = () => {
-    setProductCount((prevCount) => prevCount + 1);
-  };
-
-  const decrementCount = () => {
-    if (productCount > 0) {
-      setProductCount((prevCount) => prevCount - 1);
-    }
-  };
-
   return (
     <div className="card" style={{ borderRadius: "0%" }}>
       <div className="card-image" style={{ borderRadius: "0%" }}>
         <figure className="image is-4by3">
           <img
-            src={
-              ProductImage ||
-              "https://bulma.io/assets/images/placeholders/1280x960.png"
-            }
+            src={ProductImage || "https://bulma.io/assets/images/placeholders/1280x960.png"}
             alt="Product"
             style={{ borderRadius: "0%" }}
           />
           {ShowAddButton && (
             <button className="buttonImage add-button" onClick={handleAddClick}>
-              <img
-                src={require("../../assets/images/agregar.png")}
-                alt="AddButton"
-                style={{ fill: "black", color: "white" }}
-              />
+              <img src={require("../../assets/images/agregar.png")} alt="AddButton" />
             </button>
           )}
           {ShowDeleteButton && (
-            <button
-              className="buttonImage delete-button"
-              onClick={handleDeleteClick}
-            >
-              <img
-                src={require("../../assets/images/delete.png")}
-                alt="DeleteButton"
-                style={{ fill: "black", color: "white" }}
-              />
+            <button className="buttonImage delete-button" onClick={handleDeleteClick}>
+              <img src={require("../../assets/images/delete.png")} alt="DeleteButton" />
             </button>
           )}
           {ShowModifyButton && (
-            <button
-              className="buttonImage modify-button"
-              onClick={handleUpdateClick}
-            >
-              <img
-                src={require("../../assets/images/modify.png")}
-                alt="ModifyButton"
-                style={{ fill: "black", color: "white" }}
-              />
+            <button className="buttonImage modify-button" onClick={handleUpdateClick}>
+              <img src={require("../../assets/images/modify.png")} alt="ModifyButton" />
             </button>
           )}
         </figure>
       </div>
       <div className="card-content">
-        <p className="product-name" style={{ fontWeight: "bold" }}>
-          {ProductName}
-        </p>
-        <p className="product-price" style={{ color: "gray" }}>
-          ${ProductPrice}
-        </p>
+        <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
+        <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
         {ShowCount && (
           <div className="product-counter">
             <button className="counter-button" onClick={decrementCount}>-</button>
             <span className="counter-value">{productCount}</span>
             <button className="counter-button" onClick={incrementCount}>+</button>
           </div>
-          )}
+        )}
       </div>
     </div>
   );

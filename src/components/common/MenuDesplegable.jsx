@@ -53,7 +53,7 @@ const Desplegable = () => {
                 {/* Link para la sección de agregar producto */}
                 <li>
                     <Link to="/productscreate">Agregar Producto</Link>
-                    <Link to="/Cart" state={{ purchaseMode: false }}>Realizar compra</Link>
+                    <Link to="/Products" state={{ purchaseMode: true  }}>Realizar compra</Link>
                     <Link to="/Products" state={{ purchaseMode: false }}>Realizar edición</Link>
 
                     <Link to="/products">Todos los Productos</Link>

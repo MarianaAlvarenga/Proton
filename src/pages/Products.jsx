@@ -17,6 +17,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
@@ -82,8 +83,8 @@ const Products = () => {
                   ProductId={product.id}
                   ShowAddButton
                   {...(isAdmin
-                    ? { ShowModifyButton: true, ShowDeleteButton: true }
-                    : { ShowDeleteButton: true, ShowAddButton: true })
+                    ? { ShowModifyButton: true, ShowDeleteButton: true}
+                    : { ShowDeleteButton: false, ShowAddButton: true  })
                   }/>
               </div>
             ))}
