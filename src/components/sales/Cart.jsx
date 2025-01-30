@@ -13,7 +13,7 @@ const Cart = () => {
             <div className="page-wrapper">
                 <section className="section" style={{ margin: "0px" }}>
                     <NavBar showSearch showMenu/>
-                    <SubNavBar showBack showCart currentPage="Productos"/>
+                    <SubNavBar showBack showCart currentPage="Carrito"/>
                     <div className="ButtonsPanel">
                         <div>TOTAL: </div>
                         <CancelButton className='button' NameButton="Seguir comprando"></CancelButton>

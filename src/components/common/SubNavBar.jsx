@@ -40,7 +40,7 @@ const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage
       {/* Verificación de 'showCart' para mostrar el carrito */}
       {showCart && (
         <div className="navbar-item-cart">
-          <div role="button">
+          <div role="button" onClick={() => navigate('/Cart')}>
             
             <img
               src={require("../../assets/images/carrito.png")}
