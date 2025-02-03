@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import OkButton from "../common/OkButton";
 import CancelButton from "../common/CancelButton";
-import { useNavigate, useParams } from "react-router-dom"; // Para obtener los parámetros de la URL (si los hay)
+import { useNavigate, useParams } from "react-router-dom";
 import ProductImage from "./ProductImage";
 import axios from "axios";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
-    const { productId } = useParams(); // Para obtener el ID del producto desde la URL (si estamos modificando un producto)
+    const { productId } = useParams(); // Obtener el ID del producto desde la URL
     const [categories, setCategories] = useState([]); // Estado para categorías
-    const [image, setImage] = useState(null); // Estado para imagen
+    const [image, setImage] = useState(null); // Estado para la imagen
     const [formData, setFormData] = useState({
         nombre_producto: "",
         descripcion_producto: "",
@@ -17,9 +17,10 @@ const ProductCreateForm = () => {
         punto_reposicion: "",
         categoria_id_categoria: "",
         precio_producto: "",
-        codigo_producto: "",
-    }); // Estado para el formulario
+        codigo_producto: productId || "", // Inicializar con el ID del producto si existe
+    });
 
+    // Obtener categorías y datos del producto (si se está editando)
     useEffect(() => {
         // Obtener categorías desde el backend
         axios.get('http://localhost:8080/Proton/backend/actions/getCategories.php')
@@ -29,9 +30,9 @@ const ProductCreateForm = () => {
             .catch(error => {
                 console.error("Hubo un error al obtener las categorías:", error);
             });
-        
+
+        // Si estamos editando un producto, obtener sus datos
         if (productId) {
-            // Si estamos editando un producto, obtener los datos de ese producto
             axios.get(`http://localhost:8080/Proton/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
@@ -43,7 +44,7 @@ const ProductCreateForm = () => {
                             punto_reposicion: product.punto_reposicion,
                             categoria_id_categoria: product.categoria_id_categoria,
                             precio_producto: product.precio_producto,
-                            codigo_producto: product.codigo_producto,
+                            codigo_producto: product.id, // Asignar el valor de "id" a "codigo_producto"
                         });
                     }
                 })
@@ -52,61 +53,56 @@ const ProductCreateForm = () => {
                     alert("No se pudo cargar el producto para editar.");
                 });
         }
-    }, [productId]); // El useEffect se ejecutará cuando el productId cambie
+    }, [productId]);
 
-    // Maneja los cambios en los campos del formulario
+    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Maneja los cambios en el campo de imagen
+    // Manejar cambios en la imagen
     const handleFileChange = (file) => {
         setImage(file);
-        console.log('Imagen seleccionada:', file);
     };
 
-    // Maneja el envío del formulario
+    // Manejar el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevenir recarga de la página
+
+        // Crear un objeto FormData para enviar los datos
         const data = new FormData();
+        data.append('codigo_producto', formData.codigo_producto);
         data.append('nombre_producto', formData.nombre_producto);
         data.append('descripcion_producto', formData.descripcion_producto);
         data.append('stock_producto', formData.stock_producto);
         data.append('punto_reposicion', formData.punto_reposicion);
         data.append('categoria_id_categoria', formData.categoria_id_categoria);
         data.append('precio_producto', formData.precio_producto);
-        data.append('codigo_producto', formData.codigo_producto);
-        // Agregar la imagen
+
+        // Agregar la imagen si está presente
         if (image) {
-            data.append('image_url', image); // Asegúrate de que el campo coincida con el backend
+            data.append('image_url', image);
         }
 
-        console.log("FormData:", data); // Ver los datos enviados
-
         try {
-            let response;
-            if (productId) {
-                // Si estamos editando un producto, usamos la URL para actualizar
-                response = await axios.post('http://localhost:8080/Proton/backend/actions/updateProduct.php', data, {
+            const response = await axios.post(
+                'http://localhost:8080/Proton/backend/actions/updateProduct.php',
+                data,
+                {
                     headers: { 'Content-Type': 'multipart/form-data' },
-                });
-            } else {
-                // Si estamos agregando un producto, usamos la URL para agregar
-                response = await axios.post('http://localhost:8080/Proton/backend/actions/addProduct.php', data, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                });
-            }
+                }
+            );
 
             if (response.data.success) {
-                alert(productId ? "Producto actualizado exitosamente" : "Producto agregado exitosamente");
-                navigate('/products'); // Redirigir después de agregar o actualizar
+                alert("Producto actualizado exitosamente");
+                navigate('/products'); // Redirigir a la página de productos
             } else {
-                alert("Error al procesar el producto: " + response.data.message);
+                alert("Error al actualizar el producto: " + response.data.message);
             }
         } catch (error) {
-            console.error("Hubo un error al procesar el producto:", error);
-            alert("No se pudo procesar el producto. Intenta nuevamente.");
+            console.error("Hubo un error al actualizar el producto:", error);
+            alert("No se pudo actualizar el producto. Intenta nuevamente.");
         }
     };
 
@@ -115,6 +111,14 @@ const ProductCreateForm = () => {
             <ProductImage onImageUpload={handleFileChange} />
             <div className="box">
                 <form onSubmit={handleSubmit}>
+                    {/* Campo oculto para el código del producto */}
+                    <input
+                        type="hidden"
+                        name="codigo_producto"
+                        value={formData.codigo_producto}
+                    />
+
+                    {/* Campo: Categoría */}
                     <div className="field">
                         <label className="label">Categoría</label>
                         <div className="select" style={{ width: '100%' }}>
@@ -134,7 +138,7 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Nombre del producto */}
+                    {/* Campo: Nombre del producto */}
                     <div className="field">
                         <label className="label">Nombre del producto</label>
                         <div className="control">
@@ -150,7 +154,7 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Codigo del producto (solo editable al agregar) */}
+                    {/* Campo: Código del producto (solo lectura) */}
                     <div className="field">
                         <label className="label">Código de Producto</label>
                         <div className="control">
@@ -158,16 +162,14 @@ const ProductCreateForm = () => {
                                 className="input"
                                 type="number"
                                 name="codigo_producto"
-                                value={formData.codigo_producto}
-                                onChange={handleChange}
-                                placeholder="1500"
-                                required
-                                disabled={productId} // No editable cuando estamos modificando
+                                value={formData.codigo_producto || ""} // Mostrar el valor real del producto
+                                onChange={handleChange} // Aunque sea de solo lectura, es necesario para React
+                                readOnly // Hacer el campo de solo lectura
                             />
                         </div>
                     </div>
 
-                    {/* Descripción del producto */}
+                    {/* Campo: Descripción del producto */}
                     <div className="field">
                         <label className="label">Descripción del producto</label>
                         <div className="control">
@@ -182,7 +184,7 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Stock del producto */}
+                    {/* Campo: Stock del producto */}
                     <div className="field">
                         <label className="label">Stock</label>
                         <div className="control">
@@ -198,7 +200,7 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Precio del producto */}
+                    {/* Campo: Precio del producto */}
                     <div className="field">
                         <label className="label">Precio</label>
                         <div className="control">
@@ -214,7 +216,7 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Punto de reposición */}
+                    {/* Campo: Punto de reposición */}
                     <div className="field">
                         <label className="label">Punto de reposición</label>
                         <div className="control">
@@ -231,11 +233,8 @@ const ProductCreateForm = () => {
                     </div>
 
                     {/* Botones */}
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                    }}>
-                        <CancelButton />
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <CancelButton onClick={() => navigate('/products')} />
                         <OkButton NameButton={productId ? "Actualizar" : "Agregar"} />
                     </div>
                 </form>

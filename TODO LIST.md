@@ -85,3 +85,12 @@
 * Rol: (nombre de rol en lugar de nro.)✔️
 * Teléfono: Agregar el campo✔️
 * Botón: Actualizar en lugar de Registrarse✔️
+
+
+En UserSaleInfo.jsx hay que sacar el desplegable. hay que cambiar el campo "nombre" por el de "email". 
+hay que sacar el campo "dni".
+en el alta de cliente SignUp.jsx se debe agregar la fecha de nacimiento, ya que en la tabla "cliente" 
+tenemos el campo "fecha_nac" (el cual también se podría agregar al UserSaleInfo.jsx como una comprobación adicional. 
+{email y fecha de nacimiento}). 
+dentro de la tabla "cliente" también se encuentra el campo "vendedor_id_usuario", 
+el cual asumo que es para poner el id del vendedor/administrador que realiza la venta.

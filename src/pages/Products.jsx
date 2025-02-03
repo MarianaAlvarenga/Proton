@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
-import ProductImage from "../components/sales/ProductCard";
+import ProductCard from "../components/sales/ProductCard";
 import Pagination from "../components/common/Pagination";
 import "./Products.css";
 
@@ -76,7 +76,7 @@ const Products = () => {
                 className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
                 key={product.id}
               >
-                <ProductImage
+                <ProductCard
                   ProductName={product.nombre_producto}
                   ProductPrice={product.precio_producto}
                   ProductImage={product.image_url}
