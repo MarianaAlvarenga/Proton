@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const OkButton = ({ NameButton = "Agregar", cartProducts = [], clearCart, isRegistered, email }) => {
+const OkButton = ({ NameButton = "Agregar", cartProducts = [], clearCart, isRegistered, email, total }) => {
     const navigate = useNavigate();
 
     const handleClick = async () => {
@@ -17,6 +17,7 @@ const OkButton = ({ NameButton = "Agregar", cartProducts = [], clearCart, isRegi
                         cart: cartProducts, // Productos del carrito
                         isRegistered, // Estado del checkbox (usuario registrado o no)
                         email, // Correo electrónico (si el usuario está registrado)
+                        total, // Total de la compra
                     }),
                 });
 

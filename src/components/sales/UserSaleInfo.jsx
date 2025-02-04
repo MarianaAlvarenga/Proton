@@ -144,6 +144,7 @@ const UserSaleInfo = () => {
           clearCart={clearCart}
           isRegistered={isRegistered} // Pasar el estado del checkbox
           email={email} // Pasar el correo electrónico
+          total={total} // Pasar el total de la compra
         />
       </div>
     </div>

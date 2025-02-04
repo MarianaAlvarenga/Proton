@@ -27,6 +27,7 @@ if (!isset($data["cart"]) || !is_array($data["cart"])) {
 
 $isRegistered = $data["isRegistered"] ?? false;
 $email = $data["email"] ?? "";
+$total = $data["total"] ?? 0;
 
 $conn->begin_transaction();
 
@@ -36,7 +37,6 @@ try {
         $productId = $item["id"];
         $quantity = $item["quantity"];
 
-        // Verificar stock disponible
         $query = $conn->prepare("SELECT stock_producto FROM producto WHERE codigo_producto = ?");
         $query->bind_param("i", $productId);
         $query->execute();
@@ -59,7 +59,6 @@ try {
     $insertCarritoQuery->execute();
     $carritoId = $conn->insert_id; // Obtener el ID del carrito insertado
 
-    // Manejar usuario registrado o no registrado
     if ($isRegistered) {
         // Verificar si el usuario existe
         $userQuery = $conn->prepare("SELECT id_usuario, rol FROM usuario WHERE email = ?");
@@ -91,6 +90,12 @@ try {
         $insertUnregisteredQuery = $conn->prepare("INSERT INTO usuario_no_registrado (id_carrito) VALUES (?)");
         $insertUnregisteredQuery->bind_param("i", $carritoId);
         $insertUnregisteredQuery->execute();
+        $usuarioNoRegistradoId = $conn->insert_id; // Obtener el ID del usuario no registrado recién insertado
+
+        // Actualizar carrito con el ID del usuario no registrado
+        $updateCarritoUnregistered = $conn->prepare("UPDATE carrito SET cliente_id_usuario_no_registrado = ? WHERE id_carrito = ?");
+        $updateCarritoUnregistered->bind_param("ii", $usuarioNoRegistradoId, $carritoId);
+        $updateCarritoUnregistered->execute();
     }
 
     $conn->commit();
