@@ -25,9 +25,13 @@ if (!isset($data["cart"]) || !is_array($data["cart"])) {
     exit;
 }
 
+$isRegistered = $data["isRegistered"] ?? false;
+$email = $data["email"] ?? "";
+
 $conn->begin_transaction();
 
 try {
+    // Verificar stock y actualizar productos
     foreach ($data["cart"] as $item) {
         $productId = $item["id"];
         $quantity = $item["quantity"];
@@ -39,10 +43,6 @@ try {
         $result = $query->get_result();
         $row = $result->fetch_assoc();
 
-        // Log de diagnóstico
-        error_log("Verificando stock para producto ID: " . $productId);
-        error_log("Stock disponible: " . $row["stock_producto"]);
-
         if (!$row || $row["stock_producto"] < $quantity) {
             throw new Exception("Stock insuficiente para el producto ID $productId");
         }
@@ -53,11 +53,50 @@ try {
         $updateQuery->execute();
     }
 
+    // Insertar en la tabla carrito
+    $insertCarritoQuery = $conn->prepare("INSERT INTO carrito (fecha_carrito, hora_carrito, total) VALUES (CURDATE(), CURTIME(), ?)");
+    $insertCarritoQuery->bind_param("d", $total);
+    $insertCarritoQuery->execute();
+    $carritoId = $conn->insert_id; // Obtener el ID del carrito insertado
+
+    // Manejar usuario registrado o no registrado
+    if ($isRegistered) {
+        // Verificar si el usuario existe
+        $userQuery = $conn->prepare("SELECT id_usuario, rol FROM usuario WHERE email = ?");
+        $userQuery->bind_param("s", $email);
+        $userQuery->execute();
+        $userResult = $userQuery->get_result();
+        $userRow = $userResult->fetch_assoc();
+
+        if (!$userRow) {
+            throw new Exception("El usuario no está registrado.");
+        }
+
+        $userId = $userRow["id_usuario"];
+        $userRole = $userRow["rol"];
+
+        // Asignar el ID del usuario según su rol
+        if ($userRole == 4) { // Administrador
+            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET administrador_id_usuario = ? WHERE id_carrito = ?");
+        } elseif ($userRole == 2) { // Vendedor
+            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET vendedor_id_usuario = ? WHERE id_carrito = ?");
+        } else { // Cliente
+            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
+        }
+
+        $updateCarritoQuery->bind_param("ii", $userId, $carritoId);
+        $updateCarritoQuery->execute();
+    } else {
+        // Insertar en la tabla usuario_no_registrado
+        $insertUnregisteredQuery = $conn->prepare("INSERT INTO usuario_no_registrado (id_carrito) VALUES (?)");
+        $insertUnregisteredQuery->bind_param("i", $carritoId);
+        $insertUnregisteredQuery->execute();
+    }
+
     $conn->commit();
     echo json_encode(["success" => true, "message" => "Compra realizada con éxito"]);
 } catch (Exception $e) {
     $conn->rollback();
-    // Log de error
     error_log("Error: " . $e->getMessage());
     echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }

@@ -19,6 +19,11 @@ const Cart = () => {
     localStorage.removeItem("cart"); // Borra el carrito del localStorage
   };
 
+  // Calcular el TOTAL del carrito
+  const calculateTotal = () => {
+    return cartProducts.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  };
+
   return (
     <div className="page-wrapper">
       <section className="section" style={{ margin: "0px" }}>
@@ -27,7 +32,7 @@ const Cart = () => {
 
         <div className="ButtonsPanel">
           <div>
-            TOTAL: ${cartProducts.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
+            TOTAL: ${calculateTotal()} {/* Mostrar el TOTAL */}
           </div>
           <CancelButton className="button" NameButton="Seguir comprando" />
         </div>
@@ -43,7 +48,7 @@ const Cart = () => {
                     ProductImage={product.image}
                     ProductId={product.id}
                     ShowCount
-                    setCartProducts={setCartProducts} 
+                    setCartProducts={setCartProducts}
                   />
                 </div>
               ))
@@ -55,7 +60,11 @@ const Cart = () => {
 
         <div className="ButtonsPanel">
           <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
-          <CancelButton className="end-button" NameButton="Finalizar compra" />
+          <CancelButton
+            className="end-button"
+            NameButton="Finalizar compra"
+            total={calculateTotal()} // Pasar el TOTAL como prop
+          />
         </div>
 
         <div className="pagination-container">
