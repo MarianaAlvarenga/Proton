@@ -94,3 +94,6 @@ tenemos el campo "fecha_nac" (el cual también se podría agregar al UserSaleInf
 {email y fecha de nacimiento}). 
 dentro de la tabla "cliente" también se encuentra el campo "vendedor_id_usuario", 
 el cual asumo que es para poner el id del vendedor/administrador que realiza la venta.
+
+# VALIDACIÓN DE MAIL EN COMPRA DE USUARIO REGISTRADO.
+# BUSCADOR DE USUARIOS
