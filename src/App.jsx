@@ -28,7 +28,7 @@ function App() {
           <Route path="/Products" element={<Products />} />
           <Route path="/Shifts" element={<Shifts />} />
           <Route path="/MenuClient" element={<MenuClient />} />
-          <Route path="/MenuGroomer" element={<MenuGrommer />} />
+          <Route path="/MenuGromer" element={<MenuGrommer />} />
           <Route path="/MenuAdmin" element={<MenuAdmin />} />
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
           <Route path="/UsersAdmin" element={<UsersAdmin />} />

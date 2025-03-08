@@ -30,7 +30,7 @@ const Login = () => {
               navigate('/MenuSeller');
               break;
             case 3:
-              navigate('/MenuGrommer');
+              navigate('/MenuGromer');
               break;
             case 4:
               navigate('/MenuAdmin');
@@ -79,7 +79,7 @@ const Login = () => {
             navigate('/MenuSeller');
             break;
           case 3:
-            navigate('/MenuGrommer');
+            navigate('/MenuGromer');
             break;
           case 4:
             navigate('/MenuAdmin');
