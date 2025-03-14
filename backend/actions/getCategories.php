@@ -9,7 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 // El resto de tu código PHP...
 
 // Configuración de conexión a la base de datos
-$host = 'localhost:3307'; // O la dirección de tu servidor MySQL
+$host = 'localhost:3306'; // O la dirección de tu servidor MySQL
 $dbname = 'proton'; // Nombre de la base de datos
 $username = 'root'; // Usuario de la base de datos
 $password = ''; // Contraseña de la base de datos

@@ -36,7 +36,6 @@
   background-color: #f8f8f8;
   text-align: center; /* Centra los botones horizontalmente */
   border-top: 1px solid #ddd;
-  position: sticky; /* Fija la paginación en la parte inferior */
   bottom: 0;
   z-index: 10;
   display: flex;

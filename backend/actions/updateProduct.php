@@ -4,7 +4,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Configuración de la base de datos
-$host = 'localhost:3307';
+$host = 'localhost:3306';
 $dbname = 'proton'; // Cambia esto por tu base de datos
 $username = 'root'; // Usuario por defecto en XAMPP
 $password = '';     // Contraseña por defecto vacía
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verificar que los datos no estén vacíos
     if (empty($codigo_producto) || empty($nombre_producto) || empty($descripcion_producto) || empty($stock_producto) || empty($punto_reposicion) || empty($categoria_id_categoria) || empty($precio_producto)) {
-        echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
+        echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios. update"]);
         exit;
     }
 

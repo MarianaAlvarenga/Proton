@@ -10,7 +10,7 @@ import ProductsCreate from './components/sales/ProductsCreate';
 import Products from './pages/Products';
 import Shifts from './pages/Shifts';
 import MenuClient from './pages/MenuClient';
-import MenuGrommer from './pages/MenuGrommer';
+import MenuGroomer from './pages/MenuGroomer';
 import MenuAdmin from './pages/MenuAdmin';
 import UsersAdmin from './pages/UsersAdmin';
 import ProductCreateForm from './components/sales/ProductCreateForm';
@@ -28,7 +28,7 @@ function App() {
           <Route path="/Products" element={<Products />} />
           <Route path="/Shifts" element={<Shifts />} />
           <Route path="/MenuClient" element={<MenuClient />} />
-          <Route path="/MenuGroomer" element={<MenuGrommer />} />
+          <Route path="/MenuGroomer" element={<MenuGroomer />} />
           <Route path="/MenuAdmin" element={<MenuAdmin />} />
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
           <Route path="/UsersAdmin" element={<UsersAdmin />} />

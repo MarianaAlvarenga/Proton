@@ -65,12 +65,11 @@ const Products = () => {
   };
 
   return (
-    <div className="page-wrapper">
       <section className="section" style={{ margin: "0px" }}>
             <NavBar showSearch showMenu onSearch={handleSearch}/>
             <SubNavBar showBack showCart currentPage="Productos"/>
-          <div className="container" style={{ margin: "0px" }}>
-            <div className="columns is-mobile is-multiline products-container">
+          <div className="product-container" style={{ margin: "0px" }}>
+            <div className="columns is-mobile is-multiline">
               {products.map((product) => (
               <div
                 className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
@@ -97,7 +96,6 @@ const Products = () => {
             onPageChange={handlePageChange}/>
         </div>
         </section>
-      </div>
   );
 };
 

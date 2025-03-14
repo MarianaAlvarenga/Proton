@@ -1,6 +1,6 @@
 <?php
 // Parámetros de conexión a la base de datos
-$host = 'localhost:3307';
+$host = 'localhost:3306';
 $db = 'proton';
 $user = 'root';
 $password = '';

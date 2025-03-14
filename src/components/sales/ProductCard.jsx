@@ -118,9 +118,9 @@ const ProductCard = ({
   return (
     <div className="card" style={{ borderRadius: "0%" }}>
       <div className="card-image" style={{ borderRadius: "0%" }}>
-        <figure className="image is-4by3">
+        <figure className="image is-16by9">
           <img
-            src={ProductImage || "https://bulma.io/assets/images/placeholders/1280x960.png"}
+            src={ProductImage || "https://bulma.io/assets/images/placeholders/640x360.png"}
             alt="Product"
             style={{ borderRadius: "0%" }}
           />

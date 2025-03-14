@@ -4,7 +4,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Configuración de la base de datos
-$host = 'localhost:3307';
+$host = 'localhost:3306';
 $dbname = 'proton';
 $username = 'root';
 $password = '';
@@ -36,7 +36,7 @@ if ($productId) {
     }
 } else {
     // Lógica original para obtener múltiples productos con paginación
-    $itemsPerPage = 4;
+    $itemsPerPage = 16;
     $searchQuery = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
     $categoryFilter = isset($_GET['category']) ? intval($_GET['category']) : 0;
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;

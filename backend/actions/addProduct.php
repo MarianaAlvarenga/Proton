@@ -1,6 +1,6 @@
 <?php
 // Parámetros de conexión a la base de datos
-$host = 'localhost:3307';
+$host = 'localhost:3306';
 $db = 'proton';
 $user = 'root';
 $password = '';
@@ -35,11 +35,11 @@ $stock_producto = $_POST['stock_producto'] ?? null;
 $punto_reposicion = $_POST['punto_reposicion'] ?? null;
 $categoria_id_categoria = $_POST['categoria_id_categoria'] ?? null;
 $precio_producto = $_POST['precio_producto'] ?? null;
-$codigo_producto = $_POST['codigo_producto'] ?? null;
+$codigo_producto = "";
 $image = $_FILES['image_url'] ?? null;
 
 // Validar que todos los campos requeridos estén presentes
-if (!$nombre_producto || !$descripcion_producto || !$stock_producto || !$punto_reposicion || !$precio_producto || !$categoria_id_categoria || !$codigo_producto) {
+if (!$nombre_producto || !$stock_producto || !$punto_reposicion || !$precio_producto || !$categoria_id_categoria ) {
     echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
     exit;
 }

@@ -3,7 +3,7 @@ import NavBar from "../components/common/NavBar";
 import Alert from "../components/common/Alert";
 
 
-const MenuGrommer = () => {
+const MenuGroomer = () => {
     return (
         <>
             <div
@@ -67,4 +67,4 @@ const MenuGrommer = () => {
     );
 };
 
-export default MenuGrommer;
+export default MenuGroomer;

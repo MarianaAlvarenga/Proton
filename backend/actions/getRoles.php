@@ -8,7 +8,7 @@ header("Content-Type: application/json");
 
 // Configuración de conexión a la base de datos
 $host = "localhost";
-$port = 3307; // Cambia este puerto si no usas el predeterminado
+$port = 3306; // Cambia este puerto si no usas el predeterminado
 $dbname = "proton"; // Cambia por el nombre real de tu base de datos
 $username = "root"; // Cambia si tienes un usuario diferente
 $password = ""; // Cambia si usas una contraseña

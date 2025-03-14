@@ -86,23 +86,36 @@ const ProductCreateForm = () => {
         }
 
         try {
-            const response = await axios.post(
-                'http://localhost:8080/Proton/backend/actions/updateProduct.php',
-                data,
-                {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                }
-            );
+            let response;
+
+            // Si hay productId, estamos actualizando el producto, sino lo estamos creando
+            if (productId) {
+                response = await axios.post(
+                    'http://localhost:8080/Proton/backend/actions/updateProduct.php',
+                    data,
+                    {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    }
+                );
+            } else {
+                response = await axios.post(
+                    'http://localhost:8080/Proton/backend/actions/addProduct.php',
+                    data,
+                    {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    }
+                );
+            }
 
             if (response.data.success) {
-                alert("Producto actualizado exitosamente");
+                alert(productId ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
                 navigate('/products'); // Redirigir a la página de productos
             } else {
-                alert("Error al actualizar el producto: " + response.data.message);
+                alert("Error al " + (productId ? "actualizar" : "crear") + " el producto: " + response.data.message);
             }
         } catch (error) {
-            console.error("Hubo un error al actualizar el producto:", error);
-            alert("No se pudo actualizar el producto. Intenta nuevamente.");
+            console.error("Hubo un error al " + (productId ? "actualizar" : "crear") + " el producto:", error);
+            alert("No se pudo " + (productId ? "actualizar" : "crear") + " el producto. Intenta nuevamente.");
         }
     };
 
@@ -179,7 +192,6 @@ const ProductCreateForm = () => {
                                 value={formData.descripcion_producto}
                                 onChange={handleChange}
                                 placeholder="Este producto es el mejor"
-                                required
                             />
                         </div>
                     </div>
