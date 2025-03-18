@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import './custom-bulma.css';
 
-const Table = () => {
-  const [users, setUsers] = useState([]); // Estado para almacenar los datos de los usuarios
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [error, setError] = useState(null); // Estado de error
-  const [selectedCheckbox, setSelectedCheckbox] = useState(null); // Estado para manejar el checkbox seleccionado
-  
+const Table = ({ searchQuery }) => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedCheckbox, setSelectedCheckbox] = useState(null);
+
   useEffect(() => {
-    // Función para obtener los datos de los usuarios desde el backend
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUsers.php"); // Cambia la URL si es necesario
+        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }
@@ -23,17 +22,24 @@ const Table = () => {
         setLoading(false);
       }
     };
-    
+
     fetchUsers();
   }, []);
-  
+
   if (loading) return <p>Cargando usuarios...</p>;
   if (error) return <p>Error: {error}</p>;
-  
+
+  // Filtrado de usuarios según el texto de búsqueda
+  const filteredUsers = users.filter((user) => 
+    user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.apellido.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.rol.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleCheckboxChange = (id) => {
-    setSelectedCheckbox(id === selectedCheckbox ? null : id); // Permite deseleccionar si el mismo checkbox se marca
+    setSelectedCheckbox(id === selectedCheckbox ? null : id);
   };
-  
+
   return (
     <table className="table">
       <thead>
@@ -46,7 +52,7 @@ const Table = () => {
         </tr>
       </thead>
       <tbody>
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <tr key={user.id_usuario}>
             <td>{user.id_usuario}</td>
             <td>{user.nombre}</td>

@@ -10,7 +10,7 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
     setSearchText(value);
 
     if (onSearch) {
-      onSearch(value); // Envía el valor al componente padre
+      onSearch(value);
     }
   };
 
@@ -30,8 +30,8 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
               type="text"
               className="input-text"
               placeholder="Buscar..."
-              value={searchText} // Vincula el estado con el campo de búsqueda
-              onChange={handleInputChange} // Llama a la función al escribir
+              value={searchText}
+              onChange={handleInputChange}
             />
           </div>
         )}
