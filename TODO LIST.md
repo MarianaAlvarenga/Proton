@@ -119,7 +119,8 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
     FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
     Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
 
-- ARREGLAR SCRIPT DE BD. (antes agregar el autoincrement en el código de producto de la bd y cambiar el tipo y el tamaño del precio del producto -FLOAT de 7.2-)
-- ARREGLAR CONEXIÓN A BD en todos los archivos de back.
+- SACAR CAMPO "CODIGO PRODUCTO" EN ALTA DE PRODUCTO✔️
+- ARREGLAR SCRIPT DE BD. (antes agregar el autoincrement en el código de producto de la bd y cambiar el tipo y el tamaño del precio del       producto -FLOAT de 7.2-) ✔️
+- UNIFICAR CONEXIÓN A BD en todos los archivos de back.✔️
 - Revisar boton atras, no siempre te lleva adonde te tiene que llevar
 - Modificar alerts, por ejemplo: "Producto agregado exitosamente"

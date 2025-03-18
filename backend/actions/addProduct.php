@@ -1,12 +1,9 @@
 <?php
 // Parámetros de conexión a la base de datos
-$host = 'localhost:3307';
-$db = 'proton';
-$user = 'root';
-$password = '';
+require_once '../includes/db.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $password);
+    $pdo = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Error en la conexión: " . $e->getMessage());

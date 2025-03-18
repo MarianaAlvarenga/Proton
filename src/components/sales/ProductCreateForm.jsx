@@ -7,9 +7,9 @@ import axios from "axios";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
-    const { productId } = useParams(); // Obtener el ID del producto desde la URL
-    const [categories, setCategories] = useState([]); // Estado para categorías
-    const [image, setImage] = useState(null); // Estado para la imagen
+    const { productId } = useParams(); 
+    const [categories, setCategories] = useState([]); 
+    const [image, setImage] = useState(null); 
     const [formData, setFormData] = useState({
         nombre_producto: "",
         descripcion_producto: "",
@@ -17,12 +17,10 @@ const ProductCreateForm = () => {
         punto_reposicion: "",
         categoria_id_categoria: "",
         precio_producto: "",
-        codigo_producto: productId || "", // Inicializar con el ID del producto si existe
+        codigo_producto: productId || "", 
     });
 
-    // Obtener categorías y datos del producto (si se está editando)
     useEffect(() => {
-        // Obtener categorías desde el backend
         axios.get('http://localhost:8080/Proton/backend/actions/getCategories.php')
             .then(response => {
                 setCategories(response.data);
@@ -31,7 +29,6 @@ const ProductCreateForm = () => {
                 console.error("Hubo un error al obtener las categorías:", error);
             });
 
-        // Si estamos editando un producto, obtener sus datos
         if (productId) {
             axios.get(`http://localhost:8080/Proton/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
@@ -44,7 +41,7 @@ const ProductCreateForm = () => {
                             punto_reposicion: product.punto_reposicion,
                             categoria_id_categoria: product.categoria_id_categoria,
                             precio_producto: product.precio_producto,
-                            codigo_producto: product.id, // Asignar el valor de "id" a "codigo_producto"
+                            codigo_producto: product.id, 
                         });
                     }
                 })
@@ -55,22 +52,18 @@ const ProductCreateForm = () => {
         }
     }, [productId]);
 
-    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Manejar cambios en la imagen
     const handleFileChange = (file) => {
         setImage(file);
     };
 
-    // Manejar el envío del formulario
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevenir recarga de la página
+        e.preventDefault();
 
-        // Crear un objeto FormData para enviar los datos
         const data = new FormData();
         data.append('codigo_producto', formData.codigo_producto);
         data.append('nombre_producto', formData.nombre_producto);
@@ -80,15 +73,12 @@ const ProductCreateForm = () => {
         data.append('categoria_id_categoria', formData.categoria_id_categoria);
         data.append('precio_producto', formData.precio_producto);
 
-        // Agregar la imagen si está presente
         if (image) {
             data.append('image_url', image);
         }
 
         try {
             let response;
-
-            // Si hay productId, estamos actualizando el producto, sino lo estamos creando
             if (productId) {
                 response = await axios.post(
                     'http://localhost:8080/Proton/backend/actions/updateProduct.php',
@@ -109,7 +99,7 @@ const ProductCreateForm = () => {
 
             if (response.data.success) {
                 alert(productId ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
-                navigate('/products'); // Redirigir a la página de productos
+                navigate('/products'); 
             } else {
                 alert("Error al " + (productId ? "actualizar" : "crear") + " el producto: " + response.data.message);
             }
@@ -163,21 +153,6 @@ const ProductCreateForm = () => {
                                 onChange={handleChange}
                                 placeholder="Producto1"
                                 required
-                            />
-                        </div>
-                    </div>
-
-                    {/* Campo: Código del producto (solo lectura) */}
-                    <div className="field">
-                        <label className="label">Código de Producto</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="number"
-                                name="codigo_producto"
-                                value={formData.codigo_producto || ""} // Mostrar el valor real del producto
-                                onChange={handleChange} // Aunque sea de solo lectura, es necesario para React
-                                readOnly // Hacer el campo de solo lectura
                             />
                         </div>
                     </div>

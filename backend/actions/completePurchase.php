@@ -7,16 +7,17 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-$host = "localhost:3307";
-$user = "root";
-$password = "";
-$database = "proton";
+require_once '../includes/db.php';
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-$conn = new mysqli($host, $user, $password, $database);
-
+// Verificar la conexión
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    die("Error de conexión: " . $conn->connect_error);
 }
+
+// Establecer el conjunto de caracteres
+$conn->set_charset('utf8');
 
 $data = json_decode(file_get_contents("php://input"), true);
 

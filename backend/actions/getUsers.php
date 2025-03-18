@@ -4,12 +4,8 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Configuración de la base de datos
-$host = 'localhost:3307'; // Cambia esto si usas otro puerto
-$dbname = 'proton';       // Cambia esto por tu base de datos
-$username = 'root';       // Usuario por defecto en XAMPP
-$password = '';           // Contraseña por defecto vacía
-
-$conn = new mysqli($host, $username, $password, $dbname);
+require_once '../includes/db.php';
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);

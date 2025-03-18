@@ -4,16 +4,16 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Configuración de la base de datos
-$host = 'localhost:3307';
-$dbname = 'proton';
-$username = 'root';
-$password = '';
+require_once '../includes/db.php';
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-$conn = new mysqli($host, $username, $password, $dbname);
-
+// Verificar la conexión
 if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+    die("Error de conexión: " . $conn->connect_error);
 }
+
+// Establecer el conjunto de caracteres
+$conn->set_charset('utf8');
 
 // Verificar si se solicita un producto específico por ID
 $productId = isset($_GET['id']) ? intval($_GET['id']) : null;

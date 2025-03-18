@@ -22,3 +22,4 @@ if ($_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
 } else {
     echo json_encode(["success" => false, "message" => "Error al subir la imagen."]);
 }
+?>

@@ -7,15 +7,10 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 // Configuración de conexión a la base de datos
-$host = "localhost";
-$port = 3307; // Cambia este puerto si no usas el predeterminado
-$dbname = "proton"; // Cambia por el nombre real de tu base de datos
-$username = "root"; // Cambia si tienes un usuario diferente
-$password = ""; // Cambia si usas una contraseña
-
+require_once '../includes/db.php';
 try {
     // Crear una conexión PDO a la base de datos
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Ejecutar la consulta para obtener los roles

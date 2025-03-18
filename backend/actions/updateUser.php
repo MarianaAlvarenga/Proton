@@ -3,13 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-// Configuración de conexión a la base de datos
-$servername = "localhost";
-$username = "root";  // Cambia según tu configuración
-$password = "";      // Cambia según tu configuración
-$dbname = "proton";  // Nombre de tu base de datos
-$port = 3307;        // Puerto definido en tu configuración XAMPP
-
+require_once '../includes/db.php';
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 // Verificar conexión

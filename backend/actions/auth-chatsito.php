@@ -5,18 +5,17 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-$servername = "localhost";
-$username = "root"; // Cambia según tu configuración
-$password = ""; // Cambia según tu configuración
-$dbname = "proton";
-$port = 3307; // Puerto definido en tu configuración XAMPP
+require_once '../includes/db.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-// Verificar conexión
+// Verificar la conexión
 if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
+    die("Error de conexión: " . $conn->connect_error);
 }
+
+// Establecer el conjunto de caracteres
+$conn->set_charset('utf8');
 
 // Leer datos del cuerpo de la solicitud
 $data = json_decode(file_get_contents("php://input"), true);
