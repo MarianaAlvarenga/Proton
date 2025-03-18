@@ -168,6 +168,12 @@ CREATE TABLE peluquero (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
+CREATE TABLE usuario_no_registrado (
+    id_usuario_no_registrado INT AUTO_INCREMENT PRIMARY KEY,
+    id_carrito INT NOT NULL,
+    FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- Relación de claves foráneas
 ALTER TABLE bono ADD FOREIGN KEY (cliente_vendedor_id_usuario) REFERENCES cliente(id_usuario);
 ALTER TABLE carrito ADD FOREIGN KEY (cliente_id_usuario1) REFERENCES cliente(id_usuario);
@@ -261,3 +267,4 @@ ADD CONSTRAINT peluquero_ibfk_1
 FOREIGN KEY (id_usuario)
 REFERENCES usuario (id_usuario)
 ON DELETE CASCADE;
+

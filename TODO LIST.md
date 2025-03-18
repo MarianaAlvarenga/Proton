@@ -7,7 +7,7 @@
 **En comun**
  * Login ✔️
  * Registro ✔️
- * Carrito
+ * Carrito ✔️
 
 **ADMIN**
  * Menu admin ✔️
@@ -18,7 +18,7 @@
  * Vista inicial de turnos ✔️
  * Sign up con combo de roles ✔️
  * Boton de realizar compra en la vista de ventas. ✔️
- * Realizar compra debe llevar a la página del carrito (cuando se toque el botón "+").
+ * Realizar compra debe llevar a la página del carrito (cuando se toque el botón "+").✔️
  * Agregar precio a la card de producto. ✔️
  * Boton de agregar producto fuera de la card. ✔️
  * Pedido de datos del cliente desde el admin ✔️
@@ -97,3 +97,29 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 
 # VALIDACIÓN DE MAIL EN COMPRA DE USUARIO REGISTRADO.
 # BUSCADOR DE USUARIOS
+
+# ~·~·~ LO QUE FALTA ~·~·~ #
+* ADMINISTRADOR -VENTAS- (alta, edición y eliminación de producto):
+    ALTA DE PRODUCTO: No debe poderse ingresar el código del producto manualmente. este campo no debe figurar en el formulario de alta de producto, y se debe agregar a la base de datos autoincrementalmente.
+
+* ADMINISTRADOR-VENTAS- (compra de producto):
+    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
+    Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
+    
+* ADMINISTRADOR-TURNOS-:
+    SELECCIONAR TURNO: al "guardar y cerrar" debe
+
+* PELUQUERO-DISPONIBILIDAD-:
+    Al tocar el botón se debe abrir el calendario y permitir elegir la disponibilidad (por mes).
+* PELUQUERO-AGENDAR TURNO-:
+    Al tocar el botón se debe abrir el calendario pudiendo visualizar con un color los turnos disponibles y pudiendo seleccionar alguno para agendarlo.
+
+* VENDEDOR-ECOMMERCE:
+    No debe aparecer la opción de "realizar edición" en el desplegable.
+    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
+    Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
+
+- ARREGLAR SCRIPT DE BD. (antes agregar el autoincrement en el código de producto de la bd y cambiar el tipo y el tamaño del precio del producto -FLOAT de 7.2-)
+- ARREGLAR CONEXIÓN A BD en todos los archivos de back.
+- Revisar boton atras, no siempre te lleva adonde te tiene que llevar
+- Modificar alerts, por ejemplo: "Producto agregado exitosamente"

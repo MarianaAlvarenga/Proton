@@ -7,7 +7,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-$host = "localhost:3306";
+$host = "localhost:3307";
 $user = "root";
 $password = "";
 $database = "proton";

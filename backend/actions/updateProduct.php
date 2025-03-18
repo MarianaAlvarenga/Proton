@@ -4,7 +4,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Configuración de la base de datos
-$host = 'localhost:3306';
+$host = 'localhost:3307';
 $dbname = 'proton'; // Cambia esto por tu base de datos
 $username = 'root'; // Usuario por defecto en XAMPP
 $password = '';     // Contraseña por defecto vacía

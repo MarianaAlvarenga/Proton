@@ -9,7 +9,7 @@ $servername = "localhost";
 $username = "root"; // Cambia según tu configuración
 $password = ""; // Cambia según tu configuración
 $dbname = "proton";
-$port = 3306; // Puerto definido en tu configuración XAMPP
+$port = 3307; // Puerto definido en tu configuración XAMPP
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 

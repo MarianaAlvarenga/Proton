@@ -27,7 +27,7 @@ const Login = () => {
               navigate('/MenuClient');
               break;
             case 2:
-              navigate('/MenuSeller');
+              navigate('/Products');
               break;
             case 3:
               navigate('/MenuGroomer');
@@ -76,7 +76,7 @@ const Login = () => {
             navigate('/MenuClient');
             break;
           case 2:
-            navigate('/MenuSeller');
+            navigate('/Products');
             break;
           case 3:
             navigate('/MenuGroomer');

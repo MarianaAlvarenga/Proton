@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
 // Conexión a la base de datos
-$host = 'localhost:3306';
+$host = 'localhost:3307';
 $db = 'proton';
 $user = 'root';
 $password = '';
