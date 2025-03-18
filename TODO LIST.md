@@ -100,9 +100,13 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 * ADMINISTRADOR-VENTAS- (compra de producto):
     FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
     Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
-    
+
+* ADMINISTRADOR-USUARIOS-:
+    Buscador de usuarios.✔️
+
 * ADMINISTRADOR-TURNOS-:
     SELECCIONAR TURNO: al "guardar y cerrar" debe
+
 
 * PELUQUERO-DISPONIBILIDAD-:
     Al tocar el botón se debe abrir el calendario y permitir elegir la disponibilidad (por mes).
