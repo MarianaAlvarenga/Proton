@@ -11,7 +11,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar si el usuario ya está autenticado
     const checkUserRole = async () => {
       try {
         const response = await axios.get('http://localhost:8080/Proton/backend/actions/getUserRole.php', {
@@ -21,7 +20,6 @@ const Login = () => {
         if (response.data.success) {
           const { rol } = response.data.user;
 
-          // Redirigir según el rol del usuario si ya está autenticado
           switch (parseInt(rol, 10)) {
             case 1:
               navigate('/MenuClient');
@@ -49,12 +47,12 @@ const Login = () => {
   }, [navigate]);
 
   const handleRegisterClick = () => {
-    navigate('/SignUp', { state: { showComboBox: false } }); // Enviamos la prop showComboBox como false
+    navigate('/SignUp', { state: { showComboBox: false } });
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(''); // Reinicia el estado de error al enviar
+    setError('');
 
     try {
       const response = await axios.post('http://localhost:8080/Proton/backend/actions/auth-chatsito.php', {
@@ -62,15 +60,15 @@ const Login = () => {
         email,
         contrasenia: password,
       });
+      console.log('Respuesta del servidor:', response.data); // <--- Depuración
 
       if (response.data.success) {
         const { rol, nombre } = response.data.user;
+        console.log('Datos del usuario:', rol, nombre); // <--- Depuración
 
-        // Almacenar datos relevantes en localStorage
         localStorage.setItem('userRole', rol);
         localStorage.setItem('userName', nombre);
 
-        // Redirigir según el rol del usuario
         switch (parseInt(rol, 10)) {
           case 1:
             navigate('/MenuClient');
