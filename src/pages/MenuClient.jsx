@@ -2,78 +2,86 @@
 import React from "react";
 import NavBar from "../components/common/NavBar";
 import { useNavigate } from "react-router-dom";  // Importa useNavigate
+import { useWindowSize } from "../Hooks/useWindowSize";
+import Carousel from "../components/common/Carousel";
+import SubNavBar from "../components/common/SubNavBar";
 
 const MenuClient = () => {
 
   const navigate = useNavigate();  // Inicializa el hook de navegación
-  const userRole = localStorage.getItem('userRole'); // Obtén el rol desde localStorage
-  
-  const handleSalesClick = () => {
-    navigate("/Products", { state: { role: userRole } });
-  };
+  const { width } = useWindowSize(); // Hook para obtener el tamaño de la ventana
+  const isMobile = width < 768; 
 
-    // Función para manejar el clic en "Ventas"
-  const handleShiftsClick = () => {
-      navigate("/Shifts", { state: { role: userRole } });
-  };
-  
+  const links = [
+    { label: "Turnos", path: "/Shifts", icon: "peluqueria.png" },
+    { label: "Ventas", path: "/Products", icon: "ventas.png" },
+  ];  
   
   return (
     <>
       <div
         className="container"
         style={{
-          maxWidth: "400px",
+          width: "100%",
+          maxWidth: "100%",
+          margin: "0 auto",
           height: "100vh",
           textAlign: "center",
           backgroundColor: "white",
         }}
       >
         <NavBar showMenu />
-        <div
-          className="columns is-multiline"
-          style={{
-            height: "calc(100% - 4em)", // Ajusta el espacio restante restando el tamaño del NavBar
-            padding: "1em",
-          }}
-        >
+        {!isMobile ? (
+          // Vista para pantallas grandes
+          <>
+            <SubNavBar links={links} />
+            <Carousel />
+          </>
+        ) : (
           <div
-            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+            className="columns is-mobile"
             style={{
-              height: "calc(50% - 1em)", // Altura ajustada para margen interno
-              marginBottom: "1em",
-              backgroundColor: "#EEE6FF",
-              borderRadius: "8px", // Bordes redondeados para estética
+              marginTop: "1em",
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <a role="button" onClick={handleShiftsClick}>
-              <img
-                src={require("../../src/assets/images/peluqueria.png")}
-                alt="shiftsIcon"
-                style={{ width: "5em" }}
-              />
-              <h2 className="title is-2">Turnos</h2>
-            </a>
+            {links.map((link, index) => (
+              <div
+                key={index}
+                className="column is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+                style={{
+                  flex: 1,
+                  backgroundColor: "#EEE6FF",
+                  marginBottom: "1em",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <a
+                  role="button"
+                  onClick={() => navigate(link.path)}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={require(`../assets/images/${link.icon}`)}
+                    alt={`${link.label}Icon`}
+                    style={{ width: "5em", marginBottom: "1em" }}
+                  />
+                  <h2 className="title is-2">{link.label}</h2>
+                </a>
+              </div>
+            ))}
           </div>
-
-          <div
-            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-            style={{
-              height: "calc(50% - 1em)", // Altura ajustada para margen interno
-              backgroundColor: "#EEE6FF",
-              borderRadius: "8px", // Bordes redondeados para estética
-            }}
-          >
-            <a role="button" onClick={handleSalesClick}>
-              <img
-                src={require("../../src/assets/images/ventas.png")}
-                alt="salesIcon"
-                style={{ width: "5em" }}
-              />
-              <h2 className="title is-2">Ventas</h2>
-            </a>
-          </div>
-        </div>
+          )}
       </div>
     </>
   );
