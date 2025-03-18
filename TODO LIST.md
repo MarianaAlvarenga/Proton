@@ -57,17 +57,12 @@
 
  **Vendedor**
 * Menu vendedor ✔️
-* Ingreso a gestor de turnos
-* Modificar/cancelar turno
 * Ingreso a gestor de ventas
 * Permitir ventas sin cliente registrado.
 * Permitir registrar a clientes.
 * Venta de productos.
 
  **General**
-* Agregar input para el buscador.
-* Menu hamburguesa.
-* Texto en el subnav que indique la seccion actual.
 * Agregar cerrar sesion
 * ajustar tamaño de imagenes que se suben en Products.jsx
 * Responsive
