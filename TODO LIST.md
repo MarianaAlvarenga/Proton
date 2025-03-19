@@ -98,8 +98,8 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
     ALTA DE PRODUCTO: No debe poderse ingresar el código del producto manualmente. este campo no debe figurar en el formulario de alta de producto, y se debe agregar a la base de datos autoincrementalmente.✔️
 
 * ADMINISTRADOR-VENTAS- (compra de producto):
-    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
-    Al tildar el checkbox de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
+    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.✔️
+    Al tildar el checkbox de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.✔️
 
 * ADMINISTRADOR-USUARIOS-:
     Buscador de usuarios.✔️
@@ -115,11 +115,14 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 
 * VENDEDOR-ECOMMERCE:
     No debe aparecer la opción de "realizar edición" en el desplegable.
-    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.
-    Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.
+    No debe poder agregar productos.
+    
+    FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.✔️
+    Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.✔️
 
 - SACAR CAMPO "CODIGO PRODUCTO" EN ALTA DE PRODUCTO✔️
 - ARREGLAR SCRIPT DE BD. (antes agregar el autoincrement en el código de producto de la bd y cambiar el tipo y el tamaño del precio del       producto -FLOAT de 7.2-) ✔️
 - UNIFICAR CONEXIÓN A BD en todos los archivos de back.✔️
 - Revisar boton atras, no siempre te lleva adonde te tiene que llevar
 - Modificar alerts, por ejemplo: "Producto agregado exitosamente"
+- Vinculación con mercadopago

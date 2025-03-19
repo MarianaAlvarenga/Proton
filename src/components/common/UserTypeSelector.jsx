@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const UserTypeSelector = ({ onlyRegistered = false }) => {
+const UserTypeSelector = ({ onlyRegistered = false, onUserTypeChange }) => {
   const [isRegistered, setIsRegistered] = useState(onlyRegistered);
   const [email, setEmail] = useState("");
+
+  // Actualizar el estado del componente padre cuando cambie isRegistered o email
+  useEffect(() => {
+    onUserTypeChange({ isRegistered, email });
+  }, [isRegistered, email]); // Solo se ejecuta cuando isRegistered o email cambian
 
   return (
     <div style={{

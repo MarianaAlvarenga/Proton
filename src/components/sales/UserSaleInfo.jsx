@@ -17,14 +17,14 @@ const UserSaleInfo = () => {
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartProducts(storedCart);
-  
+
     const storedUser = localStorage.getItem("userRole");
     console.log("Valor de localStorage (userRole):", storedUser); // Depuración
-  
+
     if (storedUser) {
       setUserRole(Number(storedUser)); // Convierte a número
     }
-  
+
     setLoading(false);
   }, []);
 
@@ -35,6 +35,20 @@ const UserSaleInfo = () => {
   const clearCart = () => {
     setCartProducts([]);
     localStorage.removeItem("cart");
+  };
+
+  // Función para actualizar el estado de userInfo
+  const handleUserInfoChange = (newUserInfo) => {
+    setUserInfo((prevUserInfo) => {
+      // Solo actualiza si los valores han cambiado
+      if (
+        prevUserInfo.isRegistered !== newUserInfo.isRegistered ||
+        prevUserInfo.email !== newUserInfo.email
+      ) {
+        return newUserInfo;
+      }
+      return prevUserInfo;
+    });
   };
 
   return (
@@ -66,7 +80,7 @@ const UserSaleInfo = () => {
           <div>Cargando...</div>
         ) : (
           (userRole === 2 || userRole === 4) ? (
-            <UserTypeSelector onUserTypeChange={setUserInfo} />
+            <UserTypeSelector onUserTypeChange={handleUserInfoChange} />
           ) : (
             <div>Rol no permitido para mostrar UserTypeSelector</div>
           )
@@ -82,7 +96,14 @@ const UserSaleInfo = () => {
         }}
       >
         <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
-        <OkButton NameButton="Finalizar compra" cartProducts={cartProducts} clearCart={clearCart} {...userInfo} total={total} />
+        <OkButton
+          NameButton="Finalizar compra"
+          cartProducts={cartProducts}
+          clearCart={clearCart}
+          isRegistered={userInfo.isRegistered}
+          email={userInfo.email}
+          total={total}
+        />
       </div>
     </div>
   );

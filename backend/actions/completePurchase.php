@@ -8,6 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 require_once '../includes/db.php';
+
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
@@ -27,8 +28,17 @@ if (!isset($data["cart"]) || !is_array($data["cart"])) {
 }
 
 $isRegistered = $data["isRegistered"] ?? false;
-$email = $data["email"] ?? "";
+$email = $data["email"] ?? null; // Correo electrónico (solo si el usuario está registrado)
 $total = $data["total"] ?? 0;
+
+// Obtener el ID y el rol del usuario que está realizando la compra
+$currentUserId = $data["currentUserId"] ?? null;
+$currentUserRole = $data["currentUserRole"] ?? null;
+
+if (!$currentUserId || !$currentUserRole) {
+    echo json_encode(["success" => false, "message" => "ID o rol del usuario actual no proporcionado"]);
+    exit;
+}
 
 $conn->begin_transaction();
 
@@ -60,9 +70,14 @@ try {
     $insertCarritoQuery->execute();
     $carritoId = $conn->insert_id; // Obtener el ID del carrito insertado
 
-    if ($isRegistered) {
-        // Verificar si el usuario existe
-        $userQuery = $conn->prepare("SELECT id_usuario, rol FROM usuario WHERE email = ?");
+    if ($currentUserRole == 1) {
+        // Si el usuario es un cliente, asignar su ID a cliente_id_usuario1
+        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
+        $updateCarritoQuery->bind_param("ii", $currentUserId, $carritoId);
+        $updateCarritoQuery->execute();
+    } elseif ($isRegistered) {
+        // Verificar si el usuario existe (solo si está registrado y no es un cliente)
+        $userQuery = $conn->prepare("SELECT id_usuario FROM usuario WHERE email = ?");
         $userQuery->bind_param("s", $email);
         $userQuery->execute();
         $userResult = $userQuery->get_result();
@@ -73,17 +88,9 @@ try {
         }
 
         $userId = $userRow["id_usuario"];
-        $userRole = $userRow["rol"];
 
-        // Asignar el ID del usuario según su rol
-        if ($userRole == 4) { // Administrador
-            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET administrador_id_usuario = ? WHERE id_carrito = ?");
-        } elseif ($userRole == 2) { // Vendedor
-            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET vendedor_id_usuario = ? WHERE id_carrito = ?");
-        } else { // Cliente
-            $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
-        }
-
+        // Asignar el ID del usuario registrado en la columna cliente_id_usuario1
+        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
         $updateCarritoQuery->bind_param("ii", $userId, $carritoId);
         $updateCarritoQuery->execute();
     } else {
@@ -93,10 +100,26 @@ try {
         $insertUnregisteredQuery->execute();
         $usuarioNoRegistradoId = $conn->insert_id; // Obtener el ID del usuario no registrado recién insertado
 
-        // Actualizar carrito con el ID del usuario no registrado
+        // Asignar el ID del usuario no registrado en la columna cliente_id_usuario_no_registrado
         $updateCarritoUnregistered = $conn->prepare("UPDATE carrito SET cliente_id_usuario_no_registrado = ? WHERE id_carrito = ?");
         $updateCarritoUnregistered->bind_param("ii", $usuarioNoRegistradoId, $carritoId);
         $updateCarritoUnregistered->execute();
+    }
+
+    // Asignar el ID del usuario que realiza la compra (vendedor o administrador)
+    if ($currentUserRole == 4) { // Administrador
+        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET administrador_id_usuario = ? WHERE id_carrito = ?");
+    } elseif ($currentUserRole == 2) { // Vendedor
+        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET vendedor_id_usuario = ? WHERE id_carrito = ?");
+    } elseif ($currentUserRole == 1) { // Cliente
+        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
+    } else {
+        throw new Exception("Rol del usuario actual no válido.");
+    }
+
+    if ($currentUserRole != 1) { // Solo asignar vendedor o administrador si no es un cliente
+        $updateCarritoQuery->bind_param("ii", $currentUserId, $carritoId);
+        $updateCarritoQuery->execute();
     }
 
     $conn->commit();
