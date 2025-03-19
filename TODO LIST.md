@@ -114,8 +114,8 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
     Al tocar el botón se debe abrir el calendario pudiendo visualizar con un color los turnos disponibles y pudiendo seleccionar alguno para agendarlo.
 
 * VENDEDOR-ECOMMERCE:
-    No debe aparecer la opción de "realizar edición" en el desplegable.
-    No debe poder agregar productos.
+    No debe aparecer la opción de "realizar edición" en el desplegable.✔️
+    No debe poder agregar productos.✔️
     
     FINALIZAR COMPRA: Al tildar el checkbox de "usuario no registrado" se guarda bien en la bd en la tabla "usuario no registrado" pero en la de "carrito" solo se guarda el dato en la columna "usuario no registrado" y también debería guardarse en la columna correspondiente al id que hace la compra.✔️
     Al tildar el checkbo de "usuario registrado" tiene que validarse el email como dirección valida y aparte compararse con la de la base. si hay coincidencia NO debe registrarse el id en la columna "usuario no registrado" y si se debe registrar en la columna del "id_cliente" y aparte en la del rol que realiza la compra.✔️
@@ -126,3 +126,4 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 - Revisar boton atras, no siempre te lleva adonde te tiene que llevar
 - Modificar alerts, por ejemplo: "Producto agregado exitosamente"
 - Vinculación con mercadopago
+- Subir bd a la nube
