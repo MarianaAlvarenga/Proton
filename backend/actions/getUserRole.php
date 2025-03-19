@@ -1,12 +1,10 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:3000");
-
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 session_start();
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
@@ -14,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 require_once '../includes/db.php';
+
 try {
     $pdo = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -25,13 +24,8 @@ try {
     exit;
 }
 
-// Manejo de sesión
-
-
-var_dump($_SESSION); // Esto te ayudará a ver si 'user_id' está en la sesión
-error_log(session_save_path());
-error_log(json_encode($_SESSION));
-
+// Debugging: Verificar si la sesión contiene user_id
+error_log("Sesión activa: " . json_encode($_SESSION));
 
 if (!isset($_SESSION['user_id'])) {
     echo json_encode([
@@ -53,7 +47,9 @@ try {
     if ($userRole) {
         echo json_encode([
             "success" => true,
-            "role" => (int) $userRole['rol'] // Devuelve el ID del rol como número
+            "user" => [
+                "rol" => (int) $userRole['rol']
+            ]
         ]);
     } else {
         echo json_encode([
