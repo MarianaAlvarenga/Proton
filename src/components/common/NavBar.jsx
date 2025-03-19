@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
+import LogOut from "./LogOut.jsx";
+
 
 const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
   const [searchText, setSearchText] = useState("");
@@ -36,7 +38,9 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
           </div>
         )}
       </div>
+
       <div className="navbar-end">
+        <LogOut/>
         {showMenu && <MenuDesplegable />}
       </div>
     </nav>
