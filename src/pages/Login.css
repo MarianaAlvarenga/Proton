@@ -43,8 +43,12 @@
     }
   
     .login-box .input,
-    .login-box .button {
+    .login-box  {
       font-size: 0.9rem;
     }
+  }
+
+  .button.is-fullwidth {
+    width: 100% !important;
   }
   

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
 import LogOut from "./LogOut.jsx";
-
+import ProfileButton from "./profileButton.jsx";
 
 const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
   const [searchText, setSearchText] = useState("");
@@ -37,6 +37,8 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
             />
           </div>
         )}
+
+        <ProfileButton/>
       </div>
 
       <div className="navbar-end">
