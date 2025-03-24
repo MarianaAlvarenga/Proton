@@ -1,9 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 import NavBar from "../components/common/NavBar";
-import Alert from "../components/common/Alert";
-
 
 const MenuGroomer = () => {
+    const navigate = useNavigate(); // Obtener la función navigate
+
+    // Función para manejar el clic en "Disponibilidad"
+    const handleDisponibilidadClick = () => {
+        navigate("/Shifts", { state: { showUserTypeSelector: false } }); // Ocultar UserTypeSelector
+    };
+
+    // Función para manejar el clic en "Agendar turno"
+    const handleAgendarTurnoClick = () => {
+        navigate("/Shifts"); // Mostrar UserTypeSelector (por defecto)
+    };
+
     return (
         <>
             <div
@@ -32,14 +43,12 @@ const MenuGroomer = () => {
                             borderRadius: "8px", // Bordes redondeados para estética
                         }}
                     >
-                        <a role="button">
-                        <img
-                            src={require("../../src/assets/images/disponibilidad.png")}
-                            alt="Disponibilidad"
-                            style={{ width: "5em" }}
-                        />
-
-
+                        <a role="button" onClick={handleDisponibilidadClick}> {/* Botón Disponibilidad */}
+                            <img
+                                src={require("../../src/assets/images/disponibilidad.png")}
+                                alt="Disponibilidad"
+                                style={{ width: "5em" }}
+                            />
                             <h2 className="title is-2">Disponibilidad</h2>
                         </a>
                     </div>
@@ -52,7 +61,7 @@ const MenuGroomer = () => {
                             borderRadius: "8px", // Bordes redondeados para estética
                         }}
                     >
-                        <a role="button">
+                        <a role="button" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
                             <img
                                 src={require("../../src/assets/images/agenda.png")}
                                 alt="Agenda"

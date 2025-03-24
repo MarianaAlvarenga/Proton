@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 18-03-2025 a las 20:58:21
+-- Tiempo de generación: 23-03-2025 a las 17:32:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -36,7 +36,22 @@ CREATE TABLE `administrador` (
 --
 
 INSERT INTO `administrador` (`id_usuario`) VALUES
-(2);
+(2),
+(29);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `asistencia`
+--
+
+CREATE TABLE `asistencia` (
+  `id_asistencia` int(11) NOT NULL,
+  `id_turno` int(11) NOT NULL,
+  `estado` tinyint(1) NOT NULL,
+  `hora_de _llegada` time DEFAULT NULL,
+  `observaciones` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -89,7 +104,14 @@ INSERT INTO `carrito` (`id_carrito`, `fecha_carrito`, `hora_carrito`, `cliente_i
 (16, '2025-03-17', '17:44:13', NULL, NULL, NULL, 2850.00, 4),
 (17, '2025-03-18', '00:30:09', NULL, NULL, NULL, 2282.00, 5),
 (18, '2025-03-18', '00:33:00', NULL, NULL, NULL, 50.00, 6),
-(19, '2025-03-18', '00:41:11', NULL, NULL, NULL, 3350.00, 7);
+(19, '2025-03-18', '00:41:11', NULL, NULL, NULL, 3350.00, 7),
+(20, '2025-03-18', '19:02:33', NULL, NULL, NULL, 166.00, 8),
+(36, '2025-03-18', '23:58:43', NULL, NULL, 2, 2800.00, 13),
+(37, '2025-03-18', '23:59:16', 30, NULL, 2, 2800.00, NULL),
+(38, '2025-03-18', '23:59:55', NULL, 28, NULL, 2800.00, 14),
+(39, '2025-03-19', '00:00:23', 30, 28, NULL, 2800.00, NULL),
+(40, '2025-03-19', '00:00:56', 30, NULL, NULL, 2800.00, NULL),
+(41, '2025-03-19', '00:02:16', 30, NULL, NULL, 2800.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -136,17 +158,29 @@ INSERT INTO `cliente` (`id_usuario`, `fecha_nac`, `vendedor_id_usuario`) VALUES
 (15, NULL, NULL),
 (17, NULL, NULL),
 (21, NULL, NULL),
-(25, NULL, NULL);
+(25, NULL, NULL),
+(30, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `es_ofrecido`
+-- Estructura de tabla para la tabla `dias_disponibles`
 --
 
-CREATE TABLE `es_ofrecido` (
-  `peluquero_id_usuario` int(11) NOT NULL,
-  `servicio_id_servicio` int(11) NOT NULL
+CREATE TABLE `dias_disponibles` (
+  `id_dias_disponibles` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha_disponible` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `dias_horas_disponibles`
+--
+
+CREATE TABLE `dias_horas_disponibles` (
+  `id_dias_disponibles` int(11) NOT NULL,
+  `id_horario_disponible` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -196,10 +230,20 @@ CREATE TABLE `peluquero` (
 INSERT INTO `peluquero` (`id_usuario`, `especialidad`) VALUES
 (10, NULL),
 (18, NULL),
-(19, NULL),
 (23, NULL),
 (24, NULL),
 (27, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `peluquero_ofrece_servicio`
+--
+
+CREATE TABLE `peluquero_ofrece_servicio` (
+  `peluquero_id_usuario` int(11) NOT NULL,
+  `servicio_id_servicio` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -224,13 +268,15 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`codigo_producto`, `nombre_producto`, `descripcion_producto`, `stock_producto`, `punto_reposicion`, `categoria_id_categoria`, `precio_producto`, `image_url`) VALUES
 (1, 'philly', 'sdasdasdasdasdasdas', 99, 30, 1, 500.00, 'http://localhost:8080/Proton/backend/uploads/67d8d35b563cf_philly.png'),
-(462, 'El Chocolatin misterioso super', 'riquísimo, pero no para perros ni gatos', 1484, 1, 6, 2800.00, 'http://localhost:8080/Proton/backend/uploads/679ba8467ed3b_bepis.png'),
-(676, 'pappa', 'fafasf', 415, 2, 1, 50.00, 'http://localhost:8080/Proton/backend/uploads/6742639f2cd46_alimento4.png'),
-(887, 'ffafaf', 'daSDAs', 321, 2, 4, 33.00, 'http://localhost:8080/Proton/backend/uploads/674268d267223_accesorio1.png'),
+(462, 'El Chocolatin misterioso super', 'riquísimo, pero no para perros ni gatos', 1465, 1, 6, 2800.00, 'http://localhost:8080/Proton/backend/uploads/679ba8467ed3b_bepis.png'),
+(676, 'pappa', 'fafasf', 410, 2, 1, 50.00, 'http://localhost:8080/Proton/backend/uploads/6742639f2cd46_alimento4.png'),
+(887, 'ffafaf', 'daSDAs', 311, 2, 4, 33.00, 'http://localhost:8080/Proton/backend/uploads/674268d267223_accesorio1.png'),
 (2223, 'wewewwww', 'holi, te estoy modificando', 3230, 2, 1, 21.00, 'http://localhost:8080/Proton/backend/uploads/6742632ceb56f_alimento1.png'),
 (2467, '4341251', 'asdasd', 241, 3, 4, 232.00, NULL),
 (7777, 'gatito lionmdo', 'fsdfsdfsd', 342, 12, 2, 2232.00, NULL),
-(7778, 'cazabobos', 'sss', 1500, 20, 5, 5986.00, 'http://localhost:8080/Proton/backend/uploads/67d9cfde72b91_tfc.png');
+(7778, 'cazabobos', 'sss', 1500, 20, 5, 5986.00, 'http://localhost:8080/Proton/backend/uploads/67d9cfde72b91_tfc.png'),
+(7779, 'cachafaz', 'alfajorcinho', 100, 20, 6, 2500.00, 'http://localhost:8080/Proton/backend/uploads/67d9d6e14c96a_VTV turno.png'),
+(7780, 'debe ser por el muchacho este ', 'seguramente', 150, 10, 1, 6337.00, 'http://localhost:8080/Proton/backend/uploads/67d9d859ceaf1_Sin título.png');
 
 -- --------------------------------------------------------
 
@@ -293,23 +339,23 @@ CREATE TABLE `servicio` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `servicio_prestado_en_turno`
+--
+
+CREATE TABLE `servicio_prestado_en_turno` (
+  `turno_id_turno` int(11) NOT NULL,
+  `servicio_id_servicio` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tienev1`
 --
 
 CREATE TABLE `tienev1` (
   `producto_codigo_producto` int(11) NOT NULL,
   `carrito_id_carrito` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tienev2`
---
-
-CREATE TABLE `tienev2` (
-  `turno_id_turno` int(11) NOT NULL,
-  `servicio_id_servicio` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -326,14 +372,12 @@ CREATE TABLE `tienev6` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tiene_disponibles`
+-- Estructura de tabla para la tabla `tiene_dias`
 --
 
-CREATE TABLE `tiene_disponibles` (
-  `peluquero_id_usuario` int(11) NOT NULL,
-  `id_horario_disponible` int(11) NOT NULL,
-  `fecha_inicial_disponible` date NOT NULL,
-  `fecha_final_disponible` date NOT NULL
+CREATE TABLE `tiene_dias` (
+  `id_usuario` int(11) NOT NULL,
+  `id_dias_disponibles` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -347,10 +391,9 @@ CREATE TABLE `turno` (
   `fecha` date NOT NULL,
   `hora_inicio` time NOT NULL,
   `hora_fin` time DEFAULT NULL,
-  `estado` varchar(10) NOT NULL,
-  `peluquero_id_usuario` int(11) NOT NULL,
-  `cliente_vendedor_id_usuario` int(11) NOT NULL,
-  `administrador_id_usuario` int(11) NOT NULL
+  `cliente_id` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `id_peluquero` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -380,14 +423,16 @@ INSERT INTO `usuario` (`id_usuario`, `nombre`, `apellido`, `telefono`, `email`, 
 (12, 'aasa', 'eqeqq', '1542224106', 'gaston.garcia89@212hotmail.com', '$2y$10$cuO3ebcfvvHq3M3NfSKWYeFgi8j0r/aAVeBOQBd/6kbuE.1J0pG22', 1),
 (15, 'Maru', 'Bonita', '16547', 'aaaa@aa', '$2y$10$EaJgJoXfQoGTWzcd5pQCmOebPyqHA.J4bv3jqi2Fll8m6eJgtEJKO', 1),
 (17, 'ww', 'asda', '1511124106', 'gaston.garcqqia89@hotmail.com', '$2y$10$ZMxWQgaKY89M2LTPyFd3YuLpn/Rt812.ikRVoBY0aYYUDTGRZNo7S', 1),
-(18, 'peluquin', 'arroyoseco', '798645', 'pelucademivida@lala', '$2y$10$3bWMJFdi3Kmc6oZQMm9LO.DW7CP/x9AlhahMEuOWDTmulMv8xeFEW', 3),
-(19, 'wewew', 'wewewe', '12121', '121@asdas', '$2y$10$ohZZODD28rgCjCf5nSJo2eWRxJIk2EyGEB94eK3tg62oYixojzkXq', 3),
+(18, 'peluquin casparuli', 'arroyoseco', '798645', 'pelucademivida@lala', '$2y$10$3bWMJFdi3Kmc6oZQMm9LO.DW7CP/x9AlhahMEuOWDTmulMv8xeFEW', 3),
 (21, 'proti', 'bonito y lindo', '13264579', 'pro@pro', '$2y$10$fgZKZbZlr6j78WTZEBYx8ehyp3besbwuvF.nZDj1En2o2FqbC/.ZK', 1),
 (23, 'marulinda', 'afedafas', '232', 'asfasf@s.com', '$2y$10$6.RsshUzbPnEA26bpnJY.u0m3bg4wRd.804v0CGplt6NFv/LnPFFC', 3),
 (24, 'pepito', 'clavo un clavito', '111221', 'pepito@pepito.com', '$2y$10$BWuTSKevGIduSY5ABjE7veMkH0ircujZQTdbjF7iET31b432Es4pa', 3),
 (25, 'cliente1', 'cliente1', '123456789', 'cliente1@cliente1.com', '$2y$10$QBo/OnX3WcoJDhZ13CGG..0oHx73SFYAzh1KITQq6y8XHYGOgfSk6', 1),
 (27, 'peluca', 'peluca', '123', 'peluca@peluca.com', '$2y$10$M52DxHfuitvMyookIcFAPOdFjBLUhRA1K2DWqjpD2l3DeZm9wt3f.', 3),
-(28, 'venduca', 'venduca', '321654', 'venduca@venduca.com', '$2y$10$Q1Kyh0ntgdlUzAarxPgPL.uUAN5FgtIL.ifvdk/hk8MRGDMMSFt8a', 2);
+(28, 'venduca', 'venduca', '321654', 'venduca@venduca.com', '$2y$10$Q1Kyh0ntgdlUzAarxPgPL.uUAN5FgtIL.ifvdk/hk8MRGDMMSFt8a', 2),
+(29, 'fff', 'fff', '55', 'fafaf@rrr.com', '$2y$10$lT5m54Al9pEzjcQsg.dAye.xRHWnhrlWzdjGWbWW0MbvjtFftsF.e', 4),
+(30, 'lol2', 'ddd', '123', 'lol2@lol2.com', '$2y$10$5w/1s/QYfdDu0GLk/TqgIebRutbRXcq4vb7hVHKJle6oCpXJCSxUC', 1),
+(31, 'lol3', 'fadsda', '2332', 'lol3@lol3.com', '$2y$10$nI1ZYyRwPrya2Hm3Gf5zYuS8QD7Mxx1kB1e4s2CVfAX3CTxfMvpw6', 2);
 
 --
 -- Disparadores `usuario`
@@ -430,7 +475,10 @@ INSERT INTO `usuario_no_registrado` (`id_usuario_no_registrado`, `id_carrito`) V
 (4, 16),
 (5, 17),
 (6, 18),
-(7, 19);
+(7, 19),
+(8, 20),
+(13, 36),
+(14, 38);
 
 -- --------------------------------------------------------
 
@@ -448,7 +496,8 @@ CREATE TABLE `vendedor` (
 --
 
 INSERT INTO `vendedor` (`id_usuario`, `codigo`) VALUES
-(28, '');
+(28, ''),
+(31, '');
 
 --
 -- Índices para tablas volcadas
@@ -459,6 +508,12 @@ INSERT INTO `vendedor` (`id_usuario`, `codigo`) VALUES
 --
 ALTER TABLE `administrador`
   ADD PRIMARY KEY (`id_usuario`);
+
+--
+-- Indices de la tabla `asistencia`
+--
+ALTER TABLE `asistencia`
+  ADD PRIMARY KEY (`id_asistencia`);
 
 --
 -- Indices de la tabla `bono`
@@ -490,10 +545,17 @@ ALTER TABLE `cliente`
   ADD UNIQUE KEY `vendedor_id_usuario` (`vendedor_id_usuario`);
 
 --
--- Indices de la tabla `es_ofrecido`
+-- Indices de la tabla `dias_disponibles`
 --
-ALTER TABLE `es_ofrecido`
-  ADD PRIMARY KEY (`peluquero_id_usuario`,`servicio_id_servicio`);
+ALTER TABLE `dias_disponibles`
+  ADD PRIMARY KEY (`id_dias_disponibles`);
+
+--
+-- Indices de la tabla `dias_horas_disponibles`
+--
+ALTER TABLE `dias_horas_disponibles`
+  ADD PRIMARY KEY (`id_dias_disponibles`,`id_horario_disponible`),
+  ADD KEY `id_horario_disponible` (`id_horario_disponible`);
 
 --
 -- Indices de la tabla `horas_disponibles`
@@ -513,6 +575,12 @@ ALTER TABLE `mascota`
 --
 ALTER TABLE `peluquero`
   ADD PRIMARY KEY (`id_usuario`);
+
+--
+-- Indices de la tabla `peluquero_ofrece_servicio`
+--
+ALTER TABLE `peluquero_ofrece_servicio`
+  ADD PRIMARY KEY (`peluquero_id_usuario`,`servicio_id_servicio`);
 
 --
 -- Indices de la tabla `producto`
@@ -546,16 +614,16 @@ ALTER TABLE `servicio`
   ADD PRIMARY KEY (`id_servicio`);
 
 --
+-- Indices de la tabla `servicio_prestado_en_turno`
+--
+ALTER TABLE `servicio_prestado_en_turno`
+  ADD PRIMARY KEY (`turno_id_turno`,`servicio_id_servicio`);
+
+--
 -- Indices de la tabla `tienev1`
 --
 ALTER TABLE `tienev1`
   ADD PRIMARY KEY (`producto_codigo_producto`,`carrito_id_carrito`);
-
---
--- Indices de la tabla `tienev2`
---
-ALTER TABLE `tienev2`
-  ADD PRIMARY KEY (`turno_id_turno`,`servicio_id_servicio`);
 
 --
 -- Indices de la tabla `tienev6`
@@ -564,10 +632,11 @@ ALTER TABLE `tienev6`
   ADD PRIMARY KEY (`bono_id_bono`,`recomendacion_id_recomendacion`);
 
 --
--- Indices de la tabla `tiene_disponibles`
+-- Indices de la tabla `tiene_dias`
 --
-ALTER TABLE `tiene_disponibles`
-  ADD PRIMARY KEY (`peluquero_id_usuario`,`id_horario_disponible`);
+ALTER TABLE `tiene_dias`
+  ADD PRIMARY KEY (`id_usuario`,`id_dias_disponibles`),
+  ADD KEY `id_dias_disponibles` (`id_dias_disponibles`);
 
 --
 -- Indices de la tabla `turno`
@@ -600,6 +669,12 @@ ALTER TABLE `vendedor`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `asistencia`
+--
+ALTER TABLE `asistencia`
+  MODIFY `id_asistencia` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `bono`
 --
 ALTER TABLE `bono`
@@ -609,7 +684,7 @@ ALTER TABLE `bono`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
@@ -633,7 +708,7 @@ ALTER TABLE `mascota`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `codigo_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7779;
+  MODIFY `codigo_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7781;
 
 --
 -- AUTO_INCREMENT de la tabla `recomendacion`
@@ -657,13 +732,13 @@ ALTER TABLE `turno`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_no_registrado`
 --
 ALTER TABLE `usuario_no_registrado`
-  MODIFY `id_usuario_no_registrado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_usuario_no_registrado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
@@ -697,6 +772,13 @@ ALTER TABLE `cliente`
   ADD CONSTRAINT `cliente_ibfk_2` FOREIGN KEY (`vendedor_id_usuario`) REFERENCES `vendedor` (`id_usuario`);
 
 --
+-- Filtros para la tabla `dias_horas_disponibles`
+--
+ALTER TABLE `dias_horas_disponibles`
+  ADD CONSTRAINT `dias_horas_disponibles_ibfk_1` FOREIGN KEY (`id_dias_disponibles`) REFERENCES `dias_disponibles` (`id_dias_disponibles`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dias_horas_disponibles_ibfk_2` FOREIGN KEY (`id_horario_disponible`) REFERENCES `horas_disponibles` (`id_horario_disponible`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `mascota`
 --
 ALTER TABLE `mascota`
@@ -713,6 +795,13 @@ ALTER TABLE `peluquero`
 --
 ALTER TABLE `producto`
   ADD CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`categoria_id_categoria`) REFERENCES `categoria` (`id_categoria`);
+
+--
+-- Filtros para la tabla `tiene_dias`
+--
+ALTER TABLE `tiene_dias`
+  ADD CONSTRAINT `tiene_dias_ibfk_1` FOREIGN KEY (`id_dias_disponibles`) REFERENCES `dias_disponibles` (`id_dias_disponibles`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tiene_dias_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `peluquero` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `usuario`
