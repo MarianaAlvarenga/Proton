@@ -25,7 +25,7 @@ const Products = () => {
   
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
     const purchaseMode = location.state?.purchaseMode ?? false;
-    
+
     if (purchaseMode) {
       setIsAdmin(false);
     } else {
@@ -39,7 +39,6 @@ const Products = () => {
         const response = await fetch(
           `http://localhost:8080/proton/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
         );
-
         if (!response.ok) {
           throw new Error("Error al obtener los productos");
         }

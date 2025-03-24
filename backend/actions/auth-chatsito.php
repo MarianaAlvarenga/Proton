@@ -72,7 +72,6 @@ function registerUser($data, $conn) {
     }
 }
 
-
 function loginUser($data, $conn) {
     if (empty($data['email']) || empty($data['contrasenia'])) {
         echo json_encode(["success" => false, "message" => "Email y contraseña son obligatorios"]);
@@ -98,15 +97,25 @@ function loginUser($data, $conn) {
         $_SESSION['user_name'] = $user['nombre'];
         $_SESSION['user_role'] = $user['rol'];
 
+        // Eliminar la contraseña del resultado
+        unset($user['contrasenia']);
 
-        unset($user['contrasenia']); // Eliminar la contraseña del resultado
-        echo json_encode(["success" => true, "message" => "Inicio de sesión exitoso", "user" => $user]);
+        // Devolver los datos del usuario en la respuesta
+        echo json_encode([
+            "success" => true,
+            "message" => "Inicio de sesión exitoso",
+            "user" => [
+                "id_usuario" => $user['id_usuario'], // Asegúrate de devolver el ID del usuario
+                "rol" => $user['rol'], // Asegúrate de devolver el rol del usuario
+                "nombre" => $user['nombre'] // Asegúrate de devolver el nombre del usuario
+            ]
+        ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
     }
-    error_log(session_save_path());
-    error_log(json_encode($_SESSION));
 
+    // Depuración: Verificar la ruta de guardado de la sesión y su contenido
+    error_log("Ruta de guardado de la sesión: " . session_save_path());
+    error_log("Contenido de la sesión: " . json_encode($_SESSION));
 }
-
 ?>

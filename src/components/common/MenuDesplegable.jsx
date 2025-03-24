@@ -6,6 +6,7 @@ import "./stilaso.css"; // Incluye tu archivo CSS
 const Desplegable = () => {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [categories, setCategories] = useState([]); // Estado para las categorías
+    const [userRole, setUserRole] = useState(null); // Estado para el rol del usuario
 
     // Función para alternar la visibilidad del menú
     const toggleDropdown = (e) => {
@@ -40,6 +41,14 @@ const Desplegable = () => {
         };
     }, []);
 
+    // Obtener el rol del usuario desde el localStorage
+    useEffect(() => {
+        const role = localStorage.getItem("userRole");
+        if (role) {
+            setUserRole(parseInt(role, 10)); // Convertir a número
+        }
+    }, []);
+
     return (
         <div className="menu-container">
             <a
@@ -53,9 +62,13 @@ const Desplegable = () => {
                 {/* Link para la sección de agregar producto */}
                 <li>
                     <Link to="/productscreate">Agregar Producto</Link>
-                    <Link to="/Products" state={{ purchaseMode: true  }}>Realizar compra</Link>
-                    <Link to="/Products" state={{ purchaseMode: false }}>Realizar edición</Link>
-
+                    {/* Mostrar "Realizar compra" y "Realizar edición" solo si el rol no es 2 (vendedor) */}
+                    {userRole !== 2 && (
+                        <>
+                            <Link to="/Products" state={{ purchaseMode: true }}>Realizar compra</Link>
+                            <Link to="/Products" state={{ purchaseMode: false }}>Realizar edición</Link>
+                        </>
+                    )}
                     <Link to="/products">Todos los Productos</Link>
                 </li>
 

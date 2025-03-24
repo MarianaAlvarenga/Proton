@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom'; // Importar useLocation
 import Calendar from '../components/common/Calendar';
 import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
-import UserTypeSelector from '../components/common/UserTypeSelector'; // Importar el nuevo componente
+import UserTypeSelector from '../components/common/UserTypeSelector';
 
 const Shifts = ({ userRole }) => {
+  const location = useLocation(); // Obtener la ubicación actual
+  const showUserTypeSelector = location.state?.showUserTypeSelector ?? true; // Leer el estado
+
   const [selectedDates, setSelectedDates] = useState([]);
   const isRange = userRole === 'peluquero';
 
   const handleCalendarClose = (dates) => {
     setSelectedDates(dates);
+  };
+
+  // Función que maneja los cambios en el UserTypeSelector
+  const handleUserTypeChange = ({ isRegistered, email }) => {
+    console.log("Usuario registrado:", isRegistered);
+    console.log("Email:", email);
   };
 
   return (
@@ -20,8 +30,13 @@ const Shifts = ({ userRole }) => {
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
         <h1>Gestión de turnos</h1>
 
-        {/* Mostrar UserTypeSelector SOLO con la opción de usuario registrado */}
-        <UserTypeSelector onlyRegistered={true} />
+        {/* Mostrar UserTypeSelector solo si showUserTypeSelector es true */}
+        {showUserTypeSelector && (
+          <UserTypeSelector 
+            onlyRegistered={true} 
+            onUserTypeChange={handleUserTypeChange} 
+          />
+        )}
 
         <Calendar 
           isRange={isRange} 

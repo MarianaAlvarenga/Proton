@@ -63,11 +63,13 @@ const Login = () => {
       console.log('Respuesta del servidor:', response.data); // <--- Depuración
 
       if (response.data.success) {
-        const { rol, nombre } = response.data.user;
-        console.log('Datos del usuario:', rol, nombre); // <--- Depuración
+        const { id_usuario, rol, nombre } = response.data.user; // Asegúrate de que el backend devuelva el id_usuario
+        console.log('Datos del usuario:', id_usuario, rol, nombre); // <--- Depuración
 
-        localStorage.setItem('userRole', rol);
-        localStorage.setItem('userName', nombre);
+        // Guardar el ID, el rol y el nombre del usuario en el localStorage
+        localStorage.setItem('userId', id_usuario); // Guarda el ID del usuario
+        localStorage.setItem('userRole', rol); // Guarda el rol del usuario
+        localStorage.setItem('userName', nombre); // Guarda el nombre del usuario
 
         switch (parseInt(rol, 10)) {
           case 1:
