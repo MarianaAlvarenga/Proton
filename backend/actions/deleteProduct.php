@@ -3,7 +3,7 @@
 require_once '../includes/db.php';
 
 try {
-    $pdo = new PDO("mysql:host=$servername;port="$port";dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die(json_encode(["success" => false, "message" => "Error en la conexión: " . $e->getMessage()]));

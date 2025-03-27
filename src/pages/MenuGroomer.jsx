@@ -7,7 +7,12 @@ const MenuGroomer = () => {
 
     // Función para manejar el clic en "Disponibilidad"
     const handleDisponibilidadClick = () => {
-        navigate("/Shifts", { state: { showUserTypeSelector: false } }); // Ocultar UserTypeSelector
+        navigate("/Shifts", { 
+            state: { 
+              showUserTypeSelector: false,
+              userRole: 3 // O obténlo del localStorage
+            } 
+          });
     };
 
     // Función para manejar el clic en "Agendar turno"

@@ -1,25 +1,76 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Importar useLocation
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import Calendar from '../components/common/Calendar';
 import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
 import UserTypeSelector from '../components/common/UserTypeSelector';
+import axios from 'axios';
 
-const Shifts = ({ userRole }) => {
-  const location = useLocation(); // Obtener la ubicación actual
-  const showUserTypeSelector = location.state?.showUserTypeSelector ?? true; // Leer el estado
+const Shifts = () => {
+  const location = useLocation();
+  const showUserTypeSelector = location.state?.showUserTypeSelector ?? true;
+  
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userRole = user.rol || location.state?.userRole || '3';
+  const isRange = userRole === '3';
 
-  const [selectedDates, setSelectedDates] = useState([]);
-  const isRange = userRole === 'peluquero';
+  const handleCalendarClose = async (dates) => {
+    console.log("[DEBUG] Fechas recibidas:", dates);
+    
+    if (!dates || dates.length === 0) {
+      alert("Por favor selecciona al menos una fecha válida");
+      return;
+    }
+  
+    try {
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData?.id_usuario) {
+        throw new Error("Debes iniciar sesión para guardar disponibilidad");
+      }
 
-  const handleCalendarClose = (dates) => {
-    setSelectedDates(dates);
-  };
+      const availabilityData = dates.map(date => ({
+        fecha_disponible: date.fecha_disponible,
+        hora_inicial: date.hora_inicial,
+        hora_final: date.hora_final
+      }));
 
-  // Función que maneja los cambios en el UserTypeSelector
-  const handleUserTypeChange = ({ isRegistered, email }) => {
-    console.log("Usuario registrado:", isRegistered);
-    console.log("Email:", email);
+      // IMPORTANTE: Cambiar la URL según la configuración exacta de tu servidor
+      const apiUrl = 'http://localhost:8080/Proton/backend/actions/availability.php';
+      console.log("Enviando datos a:", apiUrl);
+
+      // Configuración especial para evitar problemas con CORS
+      const response = await axios({
+        method: 'post',
+        url: apiUrl,
+        data: {
+          id_peluquero: userData.id_usuario,
+          disponibilidades: availabilityData
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        withCredentials: false, // IMPORTANTE: Cambiado a false
+      });
+
+      console.log("Respuesta del servidor:", response.data);
+      alert("¡Disponibilidad guardada correctamente!");
+    } catch (error) {
+      console.error("Error completo:", error);
+      console.error("Respuesta del error:", error.response);
+      
+      let errorMessage = "Error al conectar con el servidor";
+      if (error.response) {
+        errorMessage = error.response.data?.message || 
+                       `Error ${error.response.status}: ${error.response.statusText}`;
+      } else if (error.request) {
+        errorMessage = "No se pudo conectar con el servidor. Verifica que el servidor esté funcionando y la URL sea correcta.";
+      } else {
+        errorMessage = error.message || "Error desconocido";
+      }
+      
+      alert(errorMessage);
+    }
   };
 
   return (
@@ -30,31 +81,19 @@ const Shifts = ({ userRole }) => {
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
         <h1>Gestión de turnos</h1>
 
-        {/* Mostrar UserTypeSelector solo si showUserTypeSelector es true */}
         {showUserTypeSelector && (
           <UserTypeSelector 
             onlyRegistered={true} 
-            onUserTypeChange={handleUserTypeChange} 
+            onUserTypeChange={() => {}} 
           />
         )}
 
         <Calendar 
           isRange={isRange} 
-          onDatesChange={setSelectedDates} 
+          isMultiple={userRole === '3'}
           onClose={handleCalendarClose} 
         />
       </div>
-
-      {selectedDates.length > 0 && (
-        <div>
-          <p><strong>Fechas seleccionadas:</strong></p>
-          <ul>
-            {selectedDates.map((date, index) => (
-              <li key={index}>{date}</li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
