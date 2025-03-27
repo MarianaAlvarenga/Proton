@@ -156,26 +156,41 @@ const Login = () => {
             </div>
           </div>
           {error && <p className="help is-danger">{error}</p>}
-          <div className="field">
-            <button className="button is-fullwidth" style={{ backgroundColor: '#6A0DAD', color: 'white' }}>
+          <div className="field" style={{ width: '100%' }}>
+          <div className="control" style={{ width: '100%' }}>
+            <button
+              className="button is-fullwidth"
+              style={{
+                backgroundColor: '#6A0DAD',
+                color: 'white',
+              }}
+            >
               Ingresar
             </button>
           </div>
-        </form>
+        </div>
 
-        <p className="has-text-centered">o inicia sesión con:</p>
-        <div className="buttons is-centered" style={{ marginTop: '1rem' }}>
-          <button className="button is-light">
+
+
+        </form>
+        <div className="is-fullwidth">
+          <p >o inicia sesión con:</p>
+        </div>
+        
+        <div className="buttons" style={{ marginTop: '1rem' }}>
+          <button className="button"
+                  style={{
+                    backgroundColor: '#6A0DAD',
+                    color: 'white',
+                  }}>
             <span className="icon">
               <i className="fab fa-google"></i>
             </span>
-            <span>Google</span>
           </button>
-          <button className="button is-light">
+          <button className="button">
             <span className="icon">
-              <i className="fab fa-facebook"></i>
+              <image src="../assets/images/cromo.png"></image>
             </span>
-            <span>Facebook</span>
           </button>
         </div>
 
