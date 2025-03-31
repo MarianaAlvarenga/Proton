@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 const ProfileButton = () => {
+    const navigate = useNavigate();
     return(
-        <a href="">
+        <a href='/ProfileUser'>
             <img
                 src={require("../../assets/images/usuarioBlanco.png")}
                 alt="SearchButton"
