@@ -92,3 +92,8 @@ div.bulma-calendar .datetimepicker-dummy .is-primary {
     transform: translateX(-50%);
     width: 80%;
 }
+
+.bulma-calendar .calendar-date.is-selected {
+    background-color: #7957d5 !important;
+    color: white !important;
+  }

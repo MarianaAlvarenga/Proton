@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 23-03-2025 a las 17:32:42
+-- Tiempo de generación: 26-03-2025 a las 04:15:37
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -107,11 +107,9 @@ INSERT INTO `carrito` (`id_carrito`, `fecha_carrito`, `hora_carrito`, `cliente_i
 (19, '2025-03-18', '00:41:11', NULL, NULL, NULL, 3350.00, 7),
 (20, '2025-03-18', '19:02:33', NULL, NULL, NULL, 166.00, 8),
 (36, '2025-03-18', '23:58:43', NULL, NULL, 2, 2800.00, 13),
-(37, '2025-03-18', '23:59:16', 30, NULL, 2, 2800.00, NULL),
-(38, '2025-03-18', '23:59:55', NULL, 28, NULL, 2800.00, 14),
-(39, '2025-03-19', '00:00:23', 30, 28, NULL, 2800.00, NULL),
-(40, '2025-03-19', '00:00:56', 30, NULL, NULL, 2800.00, NULL),
-(41, '2025-03-19', '00:02:16', 30, NULL, NULL, 2800.00, NULL);
+(44, '2025-03-24', '13:15:19', 17, 31, NULL, 33.00, NULL),
+(45, '2025-03-24', '13:15:30', NULL, 31, NULL, 33.00, 15),
+(46, '2025-03-26', '00:12:27', 21, NULL, 2, 33.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -143,23 +141,21 @@ INSERT INTO `categoria` (`id_categoria`, `nombre_categoria`) VALUES
 --
 
 CREATE TABLE `cliente` (
-  `id_usuario` int(11) NOT NULL,
-  `fecha_nac` date DEFAULT NULL,
-  `vendedor_id_usuario` int(11) DEFAULT NULL
+  `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `cliente`
 --
 
-INSERT INTO `cliente` (`id_usuario`, `fecha_nac`, `vendedor_id_usuario`) VALUES
-(3, NULL, NULL),
-(12, NULL, NULL),
-(15, NULL, NULL),
-(17, NULL, NULL),
-(21, NULL, NULL),
-(25, NULL, NULL),
-(30, NULL, NULL);
+INSERT INTO `cliente` (`id_usuario`) VALUES
+(3),
+(12),
+(15),
+(17),
+(21),
+(25),
+(30);
 
 -- --------------------------------------------------------
 
@@ -168,9 +164,18 @@ INSERT INTO `cliente` (`id_usuario`, `fecha_nac`, `vendedor_id_usuario`) VALUES
 --
 
 CREATE TABLE `dias_disponibles` (
-  `id_dias_disponibles` int(11) NOT NULL AUTO_INCREMENT,
+  `id_dias_disponibles` int(11) NOT NULL,
   `fecha_disponible` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `dias_disponibles`
+--
+
+INSERT INTO `dias_disponibles` (`id_dias_disponibles`, `fecha_disponible`) VALUES
+(21, '2025-03-26'),
+(22, '2025-03-27'),
+(23, '2025-03-28');
 
 -- --------------------------------------------------------
 
@@ -182,6 +187,15 @@ CREATE TABLE `dias_horas_disponibles` (
   `id_dias_disponibles` int(11) NOT NULL,
   `id_horario_disponible` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `dias_horas_disponibles`
+--
+
+INSERT INTO `dias_horas_disponibles` (`id_dias_disponibles`, `id_horario_disponible`) VALUES
+(21, 8),
+(22, 8),
+(23, 8);
 
 -- --------------------------------------------------------
 
@@ -195,6 +209,13 @@ CREATE TABLE `horas_disponibles` (
   `hora_final` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `horas_disponibles`
+--
+
+INSERT INTO `horas_disponibles` (`id_horario_disponible`, `hora_inicial`, `hora_final`) VALUES
+(8, '08:00:00', '16:59:00');
+
 -- --------------------------------------------------------
 
 --
@@ -203,13 +224,13 @@ CREATE TABLE `horas_disponibles` (
 
 CREATE TABLE `mascota` (
   `id_mascota` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
   `nombre_mascota` varchar(30) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
   `raza` varchar(20) NOT NULL,
   `peso` float(5,2) DEFAULT NULL,
   `tamanio` varchar(20) NOT NULL,
-  `largo_pelo` varchar(20) DEFAULT NULL,
-  `cliente_vendedor_id_usuario` int(11) NOT NULL
+  `largo_pelo` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -219,20 +240,19 @@ CREATE TABLE `mascota` (
 --
 
 CREATE TABLE `peluquero` (
-  `id_usuario` int(11) NOT NULL,
-  `especialidad` varchar(30) DEFAULT NULL
+  `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `peluquero`
 --
 
-INSERT INTO `peluquero` (`id_usuario`, `especialidad`) VALUES
-(10, NULL),
-(18, NULL),
-(23, NULL),
-(24, NULL),
-(27, NULL);
+INSERT INTO `peluquero` (`id_usuario`) VALUES
+(10),
+(18),
+(23),
+(24),
+(27);
 
 -- --------------------------------------------------------
 
@@ -269,8 +289,8 @@ CREATE TABLE `producto` (
 INSERT INTO `producto` (`codigo_producto`, `nombre_producto`, `descripcion_producto`, `stock_producto`, `punto_reposicion`, `categoria_id_categoria`, `precio_producto`, `image_url`) VALUES
 (1, 'philly', 'sdasdasdasdasdasdas', 99, 30, 1, 500.00, 'http://localhost:8080/Proton/backend/uploads/67d8d35b563cf_philly.png'),
 (462, 'El Chocolatin misterioso super', 'riquísimo, pero no para perros ni gatos', 1465, 1, 6, 2800.00, 'http://localhost:8080/Proton/backend/uploads/679ba8467ed3b_bepis.png'),
-(676, 'pappa', 'fafasf', 410, 2, 1, 50.00, 'http://localhost:8080/Proton/backend/uploads/6742639f2cd46_alimento4.png'),
-(887, 'ffafaf', 'daSDAs', 311, 2, 4, 33.00, 'http://localhost:8080/Proton/backend/uploads/674268d267223_accesorio1.png'),
+(676, 'pappa', 'fafasf', 409, 2, 1, 50.00, 'http://localhost:8080/Proton/backend/uploads/6742639f2cd46_alimento4.png'),
+(887, 'ffafaf', 'daSDAs', 307, 2, 4, 33.00, 'http://localhost:8080/Proton/backend/uploads/674268d267223_accesorio1.png'),
 (2223, 'wewewwww', 'holi, te estoy modificando', 3230, 2, 1, 21.00, 'http://localhost:8080/Proton/backend/uploads/6742632ceb56f_alimento1.png'),
 (2467, '4341251', 'asdasd', 241, 3, 4, 232.00, NULL),
 (7777, 'gatito lionmdo', 'fsdfsdfsd', 342, 12, 2, 2232.00, NULL),
@@ -380,6 +400,15 @@ CREATE TABLE `tiene_dias` (
   `id_dias_disponibles` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `tiene_dias`
+--
+
+INSERT INTO `tiene_dias` (`id_usuario`, `id_dias_disponibles`) VALUES
+(27, 21),
+(27, 22),
+(27, 23);
+
 -- --------------------------------------------------------
 
 --
@@ -409,30 +438,31 @@ CREATE TABLE `usuario` (
   `telefono` varchar(20) DEFAULT NULL,
   `email` varchar(30) DEFAULT NULL,
   `contrasenia` varchar(255) NOT NULL,
-  `rol` int(11) NOT NULL
+  `rol` int(11) NOT NULL,
+  `fecha_nacimiento` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `nombre`, `apellido`, `telefono`, `email`, `contrasenia`, `rol`) VALUES
-(2, 'Lol', 'Istrador', '123456789', 'lol@lol.com', '$2y$10$Dc544k5adRVrzIBHVcW5qui.461915YUAh.9rPwNkqCJrgGtvUCWu', 4),
-(3, 'Gasti Lindo', 'García', '1541724146', 'gaston.garcia89@hotmail.com', '$2y$10$GvC7G1ZgJ2lRNb5wesayoeYAGJrh/h5mgzmLT3zKLt3cDBg3DtaPW', 1),
-(10, 'peluca', 'sabe un montonazo', '646452', 'peluca@sabe.com', '$2y$10$vhrLY/3Jtd.s97g.uXPb0OQX35IE.AIuXTkZ9gTuwLJL.527MfaDW', 3),
-(12, 'aasa', 'eqeqq', '1542224106', 'gaston.garcia89@212hotmail.com', '$2y$10$cuO3ebcfvvHq3M3NfSKWYeFgi8j0r/aAVeBOQBd/6kbuE.1J0pG22', 1),
-(15, 'Maru', 'Bonita', '16547', 'aaaa@aa', '$2y$10$EaJgJoXfQoGTWzcd5pQCmOebPyqHA.J4bv3jqi2Fll8m6eJgtEJKO', 1),
-(17, 'ww', 'asda', '1511124106', 'gaston.garcqqia89@hotmail.com', '$2y$10$ZMxWQgaKY89M2LTPyFd3YuLpn/Rt812.ikRVoBY0aYYUDTGRZNo7S', 1),
-(18, 'peluquin casparuli', 'arroyoseco', '798645', 'pelucademivida@lala', '$2y$10$3bWMJFdi3Kmc6oZQMm9LO.DW7CP/x9AlhahMEuOWDTmulMv8xeFEW', 3),
-(21, 'proti', 'bonito y lindo', '13264579', 'pro@pro', '$2y$10$fgZKZbZlr6j78WTZEBYx8ehyp3besbwuvF.nZDj1En2o2FqbC/.ZK', 1),
-(23, 'marulinda', 'afedafas', '232', 'asfasf@s.com', '$2y$10$6.RsshUzbPnEA26bpnJY.u0m3bg4wRd.804v0CGplt6NFv/LnPFFC', 3),
-(24, 'pepito', 'clavo un clavito', '111221', 'pepito@pepito.com', '$2y$10$BWuTSKevGIduSY5ABjE7veMkH0ircujZQTdbjF7iET31b432Es4pa', 3),
-(25, 'cliente1', 'cliente1', '123456789', 'cliente1@cliente1.com', '$2y$10$QBo/OnX3WcoJDhZ13CGG..0oHx73SFYAzh1KITQq6y8XHYGOgfSk6', 1),
-(27, 'peluca', 'peluca', '123', 'peluca@peluca.com', '$2y$10$M52DxHfuitvMyookIcFAPOdFjBLUhRA1K2DWqjpD2l3DeZm9wt3f.', 3),
-(28, 'venduca', 'venduca', '321654', 'venduca@venduca.com', '$2y$10$Q1Kyh0ntgdlUzAarxPgPL.uUAN5FgtIL.ifvdk/hk8MRGDMMSFt8a', 2),
-(29, 'fff', 'fff', '55', 'fafaf@rrr.com', '$2y$10$lT5m54Al9pEzjcQsg.dAye.xRHWnhrlWzdjGWbWW0MbvjtFftsF.e', 4),
-(30, 'lol2', 'ddd', '123', 'lol2@lol2.com', '$2y$10$5w/1s/QYfdDu0GLk/TqgIebRutbRXcq4vb7hVHKJle6oCpXJCSxUC', 1),
-(31, 'lol3', 'fadsda', '2332', 'lol3@lol3.com', '$2y$10$nI1ZYyRwPrya2Hm3Gf5zYuS8QD7Mxx1kB1e4s2CVfAX3CTxfMvpw6', 2);
+INSERT INTO `usuario` (`id_usuario`, `nombre`, `apellido`, `telefono`, `email`, `contrasenia`, `rol`, `fecha_nacimiento`) VALUES
+(2, 'Lol', 'Istrador', '123456789', 'lol@lol.com', '$2y$10$Dc544k5adRVrzIBHVcW5qui.461915YUAh.9rPwNkqCJrgGtvUCWu', 4, NULL),
+(3, 'Gasti Lindo', 'García', '1541724146', 'gaston.garcia89@hotmail.com', '$2y$10$GvC7G1ZgJ2lRNb5wesayoeYAGJrh/h5mgzmLT3zKLt3cDBg3DtaPW', 1, NULL),
+(10, 'peluca', 'sabe un montonazo', '646452', 'peluca@sabe.com', '$2y$10$vhrLY/3Jtd.s97g.uXPb0OQX35IE.AIuXTkZ9gTuwLJL.527MfaDW', 3, NULL),
+(12, 'aasa', 'eqeqq', '1542224106', 'gaston.garcia89@212hotmail.com', '$2y$10$cuO3ebcfvvHq3M3NfSKWYeFgi8j0r/aAVeBOQBd/6kbuE.1J0pG22', 1, NULL),
+(15, 'Maru', 'Bonita', '16547', 'aaaa@aa', '$2y$10$EaJgJoXfQoGTWzcd5pQCmOebPyqHA.J4bv3jqi2Fll8m6eJgtEJKO', 1, NULL),
+(17, 'ww', 'asda', '1511124106', 'gaston.garcqqia89@hotmail.com', '$2y$10$ZMxWQgaKY89M2LTPyFd3YuLpn/Rt812.ikRVoBY0aYYUDTGRZNo7S', 1, NULL),
+(18, 'peluquin casparuli', 'arroyoseco', '798645', 'pelucademivida@lala', '$2y$10$3bWMJFdi3Kmc6oZQMm9LO.DW7CP/x9AlhahMEuOWDTmulMv8xeFEW', 3, NULL),
+(21, 'proti', 'bonito y lindo', '13264579', 'pro@pro', '$2y$10$fgZKZbZlr6j78WTZEBYx8ehyp3besbwuvF.nZDj1En2o2FqbC/.ZK', 1, NULL),
+(23, 'marulinda', 'afedafas', '232', 'asfasf@s.com', '$2y$10$6.RsshUzbPnEA26bpnJY.u0m3bg4wRd.804v0CGplt6NFv/LnPFFC', 3, NULL),
+(24, 'pepito', 'clavo un clavito', '111221', 'pepito@pepito.com', '$2y$10$BWuTSKevGIduSY5ABjE7veMkH0ircujZQTdbjF7iET31b432Es4pa', 3, NULL),
+(25, 'cliente1', 'cliente1', '123456789', 'cliente1@cliente1.com', '$2y$10$QBo/OnX3WcoJDhZ13CGG..0oHx73SFYAzh1KITQq6y8XHYGOgfSk6', 1, NULL),
+(27, 'peluca', 'peluca', '123', 'peluca@peluca.com', '$2y$10$M52DxHfuitvMyookIcFAPOdFjBLUhRA1K2DWqjpD2l3DeZm9wt3f.', 3, NULL),
+(28, 'venduca', 'venduca', '321654', 'venduca@venduca.com', '$2y$10$Q1Kyh0ntgdlUzAarxPgPL.uUAN5FgtIL.ifvdk/hk8MRGDMMSFt8a', 2, NULL),
+(29, 'fff', 'fff', '55', 'fafaf@rrr.com', '$2y$10$lT5m54Al9pEzjcQsg.dAye.xRHWnhrlWzdjGWbWW0MbvjtFftsF.e', 4, NULL),
+(30, 'lol2', 'ddd', '123', 'lol2@lol2.com', '$2y$10$5w/1s/QYfdDu0GLk/TqgIebRutbRXcq4vb7hVHKJle6oCpXJCSxUC', 1, NULL),
+(31, 'lol3', 'fadsda', '2332', 'lol3@lol3.com', '$2y$10$nI1ZYyRwPrya2Hm3Gf5zYuS8QD7Mxx1kB1e4s2CVfAX3CTxfMvpw6', 2, NULL);
 
 --
 -- Disparadores `usuario`
@@ -441,11 +471,11 @@ DELIMITER $$
 CREATE TRIGGER `after_usuario_insert` AFTER INSERT ON `usuario` FOR EACH ROW BEGIN
     CASE NEW.rol
         WHEN 1 THEN
-            INSERT INTO cliente (id_usuario, fecha_nac, vendedor_id_usuario) VALUES (NEW.id_usuario, NULL, NULL);
+            INSERT INTO cliente (id_usuario) VALUES (NEW.id_usuario);
         WHEN 2 THEN
-            INSERT INTO vendedor (id_usuario, codigo) VALUES (NEW.id_usuario, '');
+            INSERT INTO vendedor (id_usuario) VALUES (NEW.id_usuario);
         WHEN 3 THEN
-            INSERT INTO peluquero (id_usuario, especialidad) VALUES (NEW.id_usuario, NULL);
+            INSERT INTO peluquero (id_usuario) VALUES (NEW.id_usuario);
         WHEN 4 THEN
             INSERT INTO administrador (id_usuario) VALUES (NEW.id_usuario);
     END CASE;
@@ -478,7 +508,7 @@ INSERT INTO `usuario_no_registrado` (`id_usuario_no_registrado`, `id_carrito`) V
 (7, 19),
 (8, 20),
 (13, 36),
-(14, 38);
+(15, 45);
 
 -- --------------------------------------------------------
 
@@ -487,17 +517,16 @@ INSERT INTO `usuario_no_registrado` (`id_usuario_no_registrado`, `id_carrito`) V
 --
 
 CREATE TABLE `vendedor` (
-  `id_usuario` int(11) NOT NULL,
-  `codigo` varchar(20) NOT NULL
+  `id_usuario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `vendedor`
 --
 
-INSERT INTO `vendedor` (`id_usuario`, `codigo`) VALUES
-(28, ''),
-(31, '');
+INSERT INTO `vendedor` (`id_usuario`) VALUES
+(28),
+(31);
 
 --
 -- Índices para tablas volcadas
@@ -541,8 +570,7 @@ ALTER TABLE `categoria`
 -- Indices de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `vendedor_id_usuario` (`vendedor_id_usuario`);
+  ADD PRIMARY KEY (`id_usuario`);
 
 --
 -- Indices de la tabla `dias_disponibles`
@@ -567,8 +595,7 @@ ALTER TABLE `horas_disponibles`
 -- Indices de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  ADD PRIMARY KEY (`id_mascota`),
-  ADD KEY `cliente_vendedor_id_usuario` (`cliente_vendedor_id_usuario`);
+  ADD PRIMARY KEY (`id_mascota`);
 
 --
 -- Indices de la tabla `peluquero`
@@ -684,7 +711,7 @@ ALTER TABLE `bono`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
@@ -693,10 +720,16 @@ ALTER TABLE `categoria`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT de la tabla `dias_disponibles`
+--
+ALTER TABLE `dias_disponibles`
+  MODIFY `id_dias_disponibles` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
 -- AUTO_INCREMENT de la tabla `horas_disponibles`
 --
 ALTER TABLE `horas_disponibles`
-  MODIFY `id_horario_disponible` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_horario_disponible` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `mascota`
@@ -738,17 +771,11 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `usuario_no_registrado`
 --
 ALTER TABLE `usuario_no_registrado`
-  MODIFY `id_usuario_no_registrado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_usuario_no_registrado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `administrador`
---
-ALTER TABLE `administrador`
-  ADD CONSTRAINT `administrador_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `bono`
@@ -768,8 +795,7 @@ ALTER TABLE `carrito`
 -- Filtros para la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  ADD CONSTRAINT `cliente_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `cliente_ibfk_2` FOREIGN KEY (`vendedor_id_usuario`) REFERENCES `vendedor` (`id_usuario`);
+  ADD CONSTRAINT `cliente_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `dias_horas_disponibles`
@@ -777,12 +803,6 @@ ALTER TABLE `cliente`
 ALTER TABLE `dias_horas_disponibles`
   ADD CONSTRAINT `dias_horas_disponibles_ibfk_1` FOREIGN KEY (`id_dias_disponibles`) REFERENCES `dias_disponibles` (`id_dias_disponibles`) ON DELETE CASCADE,
   ADD CONSTRAINT `dias_horas_disponibles_ibfk_2` FOREIGN KEY (`id_horario_disponible`) REFERENCES `horas_disponibles` (`id_horario_disponible`) ON DELETE CASCADE;
-
---
--- Filtros para la tabla `mascota`
---
-ALTER TABLE `mascota`
-  ADD CONSTRAINT `mascota_ibfk_1` FOREIGN KEY (`cliente_vendedor_id_usuario`) REFERENCES `cliente` (`id_usuario`);
 
 --
 -- Filtros para la tabla `peluquero`

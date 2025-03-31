@@ -1,101 +1,131 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "bulma-calendar/dist/css/bulma-calendar.min.css";
 import "./custom-calendar.css";
-import OkButton from "./OkButton";
 
-const Calendar = ({ isRange, isMultiple, onDatesChange, onClose }) => {
-  const [calendarInstance, setCalendarInstance] = useState(null);
+const Calendar = ({ isRange, isMultiple, onClose }) => {
+  const inputRef = useRef(null);
+  const calendarInstance = useRef(null);
   const [selectedDates, setSelectedDates] = useState([]);
 
   useEffect(() => {
     const bulmaCalendar = require("bulma-calendar");
 
-    try {
-      // Limpia la instancia previa si existe
-      if (calendarInstance) {
-        calendarInstance.destroy();
+    const initCalendar = () => {
+      if (!inputRef.current) return;
+
+      if (calendarInstance.current) {
+        calendarInstance.current.destroy();
       }
 
-      // Selecciona el input de fecha y hora
-      const input = document.querySelector('[type="datetime-local"]');
-      if (!input) {
-        console.error("No se encontró el elemento input para Bulma Calendar.");
-        return;
-      }
-
-      // Inicializa el calendario
-      const calendar = bulmaCalendar.attach(input, {
+      calendarInstance.current = bulmaCalendar.attach(inputRef.current, {
         type: "datetime",
-        dateFormat: "yyyy-mm-dd",
-        timeFormat: "HH:mm:ss",
+        dateFormat: "yyyy-MM-dd",
+        timeFormat: "HH:mm",
         lang: "es",
-        isRange: isRange, // Habilitar/deshabilitar rango
-        isMultiple: isMultiple, // Habilitar/deshabilitar selección múltiple
+        isRange,
+        isMultiple,
         displayMode: "dialog",
-      })[0]; // Obtenemos la primera instancia
+        showHeader: true,
+        showFooter: true,
+        showButtons: true,
+        validateLabel: "Confirmar",
+        cancelLabel: "Cancelar",
+        clearLabel: "Limpiar"
+      })[0];
 
-      if (!calendar) {
-        console.error("No se pudo inicializar Bulma Calendar.");
-        return;
-      }
+      // En el manejador de selección de fechas (dentro del useEffect)
+calendarInstance.current.on("select", (datepicker) => {
+  const rawDates = datepicker.data.value();
+  if (!rawDates) return;
 
-      // Configura el evento de selección
-      calendar.on("select", (dates) => {
-        // Si es un solo cliente, deselecciona la fecha anterior y selecciona la nueva
-        if (!isRange) {
-          setSelectedDates([dates[0]]); // Solo seleccionamos una fecha
-        } else {
-          setSelectedDates(dates); // Selección de rango de fechas
-        }
-        if (onDatesChange) {
-          onDatesChange(dates);
-        }
+  let processedDates = [];
+  
+  if (isRange && rawDates.includes(' - ')) {
+    // Manejar rango de fechas con horario
+    const [start, end] = rawDates.split(' - ');
+    const [startDate, startTime] = start.trim().split(' ');
+    const [endDate, endTime] = end.trim().split(' ');
+    
+    // Convertir a objetos Date para iterar
+    const startDay = new Date(startDate);
+    const endDay = new Date(endDate);
+    
+    // Iterar por cada día del rango
+    for (let d = new Date(startDay); d <= endDay; d.setDate(d.getDate() + 1)) {
+      const currentDate = d.toISOString().split('T')[0];
+      processedDates.push({
+        fecha_disponible: currentDate,
+        hora_inicial: startTime,
+        hora_final: endTime
       });
+    }
+  } else {
+    // Manejar fechas simples o múltiples (código existente)
+    const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
+    
+    processedDates = datesToProcess.map(dateStr => {
+      if (!dateStr) return null;
+      
+      const [datePart, timePart] = dateStr.trim().split(' ');
+      return {
+        fecha_disponible: datePart,
+        hora_inicial: timePart,
+        hora_final: calculateEndTime(timePart)
+      };
+    }).filter(Boolean);
+  }
 
-      // Guarda la instancia
-      setCalendarInstance(calendar);
-    } catch (error) {
-      console.error("Error al inicializar Bulma Calendar:", error);
+  setSelectedDates(processedDates);
+});
+    };
+
+    const timer = setTimeout(initCalendar, 100);
+    return () => clearTimeout(timer);
+  }, [isRange, isMultiple]);
+
+  const calculateEndTime = (startTime) => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const endHours = (hours + 1) % 24;
+    return `${endHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  const handleSave = () => {
+    if (selectedDates.length === 0) {
+      alert("Por favor selecciona fechas válidas usando el selector de fechas");
+      return;
     }
 
-    // Limpieza cuando se desmonta el componente
-    return () => {
-      if (calendarInstance) {
-        calendarInstance.destroy();
-      }
-    };
-  }, [isRange, isMultiple, onDatesChange]);
+    console.log("Fechas a guardar:", selectedDates);
+    onClose(selectedDates);
+  };
 
   return (
-    <div className="field">
-      <label className="label">Selecciona fechas y horas</label>
-      <div className="control">
-        <input type="datetime-local" className="input" />
-      </div>
+    <div style={{ position: 'relative', minHeight: '400px' }}>
+      <input 
+        type="datetime" 
+        ref={inputRef}
+        style={{ display: 'none' }} 
+      />
 
-      {/* Muestra las fechas seleccionadas */}
-      {selectedDates.length > 0 && (
-        <div>
-          <p>
-            <strong>Fechas seleccionadas:</strong>
-          </p>
-          <ul>
-            {selectedDates.map((date, index) => (
-              <li key={index}>{date}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Botón para cerrar el calendario */}
-      <div className="control save-close-button">
-        <OkButton
-          NameButton="Guardar y cerrar"
-          onClick={() => onClose(selectedDates)}
-        >
-          Cerrar y guardar
-        </OkButton>
-      </div>
+      <button
+        onClick={handleSave}
+        className="button is-primary"
+        style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#9655C5',
+          color: 'white',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+        data-testid="save-button"
+      >
+        Guardar disponibilidad
+      </button>
     </div>
   );
 };
