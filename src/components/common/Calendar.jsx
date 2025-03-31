@@ -33,50 +33,41 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
         clearLabel: "Limpiar"
       })[0];
 
-      // En el manejador de selección de fechas (dentro del useEffect)
-calendarInstance.current.on("select", (datepicker) => {
-  const rawDates = datepicker.data.value();
-  if (!rawDates) return;
+      calendarInstance.current.on("select", (datepicker) => {
+        const rawDates = datepicker.data.value();
+        if (!rawDates) return;
 
-  let processedDates = [];
-  
-  if (isRange && rawDates.includes(' - ')) {
-    // Manejar rango de fechas con horario
-    const [start, end] = rawDates.split(' - ');
-    const [startDate, startTime] = start.trim().split(' ');
-    const [endDate, endTime] = end.trim().split(' ');
-    
-    // Convertir a objetos Date para iterar
-    const startDay = new Date(startDate);
-    const endDay = new Date(endDate);
-    
-    // Iterar por cada día del rango
-    for (let d = new Date(startDay); d <= endDay; d.setDate(d.getDate() + 1)) {
-      const currentDate = d.toISOString().split('T')[0];
-      processedDates.push({
-        fecha_disponible: currentDate,
-        hora_inicial: startTime,
-        hora_final: endTime
+        let processedDates = [];
+        
+        if (isRange && rawDates.includes(' - ')) {
+          const [start, end] = rawDates.split(' - ');
+          const [startDate, startTime] = start.trim().split(' ');
+          const [endDate, endTime] = end.trim().split(' ');
+          
+          processedDates.push({
+            fecha_disponible: startDate,
+            hora_inicial: startTime,
+            hora_final: endTime,
+            esRango: true
+          });
+        } else {
+          const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
+          
+          processedDates = datesToProcess.map(dateStr => {
+            if (!dateStr) return null;
+            
+            const [datePart, timePart] = dateStr.trim().split(' ');
+            return {
+              fecha_disponible: datePart,
+              hora_inicial: timePart,
+              hora_final: calculateEndTime(timePart),
+              esRango: false
+            };
+          }).filter(Boolean);
+        }
+
+        setSelectedDates(processedDates);
       });
-    }
-  } else {
-    // Manejar fechas simples o múltiples (código existente)
-    const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
-    
-    processedDates = datesToProcess.map(dateStr => {
-      if (!dateStr) return null;
-      
-      const [datePart, timePart] = dateStr.trim().split(' ');
-      return {
-        fecha_disponible: datePart,
-        hora_inicial: timePart,
-        hora_final: calculateEndTime(timePart)
-      };
-    }).filter(Boolean);
-  }
-
-  setSelectedDates(processedDates);
-});
     };
 
     const timer = setTimeout(initCalendar, 100);
@@ -95,7 +86,6 @@ calendarInstance.current.on("select", (datepicker) => {
       return;
     }
 
-    console.log("Fechas a guardar:", selectedDates);
     onClose(selectedDates);
   };
 

@@ -19,29 +19,18 @@ class AvailabilityController {
     public function saveAvailability($id_peluquero, $disponibilidades) {
         try {
             $this->conn->begin_transaction();
-    
-            // Limpiar disponibilidades anteriores
-            $this->clearPreviousAvailability($id_peluquero);
-    
-            // Agrupar por fecha para evitar duplicados
-            $disponibilidadesPorFecha = [];
+
+            // Solo limpiamos los días específicos que estamos actualizando
             foreach ($disponibilidades as $disp) {
-                $fecha = $disp['fecha_disponible'];
-                if (!isset($disponibilidadesPorFecha[$fecha])) {
-                    $disponibilidadesPorFecha[$fecha] = $disp;
-                }
+                $this->clearSpecificDayAvailability($id_peluquero, $disp['fecha_disponible']);
             }
-    
-            // Guardar cada disponibilidad única
-            foreach ($disponibilidadesPorFecha as $disp) {
+
+            foreach ($disponibilidades as $disp) {
                 // 1. Guardar día disponible
                 $id_dia = $this->saveDiaDisponible($disp['fecha_disponible']);
                 
                 // 2. Guardar horario disponible
-                $id_horario = $this->saveHorarioDisponible(
-                    $disp['hora_inicial'], 
-                    $disp['hora_final']
-                );
+                $id_horario = $this->saveHorarioDisponible($disp['hora_inicial'], $disp['hora_final']);
                 
                 // 3. Relacionar día y horario
                 $this->relacionarDiaHorario($id_dia, $id_horario);
@@ -49,13 +38,13 @@ class AvailabilityController {
                 // 4. Relacionar peluquero con día
                 $this->relacionarPeluqueroDia($id_peluquero, $id_dia);
             }
-    
+
             $this->conn->commit();
             
             return [
                 "status" => 200,
                 "message" => "Disponibilidad guardada correctamente.",
-                "data" => array_values($disponibilidadesPorFecha)
+                "data" => $disponibilidades
             ];
         } catch (Exception $e) {
             $this->conn->rollback();
@@ -66,31 +55,29 @@ class AvailabilityController {
         }
     }
 
-    private function clearPreviousAvailability($id_peluquero) {
-        // Obtener días asociados al peluquero
-        $query = "SELECT id_dias_disponibles FROM " . $this->table_relacion . 
-                 " WHERE id_usuario = ?";
+    private function clearSpecificDayAvailability($id_peluquero, $fecha) {
+        // Obtener el id_dias_disponibles para la fecha específica
+        $query = "SELECT dd.id_dias_disponibles 
+                 FROM dias_disponibles dd
+                 JOIN tiene_dias td ON dd.id_dias_disponibles = td.id_dias_disponibles
+                 WHERE td.id_usuario = ? AND dd.fecha_disponible = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $id_peluquero);
+        $stmt->bind_param("is", $id_peluquero, $fecha);
         $stmt->execute();
         $result = $stmt->get_result();
-        $dias = [];
+        
         while ($row = $result->fetch_assoc()) {
-            $dias[] = $row['id_dias_disponibles'];
-        }
-
-        if (!empty($dias)) {
-            // Eliminar relaciones
-            $query = "DELETE FROM " . $this->table_relacion . 
-                     " WHERE id_usuario = ?";
+            $id_dia = $row['id_dias_disponibles'];
+            
+            // Eliminar relación peluquero-día
+            $query = "DELETE FROM tiene_dias 
+                     WHERE id_usuario = ? AND id_dias_disponibles = ?";
             $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("i", $id_peluquero);
+            $stmt->bind_param("ii", $id_peluquero, $id_dia);
             $stmt->execute();
-
-            // Eliminar días y horarios (si no están siendo usados por otros peluqueros)
-            foreach ($dias as $id_dia) {
-                $this->cleanUnusedDaysAndHours($id_dia);
-            }
+            
+            // Limpiar días no utilizados
+            $this->cleanUnusedDaysAndHours($id_dia);
         }
     }
 
@@ -143,14 +130,13 @@ class AvailabilityController {
     private function saveHorarioDisponible($hora_inicio, $hora_fin) {
         // Verificar si ya existe
         $query = "SELECT id_horario_disponible FROM " . $this->table_horas . 
-                 " WHERE (hora_inicial = ? OR (? IS NULL AND hora_inicial IS NULL)) 
-                 AND (hora_final = ? OR (? IS NULL AND hora_final IS NULL))";
+                 " WHERE hora_inicial = ? AND hora_final = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssss", $hora_inicio, $hora_inicio, $hora_fin, $hora_fin);
+        $stmt->bind_param("ss", $hora_inicio, $hora_fin);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-    
+
         if (!$row) {
             $query = "INSERT INTO " . $this->table_horas . 
                      " (hora_inicial, hora_final) VALUES (?, ?)";
