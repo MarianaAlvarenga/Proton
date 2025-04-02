@@ -120,7 +120,7 @@ const ProfileUser = () => {
                             <p>Fecha de nacimiento: {mascotas[currentIndex].fecha_nacimiento}</p>
                             <p>Raza: {mascotas[currentIndex].raza}</p>
                             <p>Peso: {mascotas[currentIndex].peso}</p>
-                            <p>Tamaño: {mascotas[currentIndex].tamaño}</p>
+                            <p>Tamaño: {mascotas[currentIndex].tamanio}</p>
                             <p>Largo del pelo: {mascotas[currentIndex].largo_pelo}</p>
                         </div>
 
@@ -136,7 +136,7 @@ const ProfileUser = () => {
                         <p>Fecha de nacimiento: {mascotas[0].fecha_nacimiento}</p>
                         <p>Raza: {mascotas[0].raza}</p>
                         <p>Peso: {mascotas[0].peso}</p>
-                        <p>Tamaño: {mascotas[0].tamaño}</p>
+                        <p>Tamaño: {mascotas[0].tamanio}</p>
                         <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
                     </div>
                 ) : (
