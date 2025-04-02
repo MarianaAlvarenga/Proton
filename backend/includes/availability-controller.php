@@ -19,26 +19,43 @@ class AvailabilityController {
     public function saveAvailability($id_peluquero, $disponibilidades) {
         try {
             $this->conn->begin_transaction();
-
-            // Solo limpiamos los días específicos que estamos actualizando
+    
             foreach ($disponibilidades as $disp) {
-                $this->clearSpecificDayAvailability($id_peluquero, $disp['fecha_disponible']);
-            }
-
-            foreach ($disponibilidades as $disp) {
-                // 1. Guardar día disponible
-                $id_dia = $this->saveDiaDisponible($disp['fecha_disponible']);
-                
-                // 2. Guardar horario disponible
+                // Limpiar disponibilidades previas para este rango si es necesario
+                if ($disp['esRango']) {
+                    $this->clearRangeAvailability($id_peluquero, $disp['fecha_inicio'], $disp['fecha_fin']);
+                }
+    
+                // 1. Guardar horario disponible (solo una vez)
                 $id_horario = $this->saveHorarioDisponible($disp['hora_inicial'], $disp['hora_final']);
-                
-                // 3. Relacionar día y horario
-                $this->relacionarDiaHorario($id_dia, $id_horario);
-                
-                // 4. Relacionar peluquero con día
-                $this->relacionarPeluqueroDia($id_peluquero, $id_dia);
+    
+                // 2. Procesar días individuales
+                if ($disp['esRango']) {
+                    $fechaInicio = new DateTime($disp['fecha_inicio']);
+                    $fechaFin = new DateTime($disp['fecha_fin']);
+                    
+                    while ($fechaInicio <= $fechaFin) {
+                        $fechaStr = $fechaInicio->format('Y-m-d');
+                        
+                        // Guardar día disponible
+                        $id_dia = $this->saveDiaDisponible($fechaStr);
+                        
+                        // Relacionar día y horario
+                        $this->relacionarDiaHorario($id_dia, $id_horario);
+                        
+                        // Relacionar peluquero con día
+                        $this->relacionarPeluqueroDia($id_peluquero, $id_dia);
+                        
+                        $fechaInicio->modify('+1 day');
+                    }
+                } else {
+                    // Procesamiento normal para día individual
+                    $id_dia = $this->saveDiaDisponible($disp['fecha_disponible']);
+                    $this->relacionarDiaHorario($id_dia, $id_horario);
+                    $this->relacionarPeluqueroDia($id_peluquero, $id_dia);
+                }
             }
-
+    
             $this->conn->commit();
             
             return [
@@ -52,6 +69,34 @@ class AvailabilityController {
                 "status" => 500,
                 "message" => "Error al guardar disponibilidad: " . $e->getMessage()
             ];
+        }
+    }
+
+    private function clearRangeAvailability($id_peluquero, $fechaInicio, $fechaFin) {
+        // Obtener todos los IDs de días en el rango
+        $query = "SELECT dd.id_dias_disponibles 
+                  FROM dias_disponibles dd
+                  JOIN tiene_dias td ON dd.id_dias_disponibles = td.id_dias_disponibles
+                  WHERE td.id_usuario = ? 
+                  AND dd.fecha_disponible BETWEEN ? AND ?";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("iss", $id_peluquero, $fechaInicio, $fechaFin);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        while ($row = $result->fetch_assoc()) {
+            $id_dia = $row['id_dias_disponibles'];
+            
+            // Eliminar relación peluquero-día
+            $query = "DELETE FROM tiene_dias 
+                     WHERE id_usuario = ? AND id_dias_disponibles = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("ii", $id_peluquero, $id_dia);
+            $stmt->execute();
+            
+            // Limpiar días no utilizados
+            $this->cleanUnusedDaysAndHours($id_dia);
         }
     }
 

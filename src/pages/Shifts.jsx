@@ -13,10 +13,9 @@ const Shifts = () => {
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userRole = user.rol || location.state?.userRole || '3';
   const isRange = userRole === '3';
+  const isSettingAvailability = !showUserTypeSelector;
 
   const handleCalendarClose = async (dates) => {
-    console.log("[DEBUG] Fechas recibidas:", dates);
-    
     if (!dates || dates.length === 0) {
       alert("Por favor selecciona al menos una fecha válida");
       return;
@@ -24,52 +23,52 @@ const Shifts = () => {
   
     try {
       const userData = JSON.parse(localStorage.getItem('user'));
-      if (!userData?.id_usuario) {
-        throw new Error("Debes iniciar sesión para guardar disponibilidad");
-      }
-
-      const availabilityData = dates.map(date => ({
-        fecha_disponible: date.fecha_disponible,
-        hora_inicial: date.hora_inicial,
-        hora_final: date.hora_final
-      }));
-
-      // IMPORTANTE: Cambiar la URL según la configuración exacta de tu servidor
-      const apiUrl = 'http://localhost:8080/Proton/backend/actions/availability.php';
-      console.log("Enviando datos a:", apiUrl);
-
-      // Configuración especial para evitar problemas con CORS
-      const response = await axios({
-        method: 'post',
-        url: apiUrl,
-        data: {
-          id_peluquero: userData.id_usuario,
-          disponibilidades: availabilityData
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        withCredentials: false, // IMPORTANTE: Cambiado a false
-      });
-
-      console.log("Respuesta del servidor:", response.data);
-      alert("¡Disponibilidad guardada correctamente!");
-    } catch (error) {
-      console.error("Error completo:", error);
-      console.error("Respuesta del error:", error.response);
       
-      let errorMessage = "Error al conectar con el servidor";
-      if (error.response) {
-        errorMessage = error.response.data?.message || 
-                       `Error ${error.response.status}: ${error.response.statusText}`;
-      } else if (error.request) {
-        errorMessage = "No se pudo conectar con el servidor. Verifica que el servidor esté funcionando y la URL sea correcta.";
+      if (isSettingAvailability) {
+        // Guardar disponibilidad
+        if (!userData?.id_usuario) {
+          throw new Error("Debes iniciar sesión para guardar disponibilidad");
+        }
+
+        const response = await axios({
+          method: 'post',
+          url: 'http://localhost:8080/Proton/backend/actions/availability.php',
+          data: {
+            id_peluquero: userData.id_usuario,
+            disponibilidades: dates
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        alert("¡Disponibilidad guardada correctamente!");
       } else {
-        errorMessage = error.message || "Error desconocido";
+        // Agendar turno
+        const email = document.querySelector('input[type="text"]')?.value;
+        
+        if (!email && showUserTypeSelector) {
+          throw new Error("Por favor ingresa un email válido");
+        }
+
+        const response = await axios({
+          method: 'post',
+          url: 'http://localhost:8080/Proton/backend/actions/save_appointment.php',
+          data: {
+            id_peluquero: userData.id_usuario,
+            fecha: dates[0].fecha_disponible,
+            hora_inicio: dates[0].hora_inicial,
+            hora_fin: dates[0].hora_final,
+            email_cliente: email
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        alert("¡Turno agendado correctamente!");
       }
-      
-      alert(errorMessage);
+    } catch (error) {
+      console.error("Error:", error);
+      alert(error.response?.data?.message || error.message || "Error desconocido");
     }
   };
 
@@ -92,7 +91,10 @@ const Shifts = () => {
           isRange={isRange} 
           isMultiple={userRole === '3'}
           onClose={handleCalendarClose} 
+          peluqueroId={user.id_usuario}
+          isSettingAvailability={isSettingAvailability}
         />
+        
       </div>
     </div>
   );

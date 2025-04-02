@@ -30,14 +30,24 @@ $data = json_decode($json);
 if(!empty($data->id_peluquero) && !empty($data->disponibilidades)) {
     $disponibilidades = json_decode(json_encode($data->disponibilidades), true);
     
+    // Convertir fechas a formato correcto para rangos
+    $processedDisponibilidades = [];
+    foreach ($disponibilidades as $disp) {
+        if ($disp['esRango']) {
+            // Asegurarse que las fechas están en formato Y-m-d
+            $disp['fecha_inicio'] = date('Y-m-d', strtotime($disp['fecha_inicio']));
+            $disp['fecha_fin'] = date('Y-m-d', strtotime($disp['fecha_fin']));
+        } else {
+            $disp['fecha_disponible'] = date('Y-m-d', strtotime($disp['fecha_disponible']));
+        }
+        $processedDisponibilidades[] = $disp;
+    }
+    
     $controller = new AvailabilityController($conn);
-    $response = $controller->saveAvailability($data->id_peluquero, $disponibilidades);
+    $response = $controller->saveAvailability($data->id_peluquero, $processedDisponibilidades);
     
     http_response_code($response['status']);
     echo json_encode($response);
-} else {
-    http_response_code(400);
-    echo json_encode(["message" => "Datos incompletos."]);
 }
 
 $conn->close();

@@ -1,11 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
 import "bulma-calendar/dist/css/bulma-calendar.min.css";
 import "./custom-calendar.css";
+import axios from "axios";
 
-const Calendar = ({ isRange, isMultiple, onClose }) => {
+const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailability }) => {
   const inputRef = useRef(null);
   const calendarInstance = useRef(null);
   const [selectedDates, setSelectedDates] = useState([]);
+  const [existingAvailabilities, setExistingAvailabilities] = useState([]);
+
+  useEffect(() => {
+    if (!isSettingAvailability && peluqueroId) {
+      fetchAvailabilities();
+    }
+  }, [peluqueroId, isSettingAvailability]);
+
+  const fetchAvailabilities = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/Proton/backend/actions/get_availabilities.php?id_peluquero=${peluqueroId}`
+      );
+      setExistingAvailabilities(response.data);
+    } catch (error) {
+      console.error("Error fetching availabilities:", error);
+    }
+  };
 
   useEffect(() => {
     const bulmaCalendar = require("bulma-calendar");
@@ -17,21 +36,30 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
         calendarInstance.current.destroy();
       }
 
-      calendarInstance.current = bulmaCalendar.attach(inputRef.current, {
+      const options = {
         type: "datetime",
         dateFormat: "yyyy-MM-dd",
         timeFormat: "HH:mm",
         lang: "es",
-        isRange,
-        isMultiple,
+        isRange: isSettingAvailability, // Solo permite rango en modo disponibilidad
+        isMultiple: isSettingAvailability, // Solo permite múltiple en modo disponibilidad
         displayMode: "dialog",
         showHeader: true,
         showFooter: true,
         showButtons: true,
         validateLabel: "Confirmar",
         cancelLabel: "Cancelar",
-        clearLabel: "Limpiar"
-      })[0];
+        clearLabel: "Limpiar",
+        disabledDates: getDisabledDates(),
+        availableDates: !isSettingAvailability ? 
+          existingAvailabilities.map(avail => ({
+            date: avail.fecha_disponible,
+            time: avail.hora_inicial
+          })) : [],
+        highlightAvailableDates: !isSettingAvailability
+      };
+
+      calendarInstance.current = bulmaCalendar.attach(inputRef.current, options)[0];
 
       calendarInstance.current.on("select", (datepicker) => {
         const rawDates = datepicker.data.value();
@@ -39,13 +67,14 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
 
         let processedDates = [];
         
-        if (isRange && rawDates.includes(' - ')) {
+        if (isSettingAvailability && rawDates.includes(' - ')) {
           const [start, end] = rawDates.split(' - ');
           const [startDate, startTime] = start.trim().split(' ');
           const [endDate, endTime] = end.trim().split(' ');
           
           processedDates.push({
-            fecha_disponible: startDate,
+            fecha_inicio: startDate,
+            fecha_fin: endDate,
             hora_inicial: startTime,
             hora_final: endTime,
             esRango: true
@@ -72,7 +101,39 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
 
     const timer = setTimeout(initCalendar, 100);
     return () => clearTimeout(timer);
-  }, [isRange, isMultiple]);
+  }, [isRange, isMultiple, existingAvailabilities, isSettingAvailability]);
+
+  const getDisabledDates = () => {
+    const disabledDates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 1. Bloquear siempre días pasados
+    const pastDate = new Date(today);
+    pastDate.setDate(today.getDate() - 1);
+    
+    while (pastDate >= new Date(2020, 0, 1)) {
+      disabledDates.push(pastDate.toISOString().split('T')[0]);
+      pastDate.setDate(pastDate.getDate() - 1);
+    }
+
+    // 2. En modo agendado, bloquear días futuros NO disponibles
+    if (!isSettingAvailability) {
+      const availableDates = existingAvailabilities.map(avail => avail.fecha_disponible);
+      const futureDate = new Date(today);
+      futureDate.setFullYear(today.getFullYear() + 1); // Revisar hasta 1 año en el futuro
+      
+      while (today <= futureDate) {
+        const dateStr = today.toISOString().split('T')[0];
+        if (!availableDates.includes(dateStr)) {
+          disabledDates.push(dateStr);
+        }
+        today.setDate(today.getDate() + 1);
+      }
+    }
+
+    return disabledDates;
+  };
 
   const calculateEndTime = (startTime) => {
     const [hours, minutes] = startTime.split(':').map(Number);
@@ -85,7 +146,6 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
       alert("Por favor selecciona fechas válidas usando el selector de fechas");
       return;
     }
-
     onClose(selectedDates);
   };
 
@@ -112,9 +172,8 @@ const Calendar = ({ isRange, isMultiple, onClose }) => {
           borderRadius: '4px',
           cursor: 'pointer'
         }}
-        data-testid="save-button"
       >
-        Guardar disponibilidad
+        {isSettingAvailability ? 'Guardar disponibilidad' : 'Confirmar turno'}
       </button>
     </div>
   );
