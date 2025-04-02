@@ -6,64 +6,79 @@ const ProfileUser = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        const fetchMascotas = async () => {
-            try {
-                const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem('userId');
         
-                if (!userId) {
-                    setError("Usuario no autenticado");
-                    setLoading(false);
-                    return;
+        if (!userId) {
+            setError("Usuario no autenticado");
+            setLoading(false);
+            return;
+        }
+
+        const fetchData = async () => {
+            try {
+                // 1. Obtenemos datos del usuario
+                const userResponse = await fetch(
+                    `http://localhost:8080/Proton/backend/actions/getUserById.php`,
+                    {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ id: userId })
+                    }
+                );
+
+                if (!userResponse.ok) {
+                    throw new Error(`Error usuario: ${userResponse.status}`);
                 }
+
+                const userJson = await userResponse.json();
                 
-                console.log("📡 Enviando solicitud a getPetsByClientId.php...");
-                const response = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`, 
+                if (!userJson.success) {
+                    throw new Error(userJson.message || "Error al obtener datos del usuario");
+                }
+
+                setUserData(userJson.user);
+
+                // 2. Obtenemos las mascotas
+                const petsResponse = await fetch(
+                    `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`,
                     {
                         method: "GET",
-                        credentials: "include",
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         }
                     }
                 );
+
+                if (!petsResponse.ok) {
+                    throw new Error(`Error mascotas: ${petsResponse.status}`);
+                }
+
+                const petsJson = await petsResponse.json();
                 
-                console.log("📩 Respuesta recibida:", response);
-        
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+                if (!petsJson.success) {
+                    throw new Error(petsJson.message || "Error al obtener mascotas");
                 }
 
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    const text = await response.text();
-                    throw new Error(`Respuesta no es JSON: ${text}`);
-                }
+                setMascotas(petsJson.mascotas || []);
 
-                const data = await response.json();
-                console.log("📊 Datos recibidos:", data);
-
-                if (data.success) {
-                    setMascotas(data.mascotas || []);
-                } else {
-                    setError(data.message || "No se pudieron cargar las mascotas");
-                }
-            } catch (error) {
-                console.error("❌ Error al obtener mascotas:", error);
-                setError("Error al cargar las mascotas: " + error.message);
+            } catch (err) {
+                console.error("Error en fetchData:", err);
+                setError(err.message || "Error al cargar datos");
             } finally {
                 setLoading(false);
             }
         };
-        
-        fetchMascotas();
+
+        fetchData();
     }, []);
 
-    // Resto del componente permanece igual...
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % mascotas.length);
     };
@@ -74,40 +89,80 @@ const ProfileUser = () => {
         );
     };
 
+    if (loading) {
+        return <p>Cargando datos...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
     return (
         <>
             <div>
-                <h1>¡HOLA FULANO!</h1>
+                <h1>¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
                 <UserImage />
                 <hr />
             </div>
             <div>
                 <label htmlFor="name">Nombre:</label>
-                <input type="text" name="name" id="name" />
+                <input 
+                    type="text" 
+                    name="name" 
+                    id="name" 
+                    defaultValue={userData?.nombre || ''} 
+                    readOnly 
+                />
 
                 <label htmlFor="LastName">Apellido:</label>
-                <input type="text" name="LastName" id="LastName" />
+                <input 
+                    type="text" 
+                    name="LastName" 
+                    id="LastName" 
+                    defaultValue={userData?.apellido || ''} 
+                    readOnly 
+                />
 
                 <label htmlFor="born">Fecha de nacimiento:</label>
-                <input type="date" name="born" id="born" />
+                <input 
+                    type="date" 
+                    name="born" 
+                    id="born" 
+                    defaultValue={userData?.fecha_nacimiento || ''} 
+                    readOnly 
+                />
 
-                <label htmlFor="phone">Telefono:</label>
-                <input type="tel" name="phone" id="phone" />
+                <label htmlFor="phone">Teléfono:</label>
+                <input 
+                    type="tel" 
+                    name="phone" 
+                    id="phone" 
+                    defaultValue={userData?.telefono || ''} 
+                    readOnly 
+                />
 
                 <label htmlFor="email">Email:</label>
-                <input type="email" name="email" id="email" />
+                <input 
+                    type="email" 
+                    name="email" 
+                    id="email" 
+                    defaultValue={userData?.email || ''} 
+                    readOnly 
+                />
 
                 <label htmlFor="pass">Contraseña:</label>
-                <input type="password" name="pass" id="pass" />
+                <input 
+                    type="password" 
+                    name="pass" 
+                    id="pass" 
+                    placeholder="••••••••" 
+                    readOnly 
+                />
             </div>
             <div>
                 <hr />
                 <h2>MASCOTAS</h2>
-                {loading ? (
-                    <p>Cargando...</p>
-                ) : error ? (
-                    <p>{error}</p>
-                ) : mascotas.length > 1 ? (
+                {mascotas.length > 1 ? (
                     <div className="carousel">
                         <button className="carousel-prev" onClick={handlePrev}>
                             <span className="icon is-small">
