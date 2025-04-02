@@ -1,23 +1,33 @@
 <?php
-session_start(); // Inicia la sesión
+// Configuración de cookies para CORS
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', 'true');
+session_set_cookie_params([
+    'lifetime' => 86400,
+    'path' => '/',
+    'domain' => 'localhost',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None'
+]);
+session_start();
 
-header("Access-Control-Allow-Origin: *");
+
+header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
+header("Access-Control-Allow-Credentials: true");
 
 require_once '../includes/db.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-// Verificar la conexión
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Establecer el conjunto de caracteres
 $conn->set_charset('utf8');
 
-// Leer datos del cuerpo de la solicitud
 $data = json_decode(file_get_contents("php://input"), true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -40,13 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $conn->close();
 
 function registerUser($data, $conn) {
-    // Validar datos
     if (empty($data['nombre']) || empty($data['apellido']) || empty($data['email']) || empty($data['telefono']) || empty($data['contrasenia'])) {
         echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios"]);
         return;
     }
 
-    // Verificar si el email ya existe
     $email = $conn->real_escape_string($data['email']);
     $checkEmailQuery = "SELECT * FROM usuario WHERE email = '$email'";
     $result = $conn->query($checkEmailQuery);
@@ -56,11 +64,10 @@ function registerUser($data, $conn) {
         return;
     }
 
-    // Insertar usuario
     $nombre = $conn->real_escape_string($data['nombre']);
     $apellido = $conn->real_escape_string($data['apellido']);
     $telefono = $conn->real_escape_string($data['telefono']);
-    $rol = isset($data['rol']) ? intval($data['rol']) : 1; // Usa el rol enviado o 1 por defecto
+    $rol = isset($data['rol']) ? intval($data['rol']) : 1;
     $hashedPassword = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
 
     $insertQuery = "INSERT INTO usuario (nombre, apellido, telefono, email, rol, contrasenia) VALUES ('$nombre', '$apellido', '$telefono', '$email', '$rol', '$hashedPassword')";
@@ -92,30 +99,23 @@ function loginUser($data, $conn) {
     $user = $result->fetch_assoc();
 
     if (password_verify($password, $user['contrasenia'])) {
-        // Configura la sesión
         $_SESSION['user_id'] = $user['id_usuario'];
         $_SESSION['user_name'] = $user['nombre'];
         $_SESSION['user_role'] = $user['rol'];
 
-        // Eliminar la contraseña del resultado
         unset($user['contrasenia']);
 
-        // Devolver los datos del usuario en la respuesta
         echo json_encode([
             "success" => true,
             "message" => "Inicio de sesión exitoso",
             "user" => [
-                "id_usuario" => $user['id_usuario'], // Asegúrate de devolver el ID del usuario
-                "rol" => $user['rol'], // Asegúrate de devolver el rol del usuario
-                "nombre" => $user['nombre'] // Asegúrate de devolver el nombre del usuario
+                "id_usuario" => $user['id_usuario'],
+                "rol" => $user['rol'],
+                "nombre" => $user['nombre']
             ]
         ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
     }
-
-    // Depuración: Verificar la ruta de guardado de la sesión y su contenido
-    error_log("Ruta de guardado de la sesión: " . session_save_path());
-    error_log("Contenido de la sesión: " . json_encode($_SESSION));
 }
 ?>

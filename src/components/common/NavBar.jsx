@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
 import LogOut from "./LogOut.jsx";
-import ProfileButton from "./profileButton.jsx";
+import ProfileButton from "./ProfileButton.jsx";
 
 const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
   const [searchText, setSearchText] = useState("");

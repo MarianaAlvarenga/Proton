@@ -5,60 +5,65 @@ const ProfileUser = () => {
     const [mascotas, setMascotas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentIndex, setCurrentIndex] = useState(0); // Índice de la mascota actual
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         const fetchMascotas = async () => {
-          try {
-            // Obtener el userId desde localStorage
-            const userId = localStorage.getItem('userId');
-      
-            if (!userId) {
-              setError("Usuario no autenticado");
-              return;
-            }
-            console.log(userId);
-            console.log("📡 Enviando solicitud a getPetsByClientId.php...");
-            const response = await fetch(`http://localhost:8080/Proton/backend/actions/getPetsByClientId.php`, {
-                method: "GET",
-                credentials: "include",
-              });
-              
-            console.log("📩 Respuesta recibida:", response);
-      
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-      
-            // Leer la respuesta como texto
-            const responseBody = await response.text();
-            console.log("Cuerpo de la respuesta:", responseBody);
-
-            // Intentar parsear la respuesta como JSON
             try {
-              const data = JSON.parse(responseBody);
-              console.log("📊 Datos recibidos:", data);
+                const userId = localStorage.getItem('userId');
+        
+                if (!userId) {
+                    setError("Usuario no autenticado");
+                    setLoading(false);
+                    return;
+                }
+                
+                console.log("📡 Enviando solicitud a getPetsByClientId.php...");
+                const response = await fetch(
+                    `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`, 
+                    {
+                        method: "GET",
+                        credentials: "include",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    }
+                );
+                
+                console.log("📩 Respuesta recibida:", response);
+        
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+                }
 
-              if (data.success) {
-                setMascotas(data.mascotas);
-              } else {
-                setError(data.message);
-              }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Respuesta no es JSON: ${text}`);
+                }
+
+                const data = await response.json();
+                console.log("📊 Datos recibidos:", data);
+
+                if (data.success) {
+                    setMascotas(data.mascotas || []);
+                } else {
+                    setError(data.message || "No se pudieron cargar las mascotas");
+                }
             } catch (error) {
-              console.error("❌ Error al parsear JSON:", error);
-              setError("Error al procesar la respuesta");
+                console.error("❌ Error al obtener mascotas:", error);
+                setError("Error al cargar las mascotas: " + error.message);
+            } finally {
+                setLoading(false);
             }
-          } catch (error) {
-            console.error("❌ Error al obtener mascotas:", error);
-            setError("Error al cargar las mascotas");
-          } finally {
-            setLoading(false);
-          }
         };
-      
+        
         fetchMascotas();
-      }, []);
-    
+    }, []);
+
+    // Resto del componente permanece igual...
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % mascotas.length);
     };
@@ -125,17 +130,17 @@ const ProfileUser = () => {
                             </span>
                         </button>
                     </div>
+                ) : mascotas.length === 1 ? (
+                    <div>
+                        <h3>{mascotas[0].nombre_mascota}</h3>
+                        <p>Fecha de nacimiento: {mascotas[0].fecha_nacimiento}</p>
+                        <p>Raza: {mascotas[0].raza}</p>
+                        <p>Peso: {mascotas[0].peso}</p>
+                        <p>Tamaño: {mascotas[0].tamaño}</p>
+                        <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
+                    </div>
                 ) : (
-                    mascotas.map((mascota, index) => (
-                        <div key={index}>
-                            <h3>{mascota.nombre_mascota}</h3>
-                            <p>Fecha de nacimiento: {mascota.fecha_nacimiento}</p>
-                            <p>Raza: {mascota.raza}</p>
-                            <p>Peso: {mascota.peso}</p>
-                            <p>Tamaño: {mascota.tamaño}</p>
-                            <p>Largo del pelo: {mascota.largo_pelo}</p>
-                        </div>
-                    ))
+                    <p>No hay mascotas registradas</p>
                 )}
             </div>
         </>

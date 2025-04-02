@@ -4,7 +4,7 @@ import DefaultUserImage from '../../assets/images/usuario.png'; // Importación 
 const UserImage = ({ urlImage = DefaultUserImage }) => {
     return(
         <figure className="image is-inline-block" style={{ marginBottom: '20px', marginTop: '20px', paddingLeft: '20px' }}>
-            <img class="is-rounded" 
+            <img className="is-rounded" 
             src={urlImage} 
             style={{height:'100px', width:'100px'}}
             />
