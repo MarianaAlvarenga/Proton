@@ -3,7 +3,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: http://localhost:8080");
+header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../includes/db.php';
+
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if (!isset($_GET['userId'])) {
     http_response_code(400);
@@ -26,7 +28,7 @@ if ($userId <= 0) {
     die(json_encode(["error" => "userId inválido"]));
 }
 
-$stmt = $conn->prepare("SELECT img_url FROM usuario WHERE id = ?");
+$stmt = $conn->prepare("SELECT img_url FROM usuario WHERE id_usuario = ?");
 $stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();

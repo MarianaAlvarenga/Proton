@@ -1,137 +1,144 @@
-    import React, { useRef, useState, useEffect } from "react";
-    import DefaultUserImage from "../../assets/images/usuario.png";
+import React, { useRef, useState, useEffect } from "react";
+import DefaultUserImage from "../../assets/images/usuario.png";
 
-    const UserImage = ({ userId }) => { // Usamos solo el userId como prop
-        const fileInputRef = useRef(null);
-        const [selectedImage, setSelectedImage] = useState(DefaultUserImage);
+const UserImage = ({ userId }) => {
+    const fileInputRef = useRef(null);
+    const [selectedImage, setSelectedImage] = useState(DefaultUserImage);
 
-        useEffect(() => {
-            const fetchImage = async () => {
-                try {
-                    const response = await fetch(`http://localhost:8080/Proton/backend/actions/get_user_image.php?userId=${userId}`, {
-                        credentials: "include"
-                    });
-                    
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    
-                    const data = await response.json();
-                    setSelectedImage(data.img_url 
-                        ? `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
-                        : DefaultUserImage);
-                } catch (error) {
-                    console.error("Error al obtener imagen:", error);
-                    setSelectedImage(DefaultUserImage);
-                }
-            };
+    const fetchUserImage = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:8080/Proton/backend/actions/get_user_image.php?userId=${userId}`,
+                { credentials: "include" }
+            );
             
-            const handleFileChange = async (event) => {
-                const file = event.target.files?.[0];
-                if (!file || !userId) return;
-            
-                const formData = new FormData();
-                formData.append("image", file);
-                formData.append("userId", userId.toString());
-            
-                try {
-                    const response = await fetch("http://localhost:8080/Proton/backend/actions/upload_user_image.php", {
-                        method: "POST",
-                        body: formData,
-                        credentials: "include",
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-            
-                    // Verificar primero si la respuesta es válida
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Error ${response.status}: ${errorText}`);
-                    }
-            
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`);
-                        alert("¡Imagen subida correctamente!");
-                    } else {
-                        throw new Error(data.message || "Error al procesar la imagen");
-                    }
-                } catch (error) {
-                    console.error("Detalle completo del error:", {
-                        message: error.message,
-                        stack: error.stack
-                    });
-                    alert(`Error al subir imagen: ${error.message}`);
-                }
-            };
-        }, [userId]);
-
-        const handleFileChange = async (event) => {
-            const file = event.target.files?.[0];
-            if (!file || !userId) return;
-        
-            const formData = new FormData();
-            formData.append("image", file);
-            formData.append("userId", userId.toString());
-        
-            try {
-                const response = await fetch("http://localhost:8080/Proton/backend/actions/upload_user_image.php", {
-                    method: "POST",
-                    body: formData,
-                    credentials: "include",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-        
-                // Verificar primero si hay error de CORS
-                if (response.type === 'opaque') {
-                    throw new Error('Error de CORS: No se puede acceder al recurso');
-                }
-        
-                const data = await response.json();
-                
-                if (data.success) {
-                    setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`);
-                } else {
-                    throw new Error(data.message || "Error al subir imagen");
-                }
-            } catch (error) {
-                console.error("Error completo:", error);
-                alert("Error al subir imagen 2: " + error.message);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
             }
-        };
-
-        const handleClick = () => {
-            fileInputRef.current?.click();
-        };
-
-        return (
-            <div>
-                <a onClick={handleClick} style={{ cursor: "pointer" }}>
-                    <figure className="image is-128x128" style={{ padding: "10px" }}>
-                        <img 
-                            src={selectedImage} 
-                            alt="Vista previa del usuario" 
-                            style={{ 
-                                width: "128px", 
-                                height: "128px", 
-                                borderRadius: "50%", 
-                                objectFit: "cover" 
-                            }} 
-                        />
-                    </figure>
-                    <input 
-                        type="file"
-                        ref={fileInputRef} 
-                        style={{ display: "none" }} 
-                        onChange={handleFileChange} 
-                        accept="image/*"
-                    />
-                </a>
-            </div>
-        );
+            
+            const data = await response.json();
+            setSelectedImage(
+                data.img_url 
+                    ? `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
+                    : DefaultUserImage
+            );
+        } catch (error) {
+            console.error("Error al obtener imagen:", error);
+            setSelectedImage(DefaultUserImage);
+        }
     };
 
-    export default UserImage;
+    useEffect(() => {
+        if (userId) {
+            fetchUserImage();
+        }
+    }, [userId]);
+
+    const handleFileChange = async (event) => {
+        const file = event.target.files?.[0];
+        if (!file || !userId) return;
+    
+        // Validación cliente adicional
+        if (file.size > 2 * 1024 * 1024) { // 2MB
+            alert("La imagen no debe exceder 2MB");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("userId", userId.toString());
+    
+        try {
+            const response = await fetch(
+                "http://localhost:8080/Proton/backend/actions/upload_user_image.php",
+                {
+                    method: "POST",
+                    body: formData,
+                    credentials: "include"
+                }
+            );
+    
+            const responseText = await response.text();
+            console.log("Respuesta completa del servidor:", responseText); // Debug
+    
+            if (!response.ok) {
+                // Intentar parsear el error si es JSON
+                let errorData = {};
+                try {
+                    errorData = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("No se pudo parsear la respuesta de error:", e);
+                }
+                
+                throw new Error(
+                    errorData.message || 
+                    `Error del servidor (${response.status}): ${responseText || 'Sin detalles'}`
+                );
+            }
+    
+            const data = JSON.parse(responseText);
+            
+            if (!data.success) {
+                throw new Error(data.message || "Error al procesar la imagen");
+            }
+    
+            setSelectedImage(
+                `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
+            );
+            alert("¡Imagen actualizada correctamente!");
+            
+        } catch (error) {
+            console.error("Detalle completo del error:", {
+                error: error,
+                fileInfo: {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type
+                }
+            });
+            
+            alert(`Error al subir la imagen:\n${error.message}\n\n` +
+                  `Detalles técnicos:\n` +
+                  `- Tipo: ${file.type}\n` +
+                  `- Tamaño: ${Math.round(file.size / 1024)}KB\n` +
+                  `- Nombre: ${file.name}`);
+        } finally {
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    return (
+        <div>
+            <a onClick={handleClick} style={{ cursor: "pointer" }}>
+                <figure className="image is-128x128" style={{ padding: "10px" }}>
+                    <img 
+                        src={selectedImage} 
+                        alt="Foto de perfil" 
+                        style={{ 
+                            width: "128px", 
+                            height: "128px", 
+                            borderRadius: "50%", 
+                            objectFit: "cover",
+                            border: "2px solid #ddd"
+                        }} 
+                    />
+                </figure>
+                <input 
+                    type="file"
+                    ref={fileInputRef} 
+                    style={{ display: "none" }} 
+                    onChange={handleFileChange} 
+                    accept="image/jpeg, image/png"
+                />
+            </a>
+        </div>
+    );
+};
+
+export default UserImage;

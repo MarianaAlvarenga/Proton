@@ -1,92 +1,88 @@
 <?php
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: http://localhost:8080");
+header("Access-Control-Allow-Origin: http://localhost:3000");
 header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: application/json");
+header("Access-Control-Allow-Methods: POST");
 
-// Manejar preflight OPTIONS
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204);
-    exit();
-}
-
-// Debug: Verificar headers enviados
-error_log("Headers enviados: " . print_r(headers_list(), true));
+// Habilitar logging de errores
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/upload_errors.log');
 
 require_once __DIR__ . '/../includes/db.php';
 
-// VERIFICAR MÉTODO
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    ob_end_clean();
-    http_response_code(405);
-    die(json_encode(['success' => false, 'message' => 'Método no permitido']));
-}
-
-// OBTENER DATOS
-$userId = (int)($_POST['userId'] ?? 0);
-$file = $_FILES['image'] ?? null;
-
-// VALIDACIONES BÁSICAS
-if ($userId <= 0 || !$file || $file['error'] !== UPLOAD_ERR_OK) {
-    ob_end_clean();
-    http_response_code(400);
-    die(json_encode(['success' => false, 'message' => 'Datos inválidos']));
-}
-
 try {
-    // CONFIGURAR CARPETA DE SUBIDAS
-    $uploadDir = __DIR__ . '../uploads';
-    if (!file_exists($uploadDir) {
-        mkdir($uploadDir, 0777, true);
+    // Validaciones básicas
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception("Método no permitido", 405);
     }
 
-    // GENERAR NOMBRE ÚNICO
-    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    if (empty($_FILES['image']) || empty($_POST['userId'])) {
+        throw new Exception("Datos incompletos", 400);
+    }
+
+    // Configuración de directorio (USANDO RUTAS ABSOLUTAS)
+    $uploadDir = realpath(__DIR__ . '/../uploads') . DIRECTORY_SEPARATOR;
+    if (!is_dir($uploadDir)) {
+        if (!mkdir($uploadDir, 0777, true)) {
+            throw new Exception("No se pudo crear directorio uploads", 500);
+        }
+    }
+
+    // Procesar imagen
+    $file = $_FILES['image'];
+    $userId = (int)$_POST['userId'];
+    $allowedTypes = ['image/jpeg', 'image/png'];
     
-    if (!in_array($extension, $allowedExtensions)) {
-        throw new Exception('Formato de imagen no permitido');
+    if (!in_array($file['type'], $allowedTypes)) {
+        throw new Exception("Solo se permiten JPEG y PNG", 400);
     }
 
-    $fileName = uniqid() . '.' . $extension;
-    $targetPath = $uploadDir . $fileName;
+    // Generar nombre único
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $extension;
+    $targetPath = $uploadDir . $filename;
 
-    // MOVER ARCHIVO
+    // Debug: Verificar antes de mover
+    error_log("Intentando mover archivo a: $targetPath");
+
     if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-        throw new Exception('Error al guardar el archivo');
+        throw new Exception("Error al guardar archivo", 500);
     }
 
-    // ACTUALIZAR BD
-    $stmt = $conn->prepare("UPDATE usuario SET img_url = ? WHERE id = ?");
+    // Actualizar base de datos
+    $conn = new mysqli($servername, $username, $password, $dbname, $port);
+    if ($conn->connect_error) {
+        unlink($targetPath);
+        throw new Exception("Error de conexión a BD", 500);
+    }
+
+    $stmt = $conn->prepare("UPDATE usuario SET img_url = ? WHERE id_usuario = ?");
     if (!$stmt) {
-        throw new Exception('Error preparando consulta: ' . $conn->error);
+        unlink($targetPath);
+        throw new Exception("Error preparando consulta", 500);
     }
 
-    $stmt->bind_param("si", $fileName, $userId);
+    $stmt->bind_param("si", $filename, $userId);
     
     if (!$stmt->execute()) {
-        unlink($targetPath); // Eliminar archivo si falla la BD
-        throw new Exception('Error ejecutando consulta: ' . $stmt->error);
+        unlink($targetPath);
+        throw new Exception("Error ejecutando consulta", 500);
     }
 
-    // RESPUESTA EXITOSA
-    ob_end_clean();
+    // Éxito
     echo json_encode([
         'success' => true,
-        'img_url' => $fileName
+        'img_url' => $filename,
+        'message' => 'Imagen actualizada'
     ]);
 
 } catch (Exception $e) {
-    // LIMPIAR BUFFER Y ENVIAR ERROR
-    ob_end_clean();
-    http_response_code(500);
+    http_response_code($e->getCode() ?: 500);
+    error_log("ERROR: " . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => $e->getMessage()
+        'message' => $e->getMessage(),
+        'error_code' => $e->getCode()
     ]);
 }
-?>
