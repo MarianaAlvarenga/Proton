@@ -4,7 +4,7 @@ import './NavBar.css';
 import LogOut from "./LogOut.jsx";
 import ProfileButton from "./ProfileButton.jsx";
 
-const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
+const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true }) => {
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (e) => {
@@ -37,8 +37,7 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch }) => {
             />
           </div>
         )}
-
-        <ProfileButton/>
+        {showProfileButton && <ProfileButton/>}
       </div>
 
       <div className="navbar-end">

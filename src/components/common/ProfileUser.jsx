@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import UserImage from "./UserImage.jsx";
+import NavBar from "./NavBar.jsx";
+import SubNavBar from "./SubNavBar.jsx";
 
 const ProfileUser = () => {
+    /************Estados*************/
     const [mascotas, setMascotas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -9,6 +12,7 @@ const ProfileUser = () => {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
+        /*****************Obtengo ID del usuario******************/
         const userId = localStorage.getItem('userId');
         
         if (!userId) {
@@ -16,7 +20,7 @@ const ProfileUser = () => {
             setLoading(false);
             return;
         }
-
+        /*******************Obtengo los datos del usuario mediante un fetch************************/
         const fetchData = async () => {
             try {
                 // 1. Obtenemos datos del usuario
@@ -31,7 +35,7 @@ const ProfileUser = () => {
                         body: JSON.stringify({ id: userId })
                     }
                 );
-
+                /**************Control de errores****************/
                 if (!userResponse.ok) {
                     throw new Error(`Error usuario: ${userResponse.status}`);
                 }
@@ -55,7 +59,7 @@ const ProfileUser = () => {
                         }
                     }
                 );
-
+                /**************Control de errores****************/
                 if (!petsResponse.ok) {
                     throw new Error(`Error mascotas: ${petsResponse.status}`);
                 }
@@ -99,11 +103,14 @@ const ProfileUser = () => {
 
     return (
         <>
-            <div>
+            <NavBar showProfileButton={false}></NavBar>
+            <SubNavBar  showBack ></SubNavBar>
+            <div className="">
                 <h1>¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
-                <UserImage />
+                <UserImage userId={userData?.id_usuario}/>
                 <hr />
             </div>
+
             <div>
                 <label htmlFor="name">Nombre:</label>
                 <input 
@@ -129,7 +136,7 @@ const ProfileUser = () => {
                     name="born" 
                     id="born" 
                     defaultValue={userData?.fecha_nacimiento || ''} 
-                    readOnly 
+                    min="1900-01-01"
                 />
 
                 <label htmlFor="phone">Teléfono:</label>
