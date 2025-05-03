@@ -124,11 +124,10 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 - Subir bd a la nube
 - AGREGAR CONFIRMACIÓN PARA CERRAR SESIÓN (componente Alert.jsx)
 - MODIFICAR SIGNUP DE PELUQUERO (cuando el admin seleccione el rol "peluquero" se debe mostrar otro combobox con las especialidades)
-- REEMPLAZAR MENÚ HAMBURGUESA POR ICONO DE PERFIL EN VISTA DE PELUQUERO. (para poder modificar datos)
 - AGREGAR COLUMNAS "DISPONIBILIDAD" (de turnos) y ID_TURNO (foránea de turno) EN TABLA PELUQUERO
 - MODIFICAR ESTILOS DE BOTON DE CERRAR SESIÓN PA QUE CUANDO SE HAGA HOVER BRILLE 
 
-· sacar el botón "atrás" en la pantalla /Products de vendedor.
+
 EL BOTON CANCELAR EN "AGREGAR PRODUCTO" DESDE ADMIN, AGREGA UN PRODUCTO EN LUGAR DE CANCELAR
 EN "REGISTRAR USUARIO" Y EN "EDITAR USUARIO" debe haber botones de "cancelar" para evitar usar el backbutton.
 
