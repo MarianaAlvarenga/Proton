@@ -7,17 +7,7 @@ const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage
 
   return (
     <nav className="navbar-brand-custom">
-      {/* Verificación de 'showBack' para mostrar el botón de 'Back' */}
-      {showBack && (
-        <div className="navbar-item-back">
-          <div role="button" onClick={() => navigate(-1)}>
-            <img
-              src={require("../../assets/images/atras.png")}  // Asegúrate de que el path sea correcto
-              alt="BackButton"
-            />
-          </div>
-        </div>
-      )}
+      
 
       {/* Si hay enlaces, mostrarlos, sino mostrar el texto de la página actual */}
       {links.length > 0 ? (

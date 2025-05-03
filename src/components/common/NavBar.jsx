@@ -3,8 +3,9 @@ import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
 import LogOut from "./LogOut.jsx";
 import ProfileButton from "./ProfileButton.jsx";
+import HomeButton from "./HomeButton.jsx";
 
-const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true }) => {
+const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true, showHomeButton = true }) => {
   const [searchText, setSearchText] = useState("");
 
   const handleInputChange = (e) => {
@@ -19,9 +20,11 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileBut
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation" style={{ backgroundColor: '#9655C5' }}>
       <div className="navbar-brand">
+        {showHomeButton && <HomeButton/>}
+        {showProfileButton && <ProfileButton/>}
         {showSearch && (
-          <div className="navbar-item">
-            <a>
+          <div className="navbar-item search-container">
+            <a className="search-icon">
               <img
                 src={require("../../assets/images/SearchIcon.png")}
                 alt="SearchButton"
@@ -37,7 +40,6 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileBut
             />
           </div>
         )}
-        {showProfileButton && <ProfileButton/>}
       </div>
 
       <div className="navbar-end">
