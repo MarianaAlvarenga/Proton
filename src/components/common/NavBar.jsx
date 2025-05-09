@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
 import LogOut from "./LogOut.jsx";
 import ProfileButton from "./ProfileButton.jsx";
+import HomeButton from "./HomeButton.jsx";
 
-const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true }) => {
+const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true, showHomeButton = true }) => {
   const [searchText, setSearchText] = useState("");
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    if (role) {
+      setUserRole(parseInt(role, 10));
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -16,12 +25,17 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileBut
     }
   };
 
+  // No mostrar el menú si el rol es 3 (Peluquero)
+  const shouldShowMenu = showMenu && userRole !== 3;
+
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation" style={{ backgroundColor: '#9655C5' }}>
       <div className="navbar-brand">
+        {showHomeButton && <HomeButton/>}
+        {showProfileButton && <ProfileButton/>}
         {showSearch && (
-          <div className="navbar-item">
-            <a>
+          <div className="navbar-item search-container">
+            <a className="search-icon">
               <img
                 src={require("../../assets/images/SearchIcon.png")}
                 alt="SearchButton"
@@ -37,12 +51,11 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileBut
             />
           </div>
         )}
-        {showProfileButton && <ProfileButton/>}
       </div>
 
       <div className="navbar-end">
         <LogOut/>
-        {showMenu && <MenuDesplegable />}
+        {shouldShowMenu && <MenuDesplegable />}
       </div>
     </nav>
   );

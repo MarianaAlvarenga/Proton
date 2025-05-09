@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Importamos axios para hacer la solicitud
-import { Link } from "react-router-dom"; // Importar Link para navegación
-import "./stilaso.css"; // Incluye tu archivo CSS
+import axios from "axios";
+import { Link } from "react-router-dom";
+import "./stilaso.css";
 
 const Desplegable = () => {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const [categories, setCategories] = useState([]); // Estado para las categorías
-    const [userRole, setUserRole] = useState(null); // Estado para el rol del usuario
+    const [categories, setCategories] = useState([]);
+    const [userRole, setUserRole] = useState(null);
 
-    // Función para alternar la visibilidad del menú
     const toggleDropdown = (e) => {
-        e.preventDefault(); // Evita el comportamiento predeterminado
+        e.preventDefault();
         setDropdownVisible(!isDropdownVisible);
     };
 
-    // Cierra el menú si se hace clic fuera de él
     const handleOutsideClick = (e) => {
         if (!e.target.closest(".menu-container")) {
             setDropdownVisible(false);
         }
     };
 
-    // Obtener las categorías desde la base de datos
     useEffect(() => {
-        // Hacemos la solicitud a getCategories.php
         axios
             .get("http://localhost:8080/Proton/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
-                    setCategories(response.data); // Guardamos las categorías en el estado
+                    setCategories(response.data);
                 }
             })
             .catch((error) => {
@@ -41,11 +37,10 @@ const Desplegable = () => {
         };
     }, []);
 
-    // Obtener el rol del usuario desde el localStorage
     useEffect(() => {
         const role = localStorage.getItem("userRole");
         if (role) {
-            setUserRole(parseInt(role, 10)); // Convertir a número
+            setUserRole(parseInt(role, 10));
         }
     }, []);
 
@@ -59,16 +54,22 @@ const Desplegable = () => {
                 ☰
             </a>
             <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>
-                {/* Link para la sección de agregar producto */}
-                <li>
-                    <Link to="/productscreate">Agregar Producto</Link>
-                    {/* Mostrar "Realizar compra" y "Realizar edición" solo si el rol no es 2 (vendedor) */}
-                    {userRole !== 2 && (
-                        <>
+                {/* Mostrar estas opciones solo si es ADMINISTRADOR (rol 4) */}
+                {userRole === 4 && (
+                    <>
+                        <li>
+                            <Link to="/productscreate">Agregar Producto</Link>
+                        </li>
+                        <li>
                             <Link to="/Products" state={{ purchaseMode: true }}>Realizar compra</Link>
+                        </li>
+                        <li>
                             <Link to="/Products" state={{ purchaseMode: false }}>Realizar edición</Link>
-                        </>
-                    )}
+                        </li>
+                    </>
+                )}
+                
+                <li>
                     <Link to="/products">Todos los Productos</Link>
                 </li>
 
@@ -76,14 +77,13 @@ const Desplegable = () => {
                 {categories.length > 0 ? (
                     categories.map((category) => (
                         <li key={category.id_categoria}>
-                            {/* Actualización para pasar el parámetro de categoría en la URL */}
                             <Link to={`/products?category=${category.id_categoria}`}>
                                 {category.nombre_categoria}
                             </Link>
                         </li>
                     ))
                 ) : (
-                    <li>No hay categorías disponibles</li> // Mensaje si no hay categorías
+                    <li>No hay categorías disponibles</li>
                 )}
             </ul>
         </div>
