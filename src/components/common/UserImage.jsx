@@ -116,14 +116,14 @@ const UserImage = ({ userId }) => {
     return (
         <div>
             <a onClick={handleClick} style={{ cursor: "pointer" }}>
-                <figure className="image is-128x128" style={{ padding: "10px" }}>
+                <figure style={{ padding: "10px" }}>
                     <img 
                         src={selectedImage} 
                         alt="Foto de perfil" 
                         style={{ 
                             width: "128px", 
                             height: "128px", 
-                            borderRadius: "50%", 
+                            borderRadius: "100%", 
                             objectFit: "cover",
                             border: "2px solid #ddd"
                         }} 

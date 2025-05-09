@@ -105,105 +105,121 @@ const ProfileUser = () => {
         <>
             <NavBar showProfileButton={false}></NavBar>
             <SubNavBar  showBack ></SubNavBar>
-            <div className="">
-                <h1>¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
-                <UserImage userId={userData?.id_usuario}/>
-                <hr />
-            </div>
+            <div className="field">
+                <div className="container">
+                    <div className="">
+                        <h1 className="title is-2">¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
+                        <UserImage userId={userData?.id_usuario}/>
+                        <hr />
+                    </div>
+                    <label className="label" htmlFor="name">Nombre:</label>
+                    <input className="input" type="text" name="name" id="name" defaultValue={userData?.nombre || ''} />
 
-            <div>
-                <label htmlFor="name">Nombre:</label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    id="name" 
-                    defaultValue={userData?.nombre || ''} 
-                    readOnly 
-                />
+                    <label className="label" htmlFor="LastName">Apellido:</label>
+                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} />
 
-                <label htmlFor="LastName">Apellido:</label>
-                <input 
-                    type="text" 
-                    name="LastName" 
-                    id="LastName" 
-                    defaultValue={userData?.apellido || ''} 
-                    readOnly 
-                />
+                    <label className="label" htmlFor="born">Fecha de nacimiento:</label>
+                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01"/>
 
-                <label htmlFor="born">Fecha de nacimiento:</label>
-                <input 
-                    type="date" 
-                    name="born" 
-                    id="born" 
-                    defaultValue={userData?.fecha_nacimiento || ''} 
-                    min="1900-01-01"
-                />
+                    <label className="label" htmlFor="phone">Teléfono:</label>
+                    <input className="input" type="tel" name="phone" id="phone" defaultValue={userData?.telefono || ''} readOnly />
 
-                <label htmlFor="phone">Teléfono:</label>
-                <input 
-                    type="tel" 
-                    name="phone" 
-                    id="phone" 
-                    defaultValue={userData?.telefono || ''} 
-                    readOnly 
-                />
+                    <div class="field">
+                    <label className="label" htmlFor="email">Email:</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" placeholder="Email" defaultValue={userData?.email || ''} />
+                        <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                        <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                    </div>
+                    <div class="field">
+                    <label className="label" htmlFor="pass">Contraseña:</label>
+                    <p class="control has-icons-left">
+                        <input class="input" type="password" name="pass" id="pass" placeholder="••••••••" readOnly />
+                        <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                    </div>
+                </div>
+                <div>
+                    {mascotas.length > 1 ? (
+                        <div className="container">
+                            <hr />
+                            <h2 className="title is-3 has-text-centered">MASCOTAS</h2>
 
-                <label htmlFor="email">Email:</label>
-                <input 
-                    type="email" 
-                    name="email" 
-                    id="email" 
-                    defaultValue={userData?.email || ''} 
-                    readOnly 
-                />
+                            <div className="columns is-vcentered is-mobile">
+                                <div className="column is-narrow has-text-centered">
+                                    <button className="button is-white carousel-prev" onClick={handlePrev}>
+                                        <span className="icon is-large">
+                                            <i className="fas fa-chevron-left fa-2x"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div className="carousel-item">
+                                    <div className="column">
+                                        <h3 className="title is-4">{mascotas[currentIndex].nombre_mascota}</h3>
 
-                <label htmlFor="pass">Contraseña:</label>
-                <input 
-                    type="password" 
-                    name="pass" 
-                    id="pass" 
-                    placeholder="••••••••" 
-                    readOnly 
-                />
-            </div>
-            <div>
-                <hr />
-                <h2>MASCOTAS</h2>
-                {mascotas.length > 1 ? (
-                    <div className="carousel">
-                        <button className="carousel-prev" onClick={handlePrev}>
-                            <span className="icon is-small">
-                                <i className="fas fa-chevron-left"></i>
-                            </span>
-                        </button>
+                                        <label className="label" htmlFor="pet-name">Nombre:</label>
+                                        <input className="input" type="text" name="pet-name" id="name" defaultValue={mascotas[currentIndex].nombre_mascota || ''} />
 
-                        <div className="carousel-item">
-                            <h3>{mascotas[currentIndex].nombre_mascota}</h3>
-                            <p>Fecha de nacimiento: {mascotas[currentIndex].fecha_nacimiento}</p>
-                            <p>Raza: {mascotas[currentIndex].raza}</p>
-                            <p>Peso: {mascotas[currentIndex].peso}</p>
-                            <p>Tamaño: {mascotas[currentIndex].tamanio}</p>
-                            <p>Largo del pelo: {mascotas[currentIndex].largo_pelo}</p>
+                                        <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
+                                        <input className="input" type="date" name="pet-born" id="pet-born" defaultValue={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01"/>
+
+                                        <label className="label" htmlFor="pet-race">Raza:</label>
+                                        <input className="input" type="text" name="pet-race" id="pet-race" defaultValue={mascotas[currentIndex].raza || ''} />
+
+                                        <label className="label" htmlFor="weight-name">Peso:</label>
+                                        <input className="input" type="text" name="weight-name" id="weight-name" defaultValue={mascotas[currentIndex].peso || ''} />
+
+                                        <label className="label" htmlFor="pet-size">Tamaño:</label>
+                                        <input className="input" type="text" name="pet-size" id="pet-size" defaultValue={mascotas[currentIndex].tamanio || ''} />
+
+                                        <label className="label" htmlFor="hair-length">Largo de pelo:</label>
+                                        <input className="input" type="text" name="hair-length" id="hair-length" defaultValue={mascotas[currentIndex].largo_pelo|| ''} />
+                                    </div>
+
+                                    <div className="column is-narrow has-text-centered">
+                                        <button className="button is-white" onClick={handleNext}>
+                                            <span className="icon is-large">
+                                                <i className="fas fa-chevron-right fa-2x"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <button className="carousel-next" onClick={handleNext}>
-                            <span className="icon is-small">
-                                <i className="fas fa-chevron-right"></i>
-                            </span>
+                    ) : mascotas.length === 1 ? (
+                        <div>
+                            <h3>{mascotas[0].nombre_mascota}</h3>
+                            <p>Fecha de nacimiento: {mascotas[0].fecha_nacimiento}</p>
+                            <p>Raza: {mascotas[0].raza}</p>
+                            <p>Peso: {mascotas[0].peso}</p>
+                            <p>Tamaño: {mascotas[0].tamanio}</p>
+                            <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
+                        </div>
+                    ) : (
+                        <p>No hay mascotas registradas</p>
+                    )}
+                </div>
+                <hr />
+                <div class="field is-grouped is-grouped-right">
+                    <p class="control">
+                        <button class="button is-primary is-link">
+                        Aceptar
                         </button>
-                    </div>
-                ) : mascotas.length === 1 ? (
-                    <div>
-                        <h3>{mascotas[0].nombre_mascota}</h3>
-                        <p>Fecha de nacimiento: {mascotas[0].fecha_nacimiento}</p>
-                        <p>Raza: {mascotas[0].raza}</p>
-                        <p>Peso: {mascotas[0].peso}</p>
-                        <p>Tamaño: {mascotas[0].tamanio}</p>
-                        <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
-                    </div>
-                ) : (
-                    <p>No hay mascotas registradas</p>
-                )}
+                    </p>
+                    <p class="control">
+                        <a class="button is-light">
+                        Cancel
+                        </a>
+                    </p>
+                </div>
+
             </div>
         </>
     );

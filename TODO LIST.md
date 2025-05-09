@@ -128,3 +128,13 @@ el cual asumo que es para poner el id del vendedor/administrador que realiza la 
 - REEMPLAZAR MENÚ HAMBURGUESA POR ICONO DE PERFIL EN VISTA DE PELUQUERO. (para poder modificar datos)
 - AGREGAR COLUMNAS "DISPONIBILIDAD" (de turnos) y ID_TURNO (foránea de turno) EN TABLA PELUQUERO
 - MODIFICAR ESTILOS DE BOTON DE CERRAR SESIÓN PA QUE CUANDO SE HAGA HOVER BRILLE 
+
+
+
+EN EL PROFILE USER, REVISAR ESTA PAGINA:
+https://bulma.io/documentation/form/general/
+
+**Contiene herramientas para la validacion** Ejemplo: "is-success" para los input
+
+FALTA TRAER LA CONTRASEÑA DE LA BD EN ProfileUser
+
