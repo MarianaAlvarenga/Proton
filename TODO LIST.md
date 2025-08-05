@@ -45,7 +45,9 @@
  * Vista historial de turnos
  * Ver bonos
  * Modificar desplegable en "Ventas". Hay que sacar "Agregar producto", "Realizar compra" y "Realizar edición".
- 
+ * No se tiene que poder modificar el año en el que se quiere sacar el turno.
+ * Poder elegir la fecha de turno entre los disponibles.
+ * El carrito esta bien raro (front-end)
 
 
  **Peluquero**
