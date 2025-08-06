@@ -13,7 +13,7 @@
  * Menu admin ✔️
  * Mostrar productos admin ✔️
  * Modificar/Eliminar productos ✔️  
- * Modificar producto ❌(no trae los datos del producto de la base y no actualiza correctamente a pesar del msj de éxito.)
+ * Modificar producto ❌(no trae los datos del producto de la base y no actualiza correctamente a pesar del msj de éxito.) ✔️
  * Faltan categorias ✔️
  * Vista inicial de turnos ✔️
  * Sign up con combo de roles ✔️
@@ -29,25 +29,33 @@
  * Modificar turno
  * Cancelar turno
  * Agregar datos de mascota
- * En Shifts falta front para asignar el turno a un cliente (lista de usuarios - buscador)
+ * En Shifts falta front para asignar el turno a un cliente (lista de usuarios - buscador) ❓❓❓
  * Agregar pie de pagina 
- * Vista turno confirmado
+ * Vista turno confirmado ❓❓❓
+ * Modificar el menu hamburguesa, una vez en la pantalla de la opcion seleccionada, esa opcion tiene que inhabilitarse.
+ * 
  
  **Cliente**
  * Menu del cliente ✔️
  * Vista de turnos del cliente ✔️
  * Vista de ventas del cliente ✔️
  * Faltan categorias ✔️
- * Agregar productos al carrito
- * Eliminar productos del carrito
+ * Agregar productos al carrito ✔️
+ * Eliminar productos del carrito ✔️
+ * El total del carrito no se actualiza
  * Ver/modificar perfil
- * Historial de compras
- * Vista historial de turnos
- * Ver bonos
- * Modificar desplegable en "Ventas". Hay que sacar "Agregar producto", "Realizar compra" y "Realizar edición".
+ * Historial de compras ❓❓❓
+ * Vista historial de turnos ❓❓❓
+ * Ver bonos ❓❓❓
+ * Modificar desplegable en "Ventas". Hay que sacar "Agregar producto", "Realizar compra" y "Realizar edición".✔️
  * No se tiene que poder modificar el año en el que se quiere sacar el turno.
  * Poder elegir la fecha de turno entre los disponibles.
  * El carrito esta bien raro (front-end)
+ * Cambiar el menu hamburguesa en el home.
+ * Cuando hay pocos productos en la pantalla, no se ven todas las opciones del menu hamburguesa.
+ * El sacar un turno desde el cliente no deberia pedir el mail, ya que no va a sacar el cliente un turno para otra persona.
+ * Reubicar botones "Aceptar", "Cancelar", etc en todas las pantallas.
+
 
 
  **Peluquero**
@@ -56,6 +64,8 @@
  * Vista calendario con turnos ya asignados
  * Sacar turno
  * Ingresar cliente como atendido (permitir ingresar detalles de la atencion para el historial)
+ * Al seleccionar la disponibilidad, que en el horario se pueda escribir el numero, no solamente subir y bajar con los + y -.
+
 
  **Vendedor**
 * Menu vendedor ✔️
@@ -69,6 +79,10 @@
 * ajustar tamaño de imagenes que se suben en Products.jsx
 * Responsive
 * Menu desplegable
+* Hacer algo con los mensajes de sistema. Por ejemplo al modificar un usuario sin seleccionar ninguno, aparece un mensaje super feo.
+* Agregar un mensaje de si se esta seguro de cerrar sesión.
+* Revisar en horas_disponibles, el id_horas disponibles se esta repitiendo.
+* Quitar mascotas asociadas de peluqueros, administradores y vendedores.
 
 * VINCULAR BD DE ORACLE
 
