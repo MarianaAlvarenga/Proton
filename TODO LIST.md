@@ -69,10 +69,10 @@
 
  **Vendedor**
 * Menu vendedor ✔️
-* Ingreso a gestor de ventas
-* Permitir ventas sin cliente registrado.
-* Permitir registrar a clientes.
-* Venta de productos.
+* Ingreso a gestor de ventas ❓❓❓
+* Permitir ventas sin cliente registrado. ✔️
+* Permitir registrar a clientes (landing page)
+* Venta de productos. ❓❓❓
 
  **General**
 * Agregar cerrar sesion ✔️
@@ -81,7 +81,6 @@
 * Menu desplegable
 * Hacer algo con los mensajes de sistema. Por ejemplo al modificar un usuario sin seleccionar ninguno, aparece un mensaje super feo.
 * Agregar un mensaje de si se esta seguro de cerrar sesión.
-* Revisar en horas_disponibles, el id_horas disponibles se esta repitiendo.
 * Quitar mascotas asociadas de peluqueros, administradores y vendedores.
 
 * VINCULAR BD DE ORACLE
