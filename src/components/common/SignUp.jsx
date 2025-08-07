@@ -157,7 +157,10 @@ const SignUp = () => {
                 padding: "20px",
                 boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
               }}
-            >
+              >
+              {!showComboBox && isEditMode && (
+                <p>{getRoleName(formData.rol)}</p> // Muestra el nombre del rol
+              )}
               <UserImage
                 style={{
                   margin: "0 auto 20px",
@@ -165,7 +168,7 @@ const SignUp = () => {
                 }}
               />
               <form onSubmit={handleSubmit}>
-                <p>El valor de combobox es: {showComboBox ? 'true' : 'false'}</p>
+                
                 {showComboBox && !isEditMode && (
                   <ComboBox 
                     className="is-fullwidth"
@@ -175,9 +178,6 @@ const SignUp = () => {
                   />
                 )}
 
-                {!showComboBox && isEditMode && (
-                  <p>Rol: {getRoleName(formData.rol)}</p> // Muestra el nombre del rol
-                )}
                 <section className="is-flex is-flex-direction-column">
                   <Label
                     labelContent="Ingrese su nombre"
@@ -234,7 +234,6 @@ const SignUp = () => {
                     buttonType="submit"
                     className="is-fullwidth"
                   />
-                  <p>El valor de isEditMode es: {isEditMode ? 'true' : 'false'}</p>
                 </section>
               </form>
             </div>
