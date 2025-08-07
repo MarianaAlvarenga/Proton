@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($data['id']);
 
         // Consulta para obtener los datos del usuario por ID
-        $query = "SELECT id_usuario, nombre, apellido, email, telefono, rol FROM usuario WHERE id_usuario = ?";
+        $query = "SELECT id_usuario, nombre, apellido, email, telefono, rol, fecha_nacimiento FROM usuario WHERE id_usuario = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $id);
         $stmt->execute();

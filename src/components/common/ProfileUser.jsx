@@ -1,77 +1,58 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import UserImage from "./UserImage.jsx";
 import NavBar from "./NavBar.jsx";
 import SubNavBar from "./SubNavBar.jsx";
 
 const ProfileUser = () => {
-    /************Estados*************/
     const [mascotas, setMascotas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [userData, setUserData] = useState(null);
+    const [contrasenia, setContrasenia] = useState("");
+    const [mensaje, setMensaje] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        /*****************Obtengo ID del usuario******************/
         const userId = localStorage.getItem('userId');
-        
         if (!userId) {
             setError("Usuario no autenticado");
             setLoading(false);
             return;
         }
-        /*******************Obtengo los datos del usuario mediante un fetch************************/
         const fetchData = async () => {
             try {
-                // 1. Obtenemos datos del usuario
                 const userResponse = await fetch(
                     `http://localhost:8080/Proton/backend/actions/getUserById.php`,
                     {
                         method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                         body: JSON.stringify({ id: userId })
                     }
                 );
-                /**************Control de errores****************/
-                if (!userResponse.ok) {
-                    throw new Error(`Error usuario: ${userResponse.status}`);
-                }
+                if (!userResponse.ok) throw new Error(`Error usuario: ${userResponse.status}`);
 
                 const userJson = await userResponse.json();
-                
-                if (!userJson.success) {
-                    throw new Error(userJson.message || "Error al obtener datos del usuario");
-                }
+                if (!userJson.success) throw new Error(userJson.message || "Error al obtener datos del usuario");
 
                 setUserData(userJson.user);
+                setContrasenia("");
 
-                // 2. Obtenemos las mascotas
                 const petsResponse = await fetch(
                     `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`,
                     {
                         method: "GET",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        }
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                     }
                 );
-                /**************Control de errores****************/
-                if (!petsResponse.ok) {
-                    throw new Error(`Error mascotas: ${petsResponse.status}`);
-                }
+                if (!petsResponse.ok) throw new Error(`Error mascotas: ${petsResponse.status}`);
 
                 const petsJson = await petsResponse.json();
-                
-                if (!petsJson.success) {
-                    throw new Error(petsJson.message || "Error al obtener mascotas");
-                }
+                if (!petsJson.success) throw new Error(petsJson.message || "Error al obtener mascotas");
 
                 setMascotas(petsJson.mascotas || []);
-
             } catch (err) {
                 console.error("Error en fetchData:", err);
                 setError(err.message || "Error al cargar datos");
@@ -79,7 +60,6 @@ const ProfileUser = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
@@ -93,6 +73,65 @@ const ProfileUser = () => {
         );
     };
 
+    const handleCancel = () => {
+        navigate(-1);
+    };
+
+    const handleAceptar = async () => {
+        if (!userData) return;
+
+        const nombre = document.getElementById('name').value.trim();
+        const apellido = document.getElementById('LastName').value.trim();
+        const fecha_nacimiento = document.getElementById('born').value;
+        const telefono = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        if (!nombre || !apellido || !fecha_nacimiento || !telefono || !email) {
+            setMensaje({ tipo: 'error', texto: "Por favor complete todos los campos." });
+            return;
+        }
+
+        const payload = {
+            id_usuario: userData.id_usuario,
+            nombre,
+            apellido,
+            fecha_nacimiento,
+            telefono,
+            email,
+            rol: userData.rol
+        };
+
+        if (contrasenia.trim() !== "") {
+            payload.contrasenia = contrasenia.trim();
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/Proton/backend/actions/updateUser.php`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const json = await response.json();
+
+            if (json.success) {
+                setMensaje({ tipo: 'exito', texto: json.message });
+                setUserData(prev => ({ ...prev, nombre, apellido, fecha_nacimiento, telefono, email }));
+                setContrasenia("");
+                setTimeout(() => {
+                    navigate(-1);
+                }, 1500);
+            } else {
+                setMensaje({ tipo: 'error', texto: json.message || "Error al actualizar" });
+            }
+        } catch (error) {
+            setMensaje({ tipo: 'error', texto: "Error en la conexión al servidor." });
+        }
+    };
+
     if (loading) {
         return <p>Cargando datos...</p>;
     }
@@ -104,12 +143,12 @@ const ProfileUser = () => {
     return (
         <>
             <NavBar showProfileButton={false}></NavBar>
-            <SubNavBar  showBack ></SubNavBar>
+            <SubNavBar showBack></SubNavBar>
             <div className="field">
                 <div className="container">
                     <div className="">
                         <h1 className="title is-2">¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
-                        <UserImage userId={userData?.id_usuario}/>
+                        <UserImage userId={userData?.id_usuario} />
                         <hr />
                     </div>
                     <label className="label" htmlFor="name">Nombre:</label>
@@ -119,33 +158,50 @@ const ProfileUser = () => {
                     <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} />
 
                     <label className="label" htmlFor="born">Fecha de nacimiento:</label>
-                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01"/>
+                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01" />
 
                     <label className="label" htmlFor="phone">Teléfono:</label>
                     <input className="input" type="tel" name="phone" id="phone" defaultValue={userData?.telefono || ''} readOnly />
 
-                    <div class="field">
-                    <label className="label" htmlFor="email">Email:</label>
-                    <p class="control has-icons-left has-icons-right">
-                        <input class="input" type="email" placeholder="Email" defaultValue={userData?.email || ''} />
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
-                        </span>
-                        <span class="icon is-small is-right">
-                        <i class="fas fa-check"></i>
-                        </span>
-                    </p>
+                    <div className="field">
+                        <label className="label" htmlFor="email">Email:</label>
+                        <p className="control has-icons-left has-icons-right">
+                            <input
+                                className="input"
+                                type="email"
+                                name="email"
+                                id="email"
+                                defaultValue={userData?.email || ''}
+                                readOnly
+                            />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-envelope"></i>
+                            </span>
+                            <span className="icon is-small is-right">
+                                <i className="fas fa-check"></i>
+                            </span>
+                        </p>
                     </div>
-                    <div class="field">
-                    <label className="label" htmlFor="pass">Contraseña:</label>
-                    <p class="control has-icons-left">
-                        <input class="input" type="password" name="pass" id="pass" placeholder="••••••••" readOnly />
-                        <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                        </span>
-                    </p>
+
+                    <div className="field">
+                        <label className="label" htmlFor="pass">Contraseña:</label>
+                        <p className="control has-icons-left">
+                            <input
+                                className="input"
+                                type="text"
+                                name="pass"
+                                id="pass"
+                                value={contrasenia}
+                                onChange={(e) => setContrasenia(e.target.value)}
+                                placeholder="Ingrese nueva contraseña o deje vacío para no cambiar"
+                            />
+                            <span className="icon is-small is-left">
+                                <i className="fas fa-lock"></i>
+                            </span>
+                        </p>
                     </div>
                 </div>
+
                 <div>
                     {mascotas.length > 1 ? (
                         <div className="container">
@@ -168,7 +224,7 @@ const ProfileUser = () => {
                                         <input className="input" type="text" name="pet-name" id="name" defaultValue={mascotas[currentIndex].nombre_mascota || ''} />
 
                                         <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                        <input className="input" type="date" name="pet-born" id="pet-born" defaultValue={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01"/>
+                                        <input className="input" type="date" name="pet-born" id="pet-born" defaultValue={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01" />
 
                                         <label className="label" htmlFor="pet-race">Raza:</label>
                                         <input className="input" type="text" name="pet-race" id="pet-race" defaultValue={mascotas[currentIndex].raza || ''} />
@@ -180,7 +236,7 @@ const ProfileUser = () => {
                                         <input className="input" type="text" name="pet-size" id="pet-size" defaultValue={mascotas[currentIndex].tamanio || ''} />
 
                                         <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                        <input className="input" type="text" name="hair-length" id="hair-length" defaultValue={mascotas[currentIndex].largo_pelo|| ''} />
+                                        <input className="input" type="text" name="hair-length" id="hair-length" defaultValue={mascotas[currentIndex].largo_pelo || ''} />
                                     </div>
 
                                     <div className="column is-narrow has-text-centered">
@@ -203,23 +259,37 @@ const ProfileUser = () => {
                             <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
                         </div>
                     ) : (
-                        <p>No hay mascotas registradas</p>
+                        userData?.rol === 1 ? (
+            <p>No hay mascotas registradas</p>
+        ) : null
                     )}
                 </div>
+
                 <hr />
-                <div class="field is-grouped is-grouped-right">
-                    <p class="control">
-                        <button class="button is-primary is-link">
-                        Aceptar
+
+                {mensaje && (
+                    <p
+                        style={{
+                            color: mensaje.tipo === "exito" ? "green" : "red",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        {mensaje.texto}
+                    </p>
+                )}
+
+                <div className="field is-grouped is-grouped-right">
+                    <p className="control">
+                        <button className="button is-primary is-link" onClick={handleAceptar}>
+                            Aceptar
                         </button>
                     </p>
-                    <p class="control">
-                        <a class="button is-light">
-                        Cancel
-                        </a>
+                    <p className="control">
+                        <button className="button is-light" onClick={handleCancel}>
+                            Cancelar
+                        </button>
                     </p>
                 </div>
-
             </div>
         </>
     );
