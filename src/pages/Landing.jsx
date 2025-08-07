@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "bulma/css/bulma.min.css";
+import "./Landing.css"; // Asegurate de tener este archivo o el CSS donde pongas la clase
 
 const Landing = () => {
   return (
@@ -15,7 +15,7 @@ const Landing = () => {
                 <img
                   src={require('../assets/images/landing-dog.png')}
                   alt="Perro feliz"
-                  style={{ borderRadius: "20px", boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)" }}
+                  className="landing-image"
                 />
               </figure>
             </div>
