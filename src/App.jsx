@@ -18,12 +18,13 @@ import Alert from './components/common/Alert';
 import Cart from './components/sales/Cart';
 import UserSaleInfo from './components/sales/UserSaleInfo';
 import ProfileUser from './components/common/ProfileUser';
+import Landing from './pages/Landing';
 
 function App() {
   return (
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/Login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/ProductsCreate" element={<ProductsCreate />} />
           <Route path="/Products" element={<Products />} />
@@ -37,6 +38,7 @@ function App() {
           <Route path= "/Cart" element={<Cart/>} />
           <Route path= "/UserSaleInfo" element={<UserSaleInfo/>} />
           <Route path= "/ProfileUser" element={<ProfileUser/>} />
+          <Route path="/" element={<Landing />} />
         </Routes>
       </Router>
   );
