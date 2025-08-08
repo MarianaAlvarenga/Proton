@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval($data['id']);
 
         // Consulta para obtener los datos del usuario por ID
-        $query = "SELECT id_usuario, nombre, apellido, email, telefono, rol, fecha_nacimiento FROM usuario WHERE id_usuario = ?";
+        $query = "SELECT id_usuario, nombre, apellido, email, telefono, rol, fecha_nacimiento, img_url FROM usuario WHERE id_usuario = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
+            if (!empty($user['img_url'])) {
+                $baseUrl = "http://localhost:8080/Proton/backend/uploads/";
+                $user['img_url'] = $baseUrl . $user['img_url'];
+            }
             echo json_encode(["success" => true, "user" => $user]);
         } else {
             echo json_encode(["success" => false, "message" => "Usuario no encontrado"]);

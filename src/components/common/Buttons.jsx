@@ -52,7 +52,12 @@ const ModifyButton = ({ urlImage = ModifyImage }) => {
       .then((data) => {
         if (data.success) {
           navigate("/SignUp", {
-            state: { userData: data.user, isEditMode: true, showComboBox: false },
+            state: {
+              userData: data.user,
+              isEditMode: true,
+              showComboBox: false,
+              imageUrl: data.user.img_url || null,
+            },
           });
         } else {
           alert("Error al obtener los datos del usuario.");

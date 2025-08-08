@@ -7,9 +7,9 @@ import axios from "axios";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
-    const { productId } = useParams(); 
-    const [categories, setCategories] = useState([]); 
-    const [image, setImage] = useState(null); 
+    const { productId } = useParams();
+    const [categories, setCategories] = useState([]);
+    const [image, setImage] = useState(null);
     const [formData, setFormData] = useState({
         nombre_producto: "",
         descripcion_producto: "",
@@ -17,7 +17,7 @@ const ProductCreateForm = () => {
         punto_reposicion: "",
         categoria_id_categoria: "",
         precio_producto: "",
-        codigo_producto: productId || "", 
+        codigo_producto: productId || "",
     });
 
     useEffect(() => {
@@ -41,8 +41,9 @@ const ProductCreateForm = () => {
                             punto_reposicion: product.punto_reposicion,
                             categoria_id_categoria: product.categoria_id_categoria,
                             precio_producto: product.precio_producto,
-                            codigo_producto: product.id, 
+                            codigo_producto: product.id,
                         });
+                        setImage(product.image_url);
                     }
                 })
                 .catch(error => {
@@ -99,7 +100,7 @@ const ProductCreateForm = () => {
 
             if (response.data.success) {
                 alert(productId ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
-                navigate('/products'); 
+                navigate('/products');
             } else {
                 alert("Error al " + (productId ? "actualizar" : "crear") + " el producto: " + response.data.message);
             }
@@ -109,39 +110,43 @@ const ProductCreateForm = () => {
         }
     };
 
+    const handleCancel = () => {
+        navigate('/products');
+    };
+
     return (
         <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
-            <ProductImage onImageUpload={handleFileChange} />
+            <ProductImage onImageUpload={handleFileChange} imageUrl={image} />
             <div className="box">
                 <form onSubmit={handleSubmit}>
-                    {/* Campo oculto para el código del producto */}
                     <input
                         type="hidden"
                         name="codigo_producto"
                         value={formData.codigo_producto}
                     />
 
-                    {/* Campo: Categoría */}
+                    {/* CATEGORÍA */}
                     <div className="field">
                         <label className="label">Categoría</label>
-                        <div className="select" style={{ width: '100%' }}>
-                            <select
-                                name="categoria_id_categoria"
-                                value={formData.categoria_id_categoria}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Seleccionar categoría</option>
-                                {categories.map(category => (
-                                    <option key={category.id_categoria} value={category.id_categoria}>
-                                        {category.nombre_categoria}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="control">
+                            <div className="select is-fullwidth">
+                                <select
+                                    name="categoria_id_categoria"
+                                    value={formData.categoria_id_categoria}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="">Seleccionar categoría</option>
+                                    {categories.map((category) => (
+                                        <option key={category.id_categoria} value={category.id_categoria}>
+                                            {category.nombre_categoria}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Campo: Nombre del producto */}
                     <div className="field">
                         <label className="label">Nombre del producto</label>
                         <div className="control">
@@ -157,7 +162,6 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Campo: Descripción del producto */}
                     <div className="field">
                         <label className="label">Descripción del producto</label>
                         <div className="control">
@@ -171,7 +175,6 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Campo: Stock del producto */}
                     <div className="field">
                         <label className="label">Stock</label>
                         <div className="control">
@@ -187,7 +190,6 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Campo: Precio del producto */}
                     <div className="field">
                         <label className="label">Precio</label>
                         <div className="control">
@@ -203,7 +205,6 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Campo: Punto de reposición */}
                     <div className="field">
                         <label className="label">Punto de reposición</label>
                         <div className="control">
@@ -219,9 +220,8 @@ const ProductCreateForm = () => {
                         </div>
                     </div>
 
-                    {/* Botones */}
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <CancelButton onClick={() => navigate('/products')} />
+                        <CancelButton onClick={handleCancel} />
                         <OkButton NameButton={productId ? "Actualizar" : "Agregar"} />
                     </div>
                 </form>

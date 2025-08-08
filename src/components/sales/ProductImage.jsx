@@ -1,29 +1,33 @@
-import React, { useRef, useState } from "react";
-import DefaultImage from '../../assets/images/DefaultImage.png'; // Importación estática de la imagen por defecto
+import React, { useRef, useState, useEffect } from "react";
+import DefaultImage from '../../assets/images/DefaultImage.png'; // Imagen por defecto
 
-const ProductImage = ({ onImageUpload }) => {
+const ProductImage = ({ onImageUpload, imageUrl }) => {
     const [selectedImage, setSelectedImage] = useState(DefaultImage);
     const fileInputRef = useRef(null);
 
-    // Maneja el cambio de archivo
+    // Carga la imagen existente si llega por props
+    useEffect(() => {
+        if (imageUrl) {
+            setSelectedImage(imageUrl);
+        }
+    }, [imageUrl]);
+
+    // Cambia la imagen cuando el usuario sube un archivo nuevo
     const handleFileChange = (event) => {
         const file = event.target.files ? event.target.files[0] : null;
         if (file) {
-            // Establece la imagen seleccionada
-            setSelectedImage(URL.createObjectURL(file)); // Vista previa de la imagen
-
-            // Si existe la función onImageUpload, llama con el archivo
+            setSelectedImage(URL.createObjectURL(file));
             if (onImageUpload) {
-                onImageUpload(file); // Llama a la función de subida con el archivo seleccionado
+                onImageUpload(file);
             }
         } else {
             console.error('No se seleccionó un archivo válido');
         }
     };
 
-    // Simula un clic en el input file cuando se hace clic en la imagen
+    // Abre el input al hacer clic en la imagen
     const handleClick = () => {
-        fileInputRef.current.click(); // Simula un clic en el input file
+        fileInputRef.current.click();
     };
 
     return (
@@ -42,7 +46,7 @@ const ProductImage = ({ onImageUpload }) => {
                     ref={fileInputRef} 
                     style={{ display: 'none' }} 
                     onChange={handleFileChange} 
-                    accept="image/*" // Solo permite subir imágenes
+                    accept="image/*"
                 />
             </a>
         </div>

@@ -12,7 +12,6 @@ const SignUp = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Estados para manejar los datos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -20,20 +19,19 @@ const SignUp = () => {
     telefono: "",
     contrasenia: "",
     confirmarContrasenia: "",
-    rol: 1, // Por defecto, rol de cliente
+    rol: 1,
   });
 
-  const [isEditMode, setIsEditMode] = useState(false); // Estado para verificar si es edición
+  const [isEditMode, setIsEditMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
-
-  // Estado para almacenar los roles
   const [roles, setRoles] = useState([]);
 
-  // Asegurarse de que isEditMode y showComboBox se actualicen correctamente al recibir los datos desde location.state
+  // Estado para vista previa de imagen
+  const [imagenPreview, setImagenPreview] = useState(null);
+
   useEffect(() => {
-    // Obtener los roles del backend
     const fetchRoles = async () => {
       try {
         const response = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
@@ -41,32 +39,34 @@ const SignUp = () => {
         if (data.error) {
           console.error(data.message);
         } else {
-          setRoles(data); // Guardamos los roles en el estado
+          setRoles(data);
         }
       } catch (error) {
         console.error("Error al obtener los roles:", error);
       }
     };
 
-    // Llamamos a la función para obtener los roles
     fetchRoles();
 
-    // Revisamos si hay datos en location.state
     if (location.state) {
       const { userData, isEditMode, showComboBox } = location.state;
       setShowComboBox(showComboBox || false);
 
-      // Si hay datos del usuario, significa que estamos en modo edición
       if (userData) {
         setFormData({
           nombre: userData.nombre || "",
           apellido: userData.apellido || "",
           email: userData.email || "",
           telefono: userData.telefono || "",
-          contrasenia: "", // La contraseña no se rellena por seguridad
-          confirmarContrasenia: "", // Tampoco se rellena
+          contrasenia: "",
+          confirmarContrasenia: "",
           rol: userData.rol || 1,
         });
+
+        // Si hay imagen del usuario, guardarla como preview
+        if (userData.img_url) {
+          setImagenPreview(userData.img_url);
+        }
 
         setIsEditMode(isEditMode || false);
         setShowComboBox(showComboBox || false);
@@ -74,13 +74,11 @@ const SignUp = () => {
     }
   }, [location]);
 
-  // Manejador para actualizar los datos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Manejador para enviar los datos al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -132,10 +130,9 @@ const SignUp = () => {
     }
   };
 
-  // Buscar el nombre del rol por el id
   const getRoleName = (roleId) => {
     const role = roles.find((r) => r.id === roleId);
-    return role ? role.rol : "Rol desconocido"; // Devuelve el nombre del rol o "Rol desconocido" si no se encuentra
+    return role ? role.rol : "Rol desconocido";
   };
 
   return (
@@ -145,32 +142,41 @@ const SignUp = () => {
       <div className="container">
         <div
           className="columns is-centered is-vcentered"
-          style={{
-            minHeight: "100vh",
-            padding: "10px",
-          }}
+          style={{ minHeight: "100vh", padding: "10px" }}
         >
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
-            <div
-              className="box"
-              style={{
-                padding: "20px",
-                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-              }}
-              >
+            <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+              
               {!showComboBox && isEditMode && (
-                <p>{getRoleName(formData.rol)}</p> // Muestra el nombre del rol
+                <p>{getRoleName(formData.rol)}</p>
               )}
-              <UserImage
-                style={{
-                  margin: "0 auto 20px",
-                  display: "block",
-                }}
-              />
+
+              {/* Imagen del usuario si está en edición */}
+              {isEditMode && imagenPreview ? (
+                <img
+                  src={imagenPreview}
+                  alt="Foto de perfil"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                    margin: "0 auto 20px",
+                    display: "block",
+                  }}
+                />
+              ) : (
+                <UserImage
+                  style={{
+                    margin: "0 auto 20px",
+                    display: "block",
+                  }}
+                />
+              )}
+
               <form onSubmit={handleSubmit}>
-                
                 {showComboBox && !isEditMode && (
-                  <ComboBox 
+                  <ComboBox
                     className="is-fullwidth"
                     onChange={(value) =>
                       setFormData({ ...formData, rol: parseInt(value, 10) })
