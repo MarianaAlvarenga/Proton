@@ -221,22 +221,35 @@ const ProfileUser = () => {
                                         <h3 className="title is-4">{mascotas[currentIndex].nombre_mascota}</h3>
 
                                         <label className="label" htmlFor="pet-name">Nombre:</label>
-                                        <input className="input" type="text" name="pet-name" id="name" defaultValue={mascotas[currentIndex].nombre_mascota || ''} />
+                                        <input className="input" type="text" name="pet-name" id="name" value={mascotas[currentIndex].nombre_mascota || ''} />
 
                                         <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                        <input className="input" type="date" name="pet-born" id="pet-born" defaultValue={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01" />
+                                        <input className="input" type="date" name="pet-born" id="pet-born" value={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01" />
+
+                                        <label className="label" htmlFor="pet-species">Especie:</label>
+                                        <input className="input" type="text" name="pet-species" id="pet-species" value={mascotas[currentIndex].especie || ''} />
 
                                         <label className="label" htmlFor="pet-race">Raza:</label>
-                                        <input className="input" type="text" name="pet-race" id="pet-race" defaultValue={mascotas[currentIndex].raza || ''} />
+                                        <input className="input" type="text" name="pet-race" id="pet-race" value={mascotas[currentIndex].raza || ''} />
+
+                                        <label className="label" htmlFor="pet-sex">Sexo:</label>
+                                        <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotas[currentIndex].sexo || ''} />
 
                                         <label className="label" htmlFor="weight-name">Peso:</label>
-                                        <input className="input" type="text" name="weight-name" id="weight-name" defaultValue={mascotas[currentIndex].peso || ''} />
+                                        <input className="input" type="text" name="weight-name" id="weight-name" value={mascotas[currentIndex].peso || ''} />
 
                                         <label className="label" htmlFor="pet-size">Tamaño:</label>
-                                        <input className="input" type="text" name="pet-size" id="pet-size" defaultValue={mascotas[currentIndex].tamanio || ''} />
+                                        <input className="input" type="text" name="pet-size" id="pet-size" value={mascotas[currentIndex].tamanio || ''} />
 
                                         <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                        <input className="input" type="text" name="hair-length" id="hair-length" defaultValue={mascotas[currentIndex].largo_pelo || ''} />
+                                        <input className="input" type="text" name="hair-length" id="hair-length" value={mascotas[currentIndex].largo_pelo || ''} />
+                                    
+                                        
+                                        <label className="label" htmlFor="pet-color">Color:</label>
+                                        <input className="input" type="text" name="pet-color" id="pet-color" value={mascotas[currentIndex].color || ''} />
+
+                                        <label className="label" for="pet-detail">Información médica relevante:</label>
+                                        <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"></textarea>
                                     </div>
 
                                     <div className="column is-narrow has-text-centered">
