@@ -217,6 +217,13 @@ const ProfileUser = () => {
                                         </span>
                                     </button>
                                 </div>
+                                <div className="column is-narrow has-text-centered">
+                                    <button className="button is-white" onClick={handleNext}>
+                                        <span className="icon is-large">
+                                            <i className="fas fa-chevron-right fa-2x"></i>
+                                        </span>
+                                    </button>
+                                </div>
                                 <div className="carousel-item">
                                     <div className="column">
                                         <h3 className="title is-2">{mascotas[currentIndex].nombre_mascota}</h3>
@@ -251,27 +258,52 @@ const ProfileUser = () => {
                                         <input className="input" type="text" name="pet-color" id="pet-color" value={mascotas[currentIndex].color || ''} />
 
                                         <label className="label" for="pet-detail">Información médica relevante:</label>
-                                        <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"></textarea>
+                                        <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30">{mascotas[0].detalle || ''}</textarea>
                                     </div>
 
-                                    <div className="column is-narrow has-text-centered">
-                                        <button className="button is-white" onClick={handleNext}>
-                                            <span className="icon is-large">
-                                                <i className="fas fa-chevron-right fa-2x"></i>
-                                            </span>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     ) : mascotas.length === 1 ? (
                         <div>
-                            <h3>{mascotas[0].nombre_mascota}</h3>
-                            <p>Fecha de nacimiento: {mascotas[0].fecha_nacimiento}</p>
-                            <p>Raza: {mascotas[0].raza}</p>
-                            <p>Peso: {mascotas[0].peso}</p>
-                            <p>Tamaño: {mascotas[0].tamanio}</p>
-                            <p>Largo del pelo: {mascotas[0].largo_pelo}</p>
+                            <div className="columns is-vcentered is-mobile">
+                                <div className="column">
+                                    <h3 className="title is-2">{mascotas[0].nombre_mascota}</h3>
+
+                                    <PetImage petId={mascotas[0].id_mascota} />
+                                    <label className="label" htmlFor="pet-name">Nombre:</label>
+                                    <input className="input" type="text" name="pet-name" id="name" value={mascotas[0].nombre_mascota || ''} />
+
+                                    <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
+                                    <input className="input" type="date" name="pet-born" id="pet-born" value={mascotas[0].fecha_nacimiento || ''} min="1900-01-01" />
+
+                                    <label className="label" htmlFor="pet-species">Especie:</label>
+                                    <input className="input" type="text" name="pet-species" id="pet-species" value={mascotas[0].especie || ''} />
+
+                                    <label className="label" htmlFor="pet-race">Raza:</label>
+                                    <input className="input" type="text" name="pet-race" id="pet-race" value={mascotas[0].raza || ''} />
+
+                                    <label className="label" htmlFor="pet-sex">Sexo:</label>
+                                    <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotas[0].sexo || ''} />
+
+                                    <label className="label" htmlFor="weight-name">Peso:</label>
+                                    <input className="input" type="text" name="weight-name" id="weight-name" value={mascotas[0].peso || ''} />
+
+                                    <label className="label" htmlFor="pet-size">Tamaño:</label>
+                                    <input className="input" type="text" name="pet-size" id="pet-size" value={mascotas[0].tamanio || ''} />
+
+                                    <label className="label" htmlFor="hair-length">Largo de pelo:</label>
+                                    <input className="input" type="text" name="hair-length" id="hair-length" value={mascotas[0].largo_pelo || ''} />
+                                
+                                    
+                                    <label className="label" htmlFor="pet-color">Color:</label>
+                                    <input className="input" type="text" name="pet-color" id="pet-color" value={mascotas[0].color || ''} />
+
+                                    <label className="label" for="pet-detail">Información médica relevante:</label>
+                                    <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30">{mascotas[0].detalle || ''}</textarea>
+
+                                </div>
+                            </div>
                         </div>
                     ) : (
                         userData?.rol === 1 ? (
