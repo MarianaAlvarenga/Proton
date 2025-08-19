@@ -9,3 +9,30 @@
 [06-Aug-2025 04:21:37 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\6892bc318a6f0.png
 [07-Aug-2025 05:14:07 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\689419ff24df1.png
 [07-Aug-2025 05:16:44 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68941a9ca58ba.png
+[19-Aug-2025 01:47:08 Europe/Berlin] Inicio subida imagen para petId: 1
+[19-Aug-2025 01:47:08 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => 5 Non-Basic Tattoos I Will Be Adding To My Canvas ASAP.jpeg
+    [full_path] => 5 Non-Basic Tattoos I Will Be Adding To My Canvas ASAP.jpeg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php179F.tmp
+    [error] => 0
+    [size] => 144215
+)
+
+[19-Aug-2025 01:47:08 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_68a3bb7cbc69a1.81516017.jpeg
+[19-Aug-2025 01:47:08 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 1
+[19-Aug-2025 01:59:16 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68a3be54340f0.jpg
+[19-Aug-2025 02:01:44 Europe/Berlin] Inicio subida imagen para petId: 2
+[19-Aug-2025 02:01:44 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => WhatsApp Image 2025-08-12 at 11.11.22.jpeg
+    [full_path] => WhatsApp Image 2025-08-12 at 11.11.22.jpeg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php7487.tmp
+    [error] => 0
+    [size] => 176266
+)
+
+[19-Aug-2025 02:01:44 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_68a3bee8804b36.18278503.jpeg
+[19-Aug-2025 02:01:44 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 2

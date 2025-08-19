@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserImage from "./UserImage.jsx";
+import PetImage from "./PetImage.jsx";
 import NavBar from "./NavBar.jsx";
 import SubNavBar from "./SubNavBar.jsx";
 
@@ -218,7 +219,8 @@ const ProfileUser = () => {
                                 </div>
                                 <div className="carousel-item">
                                     <div className="column">
-                                        <h3 className="title is-4">{mascotas[currentIndex].nombre_mascota}</h3>
+                                        <h3 className="title is-2">{mascotas[currentIndex].nombre_mascota}</h3>
+                                        <PetImage petId={mascotas[currentIndex].id_mascota} />
 
                                         <label className="label" htmlFor="pet-name">Nombre:</label>
                                         <input className="input" type="text" name="pet-name" id="name" value={mascotas[currentIndex].nombre_mascota || ''} />
