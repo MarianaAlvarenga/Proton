@@ -56,7 +56,7 @@ const SignUp = () => {
         setFormData({
           nombre: userData.nombre || "",
           apellido: userData.apellido || "",
-          email: userData.email || "",
+          email: "",
           telefono: userData.telefono || "",
           contrasenia: "",
           confirmarContrasenia: "",
@@ -137,7 +137,7 @@ const SignUp = () => {
 
   return (
     <>
-      <NavBar />
+      <NavBar showHomeButton={false} showProfileButton={false}/>
       <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
       <div className="container">
         <div
@@ -202,7 +202,7 @@ const SignUp = () => {
                     inputName="email"
                     inputValue={formData.email}
                     handleChange={handleChange}
-                    type="email"
+                    autoComplete="off"
                   />
                   <Label
                     labelContent="Número de teléfono"
@@ -219,6 +219,7 @@ const SignUp = () => {
                         inputValue={formData.contrasenia}
                         handleChange={handleChange}
                         type="password"
+                        autoComplete="new-password"
                       />
                       <Label
                         labelContent="Confirmar contraseña"
@@ -226,6 +227,7 @@ const SignUp = () => {
                         inputValue={formData.confirmarContrasenia}
                         handleChange={handleChange}
                         type="password"
+                        autoComplete="new-password"
                       />
                     </>
                   )}

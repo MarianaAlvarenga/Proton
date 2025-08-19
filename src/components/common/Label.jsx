@@ -1,6 +1,6 @@
 import React from "react";
 
-const Label = ({ labelContent = "example", inputName, inputValue, handleChange, type = "text" }) => {
+const Label = ({ labelContent = "example", inputName, inputValue, handleChange, type = "text", autoComplete = "off" }) => {
   return (
     <div className="field" style={{ margin: "1em" }}>
       <div className="control">
@@ -11,6 +11,7 @@ const Label = ({ labelContent = "example", inputName, inputValue, handleChange, 
           name={inputName}
           value={inputValue}
           onChange={handleChange}
+          autoComplete = {autoComplete}
         />
       </div>
     </div>
