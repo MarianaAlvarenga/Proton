@@ -28,7 +28,7 @@ const Cart = () => {
     <div className="page-wrapper">
       <section className="section" style={{ margin: "0px" }}>
         <NavBar showSearch showMenu />
-        <SubNavBar showBack showCart currentPage="Carrito" />
+        <SubNavBar showBack currentPage="Carrito" />
 
           <div className="is-flex is-justify-content-center">
             TOTAL: ${calculateTotal()} {/* Mostrar el TOTAL */}
