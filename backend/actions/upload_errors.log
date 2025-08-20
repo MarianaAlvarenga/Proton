@@ -36,3 +36,16 @@
 
 [19-Aug-2025 02:01:44 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_68a3bee8804b36.18278503.jpeg
 [19-Aug-2025 02:01:44 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 2
+[19-Aug-2025 23:40:06 Europe/Berlin] Inicio subida imagen para petId: 2
+[19-Aug-2025 23:40:06 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => WhatsApp Image 2025-08-12 at 22.08.40.jpeg
+    [full_path] => WhatsApp Image 2025-08-12 at 22.08.40.jpeg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpC67E.tmp
+    [error] => 0
+    [size] => 165369
+)
+
+[19-Aug-2025 23:40:06 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_68a4ef3691be91.12530319.jpeg
+[19-Aug-2025 23:40:06 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 2

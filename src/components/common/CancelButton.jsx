@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./CancelButton.css"; 
 
-const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, onClick }) => {
+const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, onClick, End=false }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -12,7 +13,7 @@ const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, on
     }
 
     // Comportamiento por defecto si no se pasa onClick
-    if (className === "cancel-button") {
+    if (NameButton === "Cancelar") {
       if (clearCart) {
         localStorage.removeItem("cart");
         clearCart();
@@ -27,10 +28,10 @@ const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, on
   };
 
   return (
-    <div style={{ width: "50%", display: "flex", justifyContent: "center", margin: 0 }}>
+    <div className={`center ${End ? "end" : ""}`}>
       <button
         type="button"
-        className="button is-fullwidth"
+        className="button"
         style={{ backgroundColor: "#6A0DAD", color: "white" }}
         onClick={handleClick}
       >

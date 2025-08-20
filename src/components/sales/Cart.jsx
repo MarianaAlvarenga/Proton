@@ -30,12 +30,14 @@ const Cart = () => {
         <NavBar showSearch showMenu />
         <SubNavBar showBack showCart currentPage="Carrito" />
 
-        <div className="ButtonsPanel">
-          <div>
+          <div className="is-flex is-justify-content-center">
             TOTAL: ${calculateTotal()} {/* Mostrar el TOTAL */}
           </div>
-          <CancelButton className="button" NameButton="Seguir comprando" />
+        <div className="ButtonsPanel">
+          <CancelButton className="button" NameButton="Volver" End={true}/>
+          <hr />
         </div>
+
 
         <div className="products-container-wrapper">
           <div className="products-container">
@@ -43,6 +45,7 @@ const Cart = () => {
               cartProducts.map((product) => (
                 <div className="product-card" key={product.id}>
                   <ProductCard
+                    ListMode={true}
                     ProductName={product.name}
                     ProductPrice={product.price}
                     ProductImage={product.image}
@@ -58,13 +61,18 @@ const Cart = () => {
           </div>
         </div>
 
-        <div className="ButtonsPanel">
-          <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
-          <CancelButton
-            className="end-button"
-            NameButton="Finalizar compra"
-            total={calculateTotal()} // Pasar el TOTAL como prop
-          />
+        <div className="field is-grouped is-grouped-right">
+          <p className="control">
+            <CancelButton End={false} className="cancel-button button is-primary" NameButton="Cancelar" clearCart={clearCart} />
+          </p>
+          <p className="control">            
+            <CancelButton
+              End={false}
+              className="end-button"
+              NameButton="Finalizar compra"
+              total={calculateTotal()} // Pasar el TOTAL como prop
+            />
+          </p>
         </div>
 
         <div className="pagination-container">

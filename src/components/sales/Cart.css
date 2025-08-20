@@ -20,7 +20,7 @@
 /* Contenedor de las tarjetas */
 .products-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 tarjetas por fila en pantallas grandes */
+    grid-template-columns: 1fr; /* UNA tarjeta por fila */
     gap: 1rem;
     padding: 1rem;
     width: 100%;

@@ -1,6 +1,33 @@
-.card {
+.card{
     position: relative;
     background-color: white;
+}
+.cardList {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; /* reparte todo a lo ancho */
+  max-width: 80%;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+.cardList .card-image {
+  flex: 0 0 100px;  /* imagen fija, ajustá tamaño a gusto */
+}
+
+.cardList .product-name {
+  flex: 1;            /* ocupa todo el espacio disponible en el medio */
+  text-align: center; /* centra el texto horizontalmente */
+  margin: 0;          /* quita márgenes extra */
+}
+
+.cardList .product-counter {
+  flex: 0 0 auto;      /* bloque fijo al final */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;         /* espacio entre botones y número */
 }
 
 .buttonImage {
@@ -50,12 +77,6 @@
     pointer-events: none;
     align-self: center;
     justify-self: center
-}
-.product-counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
 }
 
 .counter-button {

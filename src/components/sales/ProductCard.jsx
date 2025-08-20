@@ -5,6 +5,7 @@ import "./ProductCard.css";
 const ProductCard = ({
   ProductName = "Producto",
   ProductPrice = "0.00",
+  ListMode = false, 
   ProductImage = "",
   ProductId,
   ShowAddButton = false,
@@ -114,9 +115,11 @@ const ProductCard = ({
       alert("Error al eliminar el producto.");
     }
   };
-
+  /* EMC2 */
+  /*Cambia la clase según se indique para que la card se vea cuadrada(card) u horizontal(cardList) mediante la 
+  propiedad "ListMode" */
   return (
-    <div className="card" style={{ borderRadius: "0%" }}>
+    <div className={`card ${ListMode ? "cardList" : ""}`} >
       <div className="card-image" style={{ borderRadius: "0%" }}>
         <figure className="image is-16by9">
           <img
@@ -141,8 +144,8 @@ const ProductCard = ({
           )}
         </figure>
       </div>
+      <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
       <div className="card-content">
-        <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
         <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
         {ShowCount && (
           <div className="product-counter">

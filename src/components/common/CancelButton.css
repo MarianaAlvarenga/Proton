@@ -1,0 +1,15 @@
+.center {
+  color: white;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  margin: 0px;
+}
+
+.center.end {
+  color: white;
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 30px;
+}
