@@ -13,8 +13,24 @@ const ProfileUser = () => {
     const [userData, setUserData] = useState(null);
     const [contrasenia, setContrasenia] = useState("");
     const [mensaje, setMensaje] = useState(null);
+    const [editandoMascota, setEditandoMascota] = useState(false);
+    const [mascotaEdit, setMascotaEdit] = useState(null);
+    const [editandoUsuario, setEditandoUsuario] = useState(false);
+    const [usuarioEdit, setUsuarioEdit] = useState(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (mascotas.length > 0) {
+            setMascotaEdit({ ...mascotas[currentIndex] });
+        }
+    }, [currentIndex, mascotas]);
+
+    useEffect(() => {
+        if (userData) {
+            setUsuarioEdit({ ...userData });
+        }
+    }, [userData]);
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
@@ -78,7 +94,7 @@ const ProfileUser = () => {
         navigate(-1);
     };
 
-    const handleAceptar = async () => {
+    const handleActualizarUsuario = async () => {
         if (!userData) return;
 
         const nombre = document.getElementById('name').value.trim();
@@ -133,6 +149,34 @@ const ProfileUser = () => {
         }
     };
 
+    const handleActualizarMascota = async () => {
+        if (!mascotaEdit) return;
+
+        try {
+            const response = await fetch(
+                `http://localhost:8080/Proton/backend/actions/updatePet.php`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(mascotaEdit),
+                }
+            );
+            const json = await response.json();
+            if (json.success) {
+                setMensaje({ tipo: 'exito', texto: json.message });
+                setMascotas(prev => {
+                    const updated = [...prev];
+                    updated[currentIndex] = { ...mascotaEdit };
+                    return updated;
+                });
+            } else {
+                setMensaje({ tipo: 'error', texto: json.message || 'Error al actualizar mascota' });
+            }
+        } catch (error) {
+            setMensaje({ tipo: 'error', texto: 'Error en la conexión al servidor.' });
+        }
+    };
+
     if (loading) {
         return <p>Cargando datos...</p>;
     }
@@ -150,19 +194,27 @@ const ProfileUser = () => {
                     <div className="">
                         <h1 className="title is-2">¡HOLA {userData?.nombre ? userData.nombre.toUpperCase() : 'USUARIO'}!</h1>
                         <UserImage userId={userData?.id_usuario} />
-                        <hr />
+                        <p className="control">
+                            <button className={`${editandoUsuario ? "button is-primary is-link" : "button is-light"}`} onClick={() => setEditandoUsuario(true)}>
+                                Editar perfil
+                            </button>
+                        </p>
                     </div>
                     <label className="label" htmlFor="name">Nombre:</label>
-                    <input className="input" type="text" name="name" id="name" defaultValue={userData?.nombre || ''} />
+                    <input className="input" type="text" name="name" id="name" defaultValue={userData?.nombre || ''} 
+                           readOnly={!editandoUsuario}/>
 
                     <label className="label" htmlFor="LastName">Apellido:</label>
-                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} />
+                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} 
+                           readOnly={!editandoUsuario}/>
 
                     <label className="label" htmlFor="born">Fecha de nacimiento:</label>
-                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01" />
+                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01" 
+                           readOnly={!editandoUsuario}/>
 
                     <label className="label" htmlFor="phone">Teléfono:</label>
-                    <input className="input" type="tel" name="phone" id="phone" defaultValue={userData?.telefono || ''} readOnly />
+                    <input className="input" type="tel" name="phone" id="phone" defaultValue={userData?.telefono || ''} 
+                           readOnly={!editandoUsuario} />
 
                     <div className="field">
                         <label className="label" htmlFor="email">Email:</label>
@@ -173,7 +225,7 @@ const ProfileUser = () => {
                                 name="email"
                                 id="email"
                                 defaultValue={userData?.email || ''}
-                                readOnly
+                                readOnly={!editandoUsuario}
                             />
                             <span className="icon is-small is-left">
                                 <i className="fas fa-envelope"></i>
@@ -195,16 +247,30 @@ const ProfileUser = () => {
                                 value={contrasenia}
                                 onChange={(e) => setContrasenia(e.target.value)}
                                 placeholder="Ingrese nueva contraseña o deje vacío para no cambiar"
+                                readOnly={!editandoUsuario}
                             />
                             <span className="icon is-small is-left">
                                 <i className="fas fa-lock"></i>
                             </span>
                         </p>
                     </div>
+                    <div className="field is-grouped is-grouped-right mb-2">
+                        <p className="control">
+                            <button className="button is-primary is-link" onClick={handleActualizarUsuario}>
+                                Actualizar
+                            </button>
+                        </p>
+                        <p className="control">
+                            <button className="button is-light" onClick={handleCancel}>
+                                Cancelar
+                            </button>
+                        </p>
+                    </div>
                 </div>
 
                 <div>
                     {mascotas.length > 1 ? (
+                        
                         <div className="container">
                             <hr />
                             <h2 className="title is-3 has-text-centered">MASCOTAS</h2>
@@ -225,42 +291,67 @@ const ProfileUser = () => {
                                     </button>
                                 </div>
                                 <div className="carousel-item">
+                                    
                                     <div className="column">
                                         <h3 className="title is-2">{mascotas[currentIndex].nombre_mascota}</h3>
+                                        <p className="control">
+                                            <button className={`${editandoMascota ? "button is-primary is-link" : "button is-light"}`} onClick={() => setEditandoMascota(true)}>
+                                                Editar mascota
+                                            </button>
+                                        </p>
                                         <PetImage petId={mascotas[currentIndex].id_mascota} />
-
                                         <label className="label" htmlFor="pet-name">Nombre:</label>
-                                        <input className="input" type="text" name="pet-name" id="name" value={mascotas[currentIndex].nombre_mascota || ''} />
+                                        <input className="input" type="text" name="pet-name" id="pet-name" value={mascotaEdit?.nombre_mascota || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))} 
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                        <input className="input" type="date" name="pet-born" id="pet-born" value={mascotas[currentIndex].fecha_nacimiento || ''} min="1900-01-01" />
+                                        <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01" 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-species">Especie:</label>
-                                        <input className="input" type="text" name="pet-species" id="pet-species" value={mascotas[currentIndex].especie || ''} />
+                                        <input className="input" type="text" name="pet-species" id="pet-species" value={mascotaEdit?.especie || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-race">Raza:</label>
-                                        <input className="input" type="text" name="pet-race" id="pet-race" value={mascotas[currentIndex].raza || ''} />
+                                        <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-sex">Sexo:</label>
-                                        <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotas[currentIndex].sexo || ''} />
+                                        <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotaEdit?.sexo || ''}
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="weight-name">Peso:</label>
-                                        <input className="input" type="text" name="weight-name" id="weight-name" value={mascotas[currentIndex].peso || ''} />
+                                        <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-size">Tamaño:</label>
-                                        <input className="input" type="text" name="pet-size" id="pet-size" value={mascotas[currentIndex].tamanio || ''} />
+                                        <input className="input" type="text" name="pet-size" id="pet-size" value={mascotaEdit?.tamanio || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                        <input className="input" type="text" name="hair-length" id="hair-length" value={mascotas[currentIndex].largo_pelo || ''} />
+                                        <input className="input" type="text" name="hair-length" id="hair-length" value={mascotaEdit?.largo_pelo || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
                                     
                                         
                                         <label className="label" htmlFor="pet-color">Color:</label>
-                                        <input className="input" type="text" name="pet-color" id="pet-color" value={mascotas[currentIndex].color || ''} />
+                                        <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
+                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
+                                               readOnly={!editandoMascota}/>
 
                                         <label className="label" for="pet-detail">Información médica relevante:</label>
-                                        <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30">{mascotas[0].detalle || ''}</textarea>
+                                        <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
+                                                  onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
+                                                  readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
                                     </div>
-
+                                
                                 </div>
                             </div>
                         </div>
@@ -269,38 +360,62 @@ const ProfileUser = () => {
                             <div className="columns is-vcentered is-mobile">
                                 <div className="column">
                                     <h3 className="title is-2">{mascotas[0].nombre_mascota}</h3>
-
+                                    <p className="control">
+                                        <button className={`${editandoMascota ? "button is-primary is-link" : "button is-light"}`} onClick={() => setEditandoMascota(true)}>
+                                            Editar mascota
+                                        </button>
+                                    </p>
                                     <PetImage petId={mascotas[0].id_mascota} />
                                     <label className="label" htmlFor="pet-name">Nombre:</label>
-                                    <input className="input" type="text" name="pet-name" id="name" value={mascotas[0].nombre_mascota || ''} />
+                                    <input className="input" type="text" name="pet-name" id="name" value={mascotaEdit?.nombre_mascota || ''} 
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))}
+                                            readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                    <input className="input" type="date" name="pet-born" id="pet-born" value={mascotas[0].fecha_nacimiento || ''} min="1900-01-01" />
+                                    <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01" 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-species">Especie:</label>
-                                    <input className="input" type="text" name="pet-species" id="pet-species" value={mascotas[0].especie || ''} />
+                                    <input className="input" type="text" name="pet-species" id="pet-species" value={mascotaEdit?.especie || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-race">Raza:</label>
-                                    <input className="input" type="text" name="pet-race" id="pet-race" value={mascotas[0].raza || ''} />
+                                    <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-sex">Sexo:</label>
-                                    <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotas[0].sexo || ''} />
+                                    <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotaEdit?.sexo || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="weight-name">Peso:</label>
-                                    <input className="input" type="text" name="weight-name" id="weight-name" value={mascotas[0].peso || ''} />
+                                    <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-size">Tamaño:</label>
-                                    <input className="input" type="text" name="pet-size" id="pet-size" value={mascotas[0].tamanio || ''} />
+                                    <input className="input" type="text" name="pet-size" id="pet-size" value={mascotaEdit?.tamanio || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                    <input className="input" type="text" name="hair-length" id="hair-length" value={mascotas[0].largo_pelo || ''} />
+                                    <input className="input" type="text" name="hair-length" id="hair-length" value={mascotaEdit?.largo_pelo || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
                                 
                                     
                                     <label className="label" htmlFor="pet-color">Color:</label>
-                                    <input className="input" type="text" name="pet-color" id="pet-color" value={mascotas[0].color || ''} />
+                                    <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
+                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
+                                           readOnly={!editandoMascota}/>
 
                                     <label className="label" for="pet-detail">Información médica relevante:</label>
-                                    <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30">{mascotas[0].detalle || ''}</textarea>
+                                    <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
+                                              onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
+                                              readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
 
                                 </div>
                             </div>
@@ -325,10 +440,10 @@ const ProfileUser = () => {
                     </p>
                 )}
 
-                <div className="field is-grouped is-grouped-right">
+                <div className="field is-grouped is-grouped-right mb-2">
                     <p className="control">
-                        <button className="button is-primary is-link" onClick={handleAceptar}>
-                            Aceptar
+                        <button className="button is-primary is-link" onClick={handleActualizarMascota}>
+                            Actualizar
                         </button>
                     </p>
                     <p className="control">
