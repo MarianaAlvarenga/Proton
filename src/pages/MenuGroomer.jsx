@@ -31,7 +31,7 @@ const MenuGroomer = () => {
                     backgroundColor: "white",
                 }}
             >
-                <NavBar showMenu></NavBar>
+                <NavBar></NavBar>
                 <div
                     className="columns is-multiline"
                     style={{

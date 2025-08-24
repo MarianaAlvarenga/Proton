@@ -30,7 +30,7 @@ const MenuClient = () => {
           backgroundColor: "white",
         }}
       >
-        <NavBar showMenu />
+        <NavBar/>
         {!isMobile ? (
           // Vista para pantallas grandes
           <>
