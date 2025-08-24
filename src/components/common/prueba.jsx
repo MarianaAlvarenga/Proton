@@ -31,8 +31,8 @@ const SignUp = () => {
   // Estado para vista previa de imagen
   const [imagenPreview, setImagenPreview] = useState(null);
 
-  // NUEVO: archivo de imagen elegido en registro (sin userId aún)
-  const [tempImageFile, setTempImageFile] = useState(null);
+  // Guardamos el id de usuario cuando estemos en edición
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -68,9 +68,12 @@ const SignUp = () => {
 
         // Si hay imagen del usuario, guardarla como preview
         if (userData.img_url) {
-          setImagenPreview(userData.img_url);
+          setImagenPreview(
+            `http://localhost:8080/Proton/backend/uploads/${userData.img_url}`
+          );
         }
 
+        setUserId(userData.id_usuario || null);
         setIsEditMode(isEditMode || false);
         setShowComboBox(showComboBox || false);
       }
@@ -116,23 +119,6 @@ const SignUp = () => {
       const result = await response.json();
 
       if (result.success) {
-        // NUEVO: si es registro y el usuario eligió una imagen, la subimos ahora usando el id que retorna el backend
-        if (!isEditMode && tempImageFile && result.id_usuario) {
-          const formDataImg = new FormData();
-          formDataImg.append("image", tempImageFile);
-          formDataImg.append("userId", String(result.id_usuario));
-
-          try {
-            await fetch("http://localhost:8080/Proton/backend/actions/upload_user_image.php", {
-              method: "POST",
-              body: formDataImg,
-              credentials: "include",
-            });
-          } catch (err) {
-            console.error("Error subiendo imagen luego del registro:", err);
-          }
-        }
-
         setSuccessMessage(
           isEditMode
             ? "Usuario actualizado correctamente"
@@ -171,27 +157,24 @@ const SignUp = () => {
                 <p>{getRoleName(formData.rol)}</p>
               )}
 
-              {/* Imagen del usuario si está en edición */}
-              {isEditMode && imagenPreview ? (
+              {/* Imagen del usuario */}
+              {isEditMode && userId ? (
+                <UserImage
+                  userId={userId}
+                  style={{
+                    margin: "0 auto 20px",
+                    display: "block",
+                  }}
+                />
+              ) : (
                 <img
-                  src={imagenPreview}
+                  src={imagenPreview || "/default-user.png"}
                   alt="Foto de perfil"
                   style={{
                     width: "120px",
                     height: "120px",
                     objectFit: "cover",
                     borderRadius: "50%",
-                    margin: "0 auto 20px",
-                    display: "block",
-                  }}
-                />
-              ) : (
-                <UserImage
-                  // NUEVO: en registro pasamos null; en edición (sin preview) pasarías el id si lo tuvieras
-                  userId={isEditMode && location.state?.userData?.id_usuario ? location.state.userData.id_usuario : null}
-                  // NUEVO: recibimos el archivo elegido en registro para luego subirlo tras crear el usuario
-                  onTempImageSelected={(file) => setTempImageFile(file)}
-                  style={{
                     margin: "0 auto 20px",
                     display: "block",
                   }}
