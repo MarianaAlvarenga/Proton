@@ -311,9 +311,25 @@ const ProfileUser = () => {
                                                readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-species">Especie:</label>
-                                        <input className="input" type="text" name="pet-species" id="pet-species" value={mascotaEdit?.especie || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <div className="select is-fullwidth">
+                                            <select
+                                                id="pet-species"
+                                                name="pet-species"
+                                                value={mascotaEdit?.especie || ''}   
+                                                onChange={(e) => 
+                                                setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))
+                                                }
+                                                disabled={!editandoMascota}          
+                                            >
+                                                <option value="gato">Gato</option>
+                                                <option value="perro">Perro</option>
+                                                <option value="huron">Hurón</option>
+                                                <option value="conejito-de-la-india">Conejito de la india</option>
+                                                <option value="conejo">Conejo</option>
+                                                <option value="pez">Pez</option>
+                                                <option value="ave">Ave</option>
+                                            </select>
+                                        </div>
 
                                         <label className="label" htmlFor="pet-race">Raza:</label>
                                         <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
@@ -321,9 +337,20 @@ const ProfileUser = () => {
                                                readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-sex">Sexo:</label>
-                                        <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotaEdit?.sexo || ''}
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <div className="select is-fullwidth">
+                                            <select
+                                                id="pet-sex"
+                                                name="pet-sex"
+                                                value={mascotaEdit?.sexo || ''}   
+                                                onChange={(e) => 
+                                                setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))
+                                                }
+                                                disabled={!editandoMascota}          
+                                            >
+                                                <option value="macho">Macho</option>
+                                                <option value="hembra">Hembra</option>
+                                            </select>
+                                        </div>
 
                                         <label className="label" htmlFor="weight-name">Peso:</label>
                                         <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
@@ -331,14 +358,39 @@ const ProfileUser = () => {
                                                readOnly={!editandoMascota}/>
 
                                         <label className="label" htmlFor="pet-size">Tamaño:</label>
-                                        <input className="input" type="text" name="pet-size" id="pet-size" value={mascotaEdit?.tamanio || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <div className="select is-fullwidth">
+                                            <select
+                                                id="tamanio"
+                                                name="tamanio"
+                                                value={mascotaEdit?.tamanio || ''}   
+                                                onChange={(e) => 
+                                                setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))
+                                                }
+                                                disabled={!editandoMascota}          
+                                            >
+                                                <option value="pequenio">Pequeño</option>
+                                                <option value="mediano">Mediano</option>
+                                                <option value="grande">Grande</option>
+                                            </select>
+                                        </div>
 
                                         <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                        <input className="input" type="text" name="hair-length" id="hair-length" value={mascotaEdit?.largo_pelo || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <div className="select is-fullwidth">
+                                            <select
+                                                id="largo_pelo"
+                                                name="largo_pelo"
+                                                value={mascotaEdit?.largo_pelo || ''}   
+                                                onChange={(e) => 
+                                                setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))
+                                                }
+                                                disabled={!editandoMascota}          
+                                            >
+                                                <option value="muy corto">Muy corto</option>
+                                                <option value="corto">Corto</option>
+                                                <option value="largo">Largo</option>
+                                                <option value="muy largo">Muy largo</option>
+                                            </select>
+                                        </div>
                                     
                                         
                                         <label className="label" htmlFor="pet-color">Color:</label>
@@ -377,19 +429,47 @@ const ProfileUser = () => {
                                            readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-species">Especie:</label>
-                                    <input className="input" type="text" name="pet-species" id="pet-species" value={mascotaEdit?.especie || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <div className="select is-fullwidth">
+                                        <select
+                                            id="pet-species"
+                                            name="pet-species"
+                                            value={mascotaEdit?.especie || ''}   
+                                            onChange={(e) => 
+                                            setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))
+                                            }
+                                            disabled={!editandoMascota}          
+                                        >
+                                            <option value="gato">Gato</option>
+                                            <option value="perro">Perro</option>
+                                            <option value="huron">Hurón</option>
+                                            <option value="conejito-de-la-india">Conejito de la india</option>
+                                            <option value="conejo">Conejo</option>
+                                            <option value="pez">Pez</option>
+                                            <option value="ave">Ave</option>
+                                        </select>
+                                    </div>
 
                                     <label className="label" htmlFor="pet-race">Raza:</label>
+                            
                                     <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
                                            readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-sex">Sexo:</label>
-                                    <input className="input" type="text" name="pet-sex" id="pet-sex" value={mascotaEdit?.sexo || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <div className="select is-fullwidth">
+                                        <select
+                                            id="pet-sex"
+                                            name="pet-sex"
+                                            value={mascotaEdit?.sexo || ''}   
+                                            onChange={(e) => 
+                                            setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))
+                                            }
+                                            disabled={!editandoMascota}          
+                                        >
+                                            <option value="macho">Macho</option>
+                                            <option value="hembra">Hembra</option>
+                                        </select>
+                                    </div>
 
                                     <label className="label" htmlFor="weight-name">Peso:</label>
                                     <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
@@ -397,14 +477,39 @@ const ProfileUser = () => {
                                            readOnly={!editandoMascota}/>
 
                                     <label className="label" htmlFor="pet-size">Tamaño:</label>
-                                    <input className="input" type="text" name="pet-size" id="pet-size" value={mascotaEdit?.tamanio || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <div className="select is-fullwidth">
+                                        <select
+                                            id="tamanio"
+                                            name="tamanio"
+                                            value={mascotaEdit?.tamanio || ''}   
+                                            onChange={(e) => 
+                                            setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))
+                                            }
+                                            disabled={!editandoMascota}          
+                                        >
+                                            <option value="pequenio">Pequeño</option>
+                                            <option value="mediano">Mediano</option>
+                                            <option value="grande">Grande</option>
+                                        </select>
+                                    </div>
 
-                                    <label className="label" htmlFor="hair-length">Largo de pelo:</label>
-                                    <input className="input" type="text" name="hair-length" id="hair-length" value={mascotaEdit?.largo_pelo || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <label className="label" htmlFor="largo_pelo">Largo de pelo:</label>
+                                    <div className="select is-fullwidth">
+                                        <select
+                                            id="largo_pelo"
+                                            name="largo_pelo"
+                                            value={mascotaEdit?.largo_pelo || ''}   
+                                            onChange={(e) => 
+                                            setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))
+                                            }
+                                            disabled={!editandoMascota}          
+                                        >
+                                            <option value="muy corto">Muy corto</option>
+                                            <option value="corto">Corto</option>
+                                            <option value="largo">Largo</option>
+                                            <option value="muy largo">Muy largo</option>
+                                        </select>
+                                    </div>
                                 
                                     
                                     <label className="label" htmlFor="pet-color">Color:</label>
