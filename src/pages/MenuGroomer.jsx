@@ -66,7 +66,7 @@ const MenuGroomer = () => {
                             borderRadius: "8px", // Bordes redondeados para estética
                         }}
                     >
-                        <a role="button" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
+                        <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
                             <img
                                 src={require("../../src/assets/images/agenda.png")}
                                 alt="Agenda"

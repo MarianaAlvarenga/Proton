@@ -159,7 +159,7 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
 
       <button
         onClick={handleSave}
-        className="button is-primary"
+        className="button is-primary is-fullwidth"
         style={{
           position: 'absolute',
           bottom: '20px',

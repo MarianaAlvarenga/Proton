@@ -138,9 +138,6 @@ const ProfileUser = () => {
                 setMensaje({ tipo: 'exito', texto: json.message });
                 setUserData(prev => ({ ...prev, nombre, apellido, fecha_nacimiento, telefono, email }));
                 setContrasenia("");
-                setTimeout(() => {
-                    navigate(-1);
-                }, 1500);
             } else {
                 setMensaje({ tipo: 'error', texto: json.message || "Error al actualizar" });
             }
