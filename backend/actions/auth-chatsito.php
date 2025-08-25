@@ -72,8 +72,13 @@ function registerUser($data, $conn) {
 
     $insertQuery = "INSERT INTO usuario (nombre, apellido, telefono, email, rol, contrasenia) VALUES ('$nombre', '$apellido', '$telefono', '$email', '$rol', '$hashedPassword')";
 
-    if ($conn->query($insertQuery) === TRUE) {
-        echo json_encode(["success" => true, "message" => "Usuario registrado correctamente"]);
+    if ($conn->query($insertQuery) === TRUE) 
+        {$newUserId = $conn->insert_id; // <-- OBTIENE EL ID DEL USUARIO RECIÉN CREADO
+        echo json_encode([
+            "success" => true,
+            "message" => "Usuario registrado correctamente",
+            "id_usuario" => $newUserId // <-- Devuelve al frontend
+    ]);
     } else {
         echo json_encode(["success" => false, "message" => "Error al registrar el usuario: " . $conn->error]);
     }

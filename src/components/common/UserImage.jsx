@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import DefaultUserImage from "../../assets/images/usuario.png";
 
-const UserImage = ({ userId }) => {
+const UserImage = ({ userId, onTempImageSelected }) => {
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(DefaultUserImage);
 
@@ -31,19 +31,33 @@ const UserImage = ({ userId }) => {
     useEffect(() => {
         if (userId) {
             fetchUserImage();
+        } else {
+            // En registro (sin userId) mostramos placeholder
+            setSelectedImage(DefaultUserImage);
         }
     }, [userId]);
 
     const handleFileChange = async (event) => {
         const file = event.target.files?.[0];
-        if (!file || !userId) return;
-    
+        if (!file) return;
+
         // Validación cliente adicional
         if (file.size > 2 * 1024 * 1024) { // 2MB
             alert("La imagen no debe exceder 2MB");
             return;
         }
-    
+
+        // CASO 1: REGISTRO (sin userId): solo preview local y aviso al padre
+        if (!userId) {
+            setSelectedImage(URL.createObjectURL(file)); // preview inmediata
+            if (typeof onTempImageSelected === "function") {
+                onTempImageSelected(file); // el padre guardará el archivo para subirlo después del registro
+            }
+            if (fileInputRef.current) fileInputRef.current.value = "";
+            return;
+        }
+
+        // CASO 2: EDICIÓN (con userId): subir al servidor
         const formData = new FormData();
         formData.append("image", file);
         formData.append("userId", userId.toString());
@@ -59,15 +73,12 @@ const UserImage = ({ userId }) => {
             );
     
             const responseText = await response.text();
-            console.log("Respuesta completa del servidor:", responseText); // Debug
-    
             if (!response.ok) {
-                // Intentar parsear el error si es JSON
                 let errorData = {};
                 try {
                     errorData = JSON.parse(responseText);
                 } catch (e) {
-                    console.error("No se pudo parsear la respuesta de error:", e);
+                    // respuesta no JSON
                 }
                 
                 throw new Error(
@@ -88,20 +99,8 @@ const UserImage = ({ userId }) => {
             alert("¡Imagen actualizada correctamente!");
             
         } catch (error) {
-            console.error("Detalle completo del error:", {
-                error: error,
-                fileInfo: {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type
-                }
-            });
-            
-            alert(`Error al subir la imagen:\n${error.message}\n\n` +
-                  `Detalles técnicos:\n` +
-                  `- Tipo: ${file.type}\n` +
-                  `- Tamaño: ${Math.round(file.size / 1024)}KB\n` +
-                  `- Nombre: ${file.name}`);
+            console.error("Detalle completo del error:", error);
+            alert(`Error al subir la imagen:\n${error.message}`);
         } finally {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
