@@ -8,6 +8,6 @@ session_start();
 session_destroy();
 session_write_close();
 
-echo json_encode(["success" => true, "message" => "Sesión cerrada"]);
+echo json_encode(["success" => true, "message" => "Cerrar sesión"]);
 exit;
 ?>
