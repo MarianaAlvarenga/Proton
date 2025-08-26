@@ -56,3 +56,9 @@
         transform: translateY(0);
     }
 }
+
+.dropdown-menu li.disabled {
+  pointer-events: none;  /* No se puede hacer clic */
+  opacity: 0.5;          /* Se ve atenuado */
+}
+

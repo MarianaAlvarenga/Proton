@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./stilaso.css";
 
 const Desplegable = () => {
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [categories, setCategories] = useState([]);
     const [userRole, setUserRole] = useState(null);
+    const [activeOption, setActiveOption] = useState(""); // Opción seleccionada
+    const location = useLocation();
 
     const toggleDropdown = (e) => {
         e.preventDefault();
@@ -44,6 +46,13 @@ const Desplegable = () => {
         }
     }, []);
 
+    // Cuando cambia la ruta, actualizamos la opción activa
+    useEffect(() => {
+        const currentPath = location.pathname + location.search;
+        setActiveOption(currentPath);
+        setDropdownVisible(false); // Cerrar menú al navegar
+    }, [location]);
+
     return (
         <div className="menu-container">
             <a
@@ -57,31 +66,34 @@ const Desplegable = () => {
                 {/* Mostrar estas opciones solo si es ADMINISTRADOR (rol 4) */}
                 {userRole === 4 && (
                     <>
-                        <li>
+                        <li className={activeOption === "/productscreate" ? "disabled" : ""}>
                             <Link to="/productscreate">Agregar Producto</Link>
                         </li>
-                        <li>
+                        <li className={activeOption === "/Products?purchase=true" ? "disabled" : ""}>
                             <Link to="/Products" state={{ purchaseMode: true }}>Realizar compra</Link>
                         </li>
-                        <li>
+                        <li className={activeOption === "/Products?purchase=false" ? "disabled" : ""}>
                             <Link to="/Products" state={{ purchaseMode: false }}>Realizar edición</Link>
                         </li>
                     </>
                 )}
                 
-                <li>
+                <li className={activeOption === "/products" ? "disabled" : ""}>
                     <Link to="/products">Todos los Productos</Link>
                 </li>
 
                 {/* Lista de categorías de productos */}
                 {categories.length > 0 ? (
-                    categories.map((category) => (
-                        <li key={category.id_categoria}>
-                            <Link to={`/products?category=${category.id_categoria}`}>
-                                {category.nombre_categoria}
-                            </Link>
-                        </li>
-                    ))
+                    categories.map((category) => {
+                        const path = `/products?category=${category.id_categoria}`;
+                        return (
+                            <li key={category.id_categoria} className={activeOption === path ? "disabled" : ""}>
+                                <Link to={path}>
+                                    {category.nombre_categoria}
+                                </Link>
+                            </li>
+                        );
+                    })
                 ) : (
                     <li>No hay categorías disponibles</li>
                 )}
