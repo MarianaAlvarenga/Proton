@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bulma-carousel/dist/css/bulma-carousel.min.css';
 
+import Layout from '././components/common/Layout';
 
 // Importa tus componentes
 import Login from './pages/Login';
@@ -22,7 +23,8 @@ import Landing from './pages/Landing';
 
 function App() {
   return (
-      <Router>
+    <Router>
+      <Layout>
         <Routes>
           <Route path="/Login" element={<Login />} />
           <Route path="/SignUp" element={<SignUp />} />
@@ -34,13 +36,14 @@ function App() {
           <Route path="/MenuAdmin" element={<MenuAdmin />} />
           <Route path="/ProductCreateForm/:productId" element={<ProductCreateForm />} />
           <Route path="/UsersAdmin" element={<UsersAdmin />} />
-          <Route path= "/Alert" element={<Alert/>} />
-          <Route path= "/Cart" element={<Cart/>} />
-          <Route path= "/UserSaleInfo" element={<UserSaleInfo/>} />
-          <Route path= "/ProfileUser" element={<ProfileUser/>} />
+          <Route path="/Alert" element={<Alert/>} />
+          <Route path="/Cart" element={<Cart/>} />
+          <Route path="/UserSaleInfo" element={<UserSaleInfo/>} />
+          <Route path="/ProfileUser" element={<ProfileUser/>} />
           <Route path="/" element={<Landing />} />
         </Routes>
-      </Router>
+      </Layout>
+    </Router>
   );
 }
 

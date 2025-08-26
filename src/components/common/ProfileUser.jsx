@@ -403,6 +403,18 @@ const ProfileUser = () => {
                                 
                                 </div>
                             </div>
+                            <div className="field is-grouped is-grouped-right mb-2">
+                                <p className="control">
+                                    <button className="button is-primary is-link" onClick={handleActualizarMascota}>
+                                        Actualizar
+                                    </button>
+                                </p>
+                                <p className="control">
+                                    <button className="button is-light" onClick={handleCancel}>
+                                        Cancelar
+                                    </button>
+                                </p>
+                            </div>
                         </div>
                     ) : mascotas.length === 1 ? (
                         <div>
@@ -521,6 +533,18 @@ const ProfileUser = () => {
 
                                 </div>
                             </div>
+                            <div className="field is-grouped is-grouped-right mb-2">
+                                <p className="control">
+                                    <button className="button is-primary is-link" onClick={handleActualizarMascota}>
+                                        Actualizar
+                                    </button>
+                                </p>
+                                <p className="control">
+                                    <button className="button is-light" onClick={handleCancel}>
+                                        Cancelar
+                                    </button>
+                                </p>
+                            </div>
                         </div>
                     ) : (
                         userData?.rol === 1 ? (
@@ -542,18 +566,6 @@ const ProfileUser = () => {
                     </p>
                 )}
 
-                <div className="field is-grouped is-grouped-right mb-2">
-                    <p className="control">
-                        <button className="button is-primary is-link" onClick={handleActualizarMascota}>
-                            Actualizar
-                        </button>
-                    </p>
-                    <p className="control">
-                        <button className="button is-light" onClick={handleCancel}>
-                            Cancelar
-                        </button>
-                    </p>
-                </div>
             </div>
         </>
     );
