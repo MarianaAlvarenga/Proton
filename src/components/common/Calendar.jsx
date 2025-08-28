@@ -160,25 +160,38 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
   };
 
   return (
-    <div style={{ position: "relative", minHeight: "800px", textAlign: "center"}}>
+      <div
+        style={{
+          position: "relative",
+          minHeight: "100vh",          // ocupa toda la pantalla
+          display: "flex",             // activamos flexbox
+          justifyContent: "center",    // centra horizontalmente
+          alignItems: "center",        // centra verticalmente
+          flexDirection: "column",     // para que el botón quede debajo
+          textAlign: "center",
+        }}
+      >
+
       <input type="datetime" ref={inputRef} style={{ display: "none" }} />
       {showEditBtn && (
-        <button
-          className="button is-warning"
-          style={{
-            top: "0px",
-            right: "50px",
-            zIndex: 9999,
-            padding: "10px 12px",
-            minWidth: "200px",   // ancho mínimo para que el texto no se corte
-            whiteSpace: "nowrap", 
-            backgroundColor: "#9655C5",
-            color: "white",
-          }}
-          onClick={() => alert("Editar disponibilidad")}
-        >
-          Editar disponibilidad
-        </button>
+      <button
+      className="button is-warning"
+      style={{
+        position: "fixed",        // ahora siempre sobre la pantalla
+        top: "120px",              // separación desde arriba
+        right: "20px",            // separación desde la derecha
+        zIndex: 9999,
+        padding: "10px 12px",
+        minWidth: "200px",
+        whiteSpace: "nowrap",
+        backgroundColor: "#9655C5",
+        color: "white",
+      }}
+      onClick={() => alert("Editar disponibilidad")}
+    >
+      Editar disponibilidad
+    </button>
+
       )}
 
 
@@ -186,16 +199,14 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
         onClick={handleSave}
         className="button is-primary is-fullwidth"
         style={{
-          position: "absolute",
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
           backgroundColor: "#9655C5",
           color: "white",
           padding: "10px 20px",
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
+          marginTop: "30px", 
+          bottom: "20px", 
         }}
       >
         {isSettingAvailability ? "Guardar disponibilidad" : "Confirmar turno"}

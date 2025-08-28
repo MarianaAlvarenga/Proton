@@ -78,7 +78,6 @@ const Shifts = () => {
       <SubNavBar showBack currentPage='Turnos' />
 
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-        <h1>Gestión de turnos</h1>
 
         {showUserTypeSelector && (
           <UserTypeSelector 
