@@ -8,7 +8,7 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
   const calendarInstance = useRef(null);
   const [selectedDates, setSelectedDates] = useState([]);
   const [existingAvailabilities, setExistingAvailabilities] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showEditBtn, setShowEditBtn] = useState(false); // controla visibilidad del botón
 
   useEffect(() => {
     if (peluqueroId) {
@@ -54,19 +54,22 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
         timeFormat: "HH:mm",
         lang: "es",
         isRange: isSettingAvailability,
-        isMultiple: isSettingAvailability && isMultiple,
-        displayMode: "dialog",
+        isMultiple: isSettingAvailability,
+        displayMode: "inline", 
         showHeader: true,
-        showFooter: true,
+        showFooter: false,
         showButtons: true,
         validateLabel: "Confirmar",
         cancelLabel: "Cancelar",
         clearLabel: "Limpiar",
         disabledDates: getDisabledDates(),
         availableDates: !isSettingAvailability
-          ? existingAvailabilities.map(avail => avail.fecha_disponible)
+          ? existingAvailabilities.map((avail) => ({
+              date: avail.fecha_disponible,
+              time: avail.hora_inicial,
+            }))
           : [],
-        highlightAvailableDates: !isSettingAvailability
+        highlightAvailableDates: !isSettingAvailability,
       };
 
       try {
@@ -107,48 +110,52 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
           }, 800); // Aumentado a 800ms para asegurar la inicialización completa
         }
 
-        calendarInstance.current.on("select", (datepicker) => {
-          const rawDates = datepicker.data.value();
-          if (!rawDates) return;
+      // Evento al seleccionar fechas
+      calendarInstance.current.on("select", (datepicker) => {
+        const rawDates = datepicker.data.value();
+        if (!rawDates) return;
 
-          let processedDates = [];
+        let processedDates = [];
 
-          if (isSettingAvailability && typeof rawDates === 'string' && rawDates.includes(" - ")) {
-            const [start, end] = rawDates.split(" - ");
-            const [startDate, startTime] = start.trim().split(" ");
-            const [endDate, endTime] = end.trim().split(" ");
+        if (isSettingAvailability && rawDates.includes(" - ")) {
+          const [start, end] = rawDates.split(" - ");
+          const [startDate, startTime] = start.trim().split(" ");
+          const [endDate, endTime] = end.trim().split(" ");
 
-            processedDates.push({
-              fecha_inicio: startDate,
-              fecha_fin: endDate,
-              hora_inicial: startTime,
-              hora_final: endTime,
-              esRango: true
-            });
-          } else {
-            const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
+          processedDates.push({
+            fecha_inicio: startDate,
+            fecha_fin: endDate,
+            hora_inicial: startTime,
+            hora_final: endTime,
+            esRango: true,
+          });
+        } else {
+          const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
 
-            processedDates = datesToProcess
-              .map(dateStr => {
-                if (!dateStr || typeof dateStr !== 'string') return null;
-                const [datePart, timePart] = dateStr.trim().split(" ");
-                return {
-                  fecha_disponible: datePart,
-                  hora_inicial: timePart,
-                  hora_final: calculateEndTime(timePart),
-                  esRango: false
-                };
-              })
-              .filter(Boolean);
-          }
+          processedDates = datesToProcess
+            .map((dateStr) => {
+              if (!dateStr) return null;
+              const [datePart, timePart] = dateStr.trim().split(" ");
+              return {
+                fecha_disponible: datePart,
+                hora_inicial: timePart,
+                hora_final: calculateEndTime(timePart),
+                esRango: false,
+              };
+            })
+            .filter(Boolean);
+        }
 
-          setSelectedDates(processedDates);
-        });
+        setSelectedDates(processedDates);
 
-      } catch (error) {
-        console.error("Error initializing calendar:", error);
-        inputRef.current.style.display = "none";
-      }
+        // Mostrar botón si hay fechas seleccionadas
+        setShowEditBtn(processedDates.length > 0);
+      });
+
+      // Evento al cerrar el calendario
+      calendarInstance.current.on("hide", () => {
+        setShowEditBtn(false);
+      });
     };
 
     const timer = setTimeout(initCalendar, 100);
@@ -173,13 +180,26 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Deshabilitar fechas pasadas
     const pastDate = new Date(today);
     pastDate.setDate(today.getDate() - 1);
 
     while (pastDate >= new Date(2020, 0, 1)) {
       disabledDates.push(pastDate.toISOString().split("T")[0]);
       pastDate.setDate(pastDate.getDate() - 1);
+    }
+
+    if (!isSettingAvailability) {
+      const availableDates = existingAvailabilities.map((avail) => avail.fecha_disponible);
+      const futureDate = new Date(today);
+      futureDate.setFullYear(today.getFullYear() + 1);
+
+      while (today <= futureDate) {
+        const dateStr = today.toISOString().split("T")[0];
+        if (!availableDates.includes(dateStr)) {
+          disabledDates.push(dateStr);
+        }
+        today.setDate(today.getDate() + 1);
+      }
     }
 
     return disabledDates;
@@ -204,28 +224,53 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
   }
 
   return (
-    <div style={{ position: "relative", minHeight: "400px" }}>
-      <input
-        type="text"
-        ref={inputRef}
-        style={{ display: "none" }}
-        readOnly
-      />
+      <div
+        style={{
+          position: "relative",
+          minHeight: "100vh",          // ocupa toda la pantalla
+          display: "flex",             // activamos flexbox
+          justifyContent: "center",    // centra horizontalmente
+          alignItems: "center",        // centra verticalmente
+          flexDirection: "column",     // para que el botón quede debajo
+          textAlign: "center",
+        }}
+      >
+
+      <input type="datetime" ref={inputRef} style={{ display: "none" }} />
+      {showEditBtn && (
+      <button
+      className="button is-warning"
+      style={{
+        position: "fixed",        // ahora siempre sobre la pantalla
+        top: "120px",              // separación desde arriba
+        right: "20px",            // separación desde la derecha
+        zIndex: 9999,
+        padding: "10px 12px",
+        minWidth: "200px",
+        whiteSpace: "nowrap",
+        backgroundColor: "#9655C5",
+        color: "white",
+      }}
+      onClick={() => alert("Editar disponibilidad")}
+    >
+      Editar disponibilidad
+    </button>
+
+      )}
+
 
       <button
         onClick={handleSave}
         className="button is-primary is-fullwidth"
         style={{
-          position: "absolute",
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
           backgroundColor: "#9655C5",
           color: "white",
           padding: "10px 20px",
           border: "none",
           borderRadius: "4px",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginTop: "30px", 
+          bottom: "20px", 
         }}
       >
         {isSettingAvailability ? "Guardar disponibilidad" : "Confirmar turno"}
