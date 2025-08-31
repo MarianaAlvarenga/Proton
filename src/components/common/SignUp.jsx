@@ -59,7 +59,7 @@ const SignUp = () => {
         setFormData({
           nombre: userData.nombre || "",
           apellido: userData.apellido || "",
-          email: "",
+          email: userData.email || "",
           telefono: userData.telefono || "",
           contrasenia: "",
           confirmarContrasenia: "",

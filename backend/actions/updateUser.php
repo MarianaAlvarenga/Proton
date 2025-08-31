@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         isset($data['email']) &&
         isset($data['telefono']) &&
         isset($data['rol']) &&
-        isset($data['fecha_nacimiento']) &&
         isset($data['id_usuario'])
     ) {
         $id = intval($data['id_usuario']);
@@ -28,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $conn->real_escape_string($data['email']);
         $telefono = $conn->real_escape_string($data['telefono']);
         $rol = intval($data['rol']);
-        $fecha_nacimiento = $conn->real_escape_string($data['fecha_nacimiento']);
 
         $contrasenia = null;
         if (isset($data['contrasenia']) && !empty($data['contrasenia'])) {
@@ -37,13 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($contrasenia !== null) {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ?, contrasenia = ? WHERE id_usuario = ?";
+            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, contrasenia = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssssssi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $contrasenia, $id);
+            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $contrasenia, $id);
         } else {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ? WHERE id_usuario = ?";
+            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssssi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $id);
+            $stmt->bind_param("ssssii", $nombre, $apellido, $email, $telefono, $rol, $id);
         }
 
         if ($stmt->execute()) {

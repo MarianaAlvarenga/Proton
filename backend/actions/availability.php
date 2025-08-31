@@ -33,8 +33,7 @@ if(!empty($data->id_peluquero) && !empty($data->disponibilidades)) {
     // Convertir fechas a formato correcto para rangos
     $processedDisponibilidades = [];
     foreach ($disponibilidades as $disp) {
-        if ($disp['esRango']) {
-            // Asegurarse que las fechas están en formato Y-m-d
+        if (!empty($disp['esRango']) && $disp['esRango']) {
             $disp['fecha_inicio'] = date('Y-m-d', strtotime($disp['fecha_inicio']));
             $disp['fecha_fin'] = date('Y-m-d', strtotime($disp['fecha_fin']));
         } else {

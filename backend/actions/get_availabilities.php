@@ -31,17 +31,18 @@ if (!isset($_GET['id_peluquero'])) {
 
 $id_peluquero = $conn->real_escape_string($_GET['id_peluquero']);
 
+// Query para obtener todas las disponibilidades del peluquero
 $query = "
-    SELECT DISTINCT
+    SELECT 
         dd.fecha_disponible,
         hd.hora_inicial,
-        hd.hora_final
+        hd.hora_final,
+        td.id_usuario
     FROM tiene_dias td
     JOIN dias_disponibles dd ON td.id_dias_disponibles = dd.id_dias_disponibles
     JOIN dias_horas_disponibles dhd ON dd.id_dias_disponibles = dhd.id_dias_disponibles
     JOIN horas_disponibles hd ON dhd.id_horario_disponible = hd.id_horario_disponible
     WHERE td.id_usuario = ?
-    AND dd.fecha_disponible >= CURDATE()
     ORDER BY dd.fecha_disponible ASC, hd.hora_inicial ASC
 ";
 
@@ -52,14 +53,21 @@ $result = $stmt->get_result();
 
 $availabilities = [];
 while ($row = $result->fetch_assoc()) {
+    // Cada disponibilidad se devuelve con fecha y horas
     $availabilities[] = [
         'fecha_disponible' => $row['fecha_disponible'],
         'hora_inicial' => $row['hora_inicial'],
-        'hora_final' => $row['hora_final']
+        'hora_final' => $row['hora_final'],
+        'esRango' => false // ya no se usan rangos, cada día es independiente
     ];
 }
 
-echo json_encode($availabilities);
+// Si no hay disponibilidades, devolver array vacío
+if (empty($availabilities)) {
+    echo json_encode([]);
+} else {
+    echo json_encode($availabilities);
+}
 
 $conn->close();
 ?>
