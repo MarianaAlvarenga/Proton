@@ -9,6 +9,7 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
   const [selectedDates, setSelectedDates] = useState([]);
   const [existingAvailabilities, setExistingAvailabilities] = useState([]);
   const [showEditBtn, setShowEditBtn] = useState(false); // controla visibilidad del botón
+  const [isLoading, setIsLoading] = useState(true); // agregado: control de carga
 
   useEffect(() => {
     if (peluqueroId) {
@@ -55,7 +56,7 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
         lang: "es",
         isRange: isSettingAvailability,
         isMultiple: isSettingAvailability,
-        displayMode: "inline", 
+        displayMode: "inline",
         showHeader: true,
         showFooter: false,
         showButtons: true,
@@ -75,9 +76,9 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
       try {
         // Hacer el input visible temporalmente para que Bulma pueda inicializarlo
         inputRef.current.style.display = "block";
-        
+
         calendarInstance.current = bulmaCalendar.attach(inputRef.current, options)[0];
-        
+
         // Ocultar el input después de la inicialización
         inputRef.current.style.display = "none";
 
@@ -89,7 +90,7 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
                 const datesToSelect = existingAvailabilities.map(avail => {
                   return `${avail.fecha_disponible} ${avail.hora_inicial}`;
                 });
-                
+
                 calendarInstance.current.value(datesToSelect);
 
                 // 🔥 Forzar highlight en el calendario
@@ -110,52 +111,59 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
           }, 800); // Aumentado a 800ms para asegurar la inicialización completa
         }
 
-      // Evento al seleccionar fechas
-      calendarInstance.current.on("select", (datepicker) => {
-        const rawDates = datepicker.data.value();
-        if (!rawDates) return;
+        // Evento al seleccionar fechas (solo si la instancia existe)
+        if (calendarInstance.current && typeof calendarInstance.current.on === "function") {
+          calendarInstance.current.on("select", (datepicker) => {
+            const rawDates = datepicker.data.value();
+            if (!rawDates) return;
 
-        let processedDates = [];
+            let processedDates = [];
 
-        if (isSettingAvailability && rawDates.includes(" - ")) {
-          const [start, end] = rawDates.split(" - ");
-          const [startDate, startTime] = start.trim().split(" ");
-          const [endDate, endTime] = end.trim().split(" ");
+            if (isSettingAvailability && typeof rawDates === 'string' && rawDates.includes(" - ")) {
+              const [start, end] = rawDates.split(" - ");
+              const [startDate, startTime] = start.trim().split(" ");
+              const [endDate, endTime] = end.trim().split(" ");
 
-          processedDates.push({
-            fecha_inicio: startDate,
-            fecha_fin: endDate,
-            hora_inicial: startTime,
-            hora_final: endTime,
-            esRango: true,
+              processedDates.push({
+                fecha_inicio: startDate,
+                fecha_fin: endDate,
+                hora_inicial: startTime,
+                hora_final: endTime,
+                esRango: true,
+              });
+            } else {
+              const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
+
+              processedDates = datesToProcess
+                .map((dateStr) => {
+                  if (!dateStr) return null;
+                  const [datePart, timePart] = dateStr.trim().split(" ");
+                  return {
+                    fecha_disponible: datePart,
+                    hora_inicial: timePart,
+                    hora_final: calculateEndTime(timePart),
+                    esRango: false,
+                  };
+                })
+                .filter(Boolean);
+            }
+
+            setSelectedDates(processedDates);
+
+            // Mostrar botón si hay fechas seleccionadas
+            setShowEditBtn(processedDates.length > 0);
           });
-        } else {
-          const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
 
-          processedDates = datesToProcess
-            .map((dateStr) => {
-              if (!dateStr) return null;
-              const [datePart, timePart] = dateStr.trim().split(" ");
-              return {
-                fecha_disponible: datePart,
-                hora_inicial: timePart,
-                hora_final: calculateEndTime(timePart),
-                esRango: false,
-              };
-            })
-            .filter(Boolean);
+          // Evento al cerrar el calendario
+          calendarInstance.current.on("hide", () => {
+            setShowEditBtn(false);
+          });
         }
-
-        setSelectedDates(processedDates);
-
-        // Mostrar botón si hay fechas seleccionadas
-        setShowEditBtn(processedDates.length > 0);
-      });
-
-      // Evento al cerrar el calendario
-      calendarInstance.current.on("hide", () => {
-        setShowEditBtn(false);
-      });
+      } catch (error) {
+        console.error("Error initializing calendar:", error);
+        // Asegurar que el input se oculte si hubo fallo
+        try { inputRef.current.style.display = "none"; } catch (e) {}
+      }
     };
 
     const timer = setTimeout(initCalendar, 100);
@@ -258,7 +266,6 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
 
       )}
 
-
       <button
         onClick={handleSave}
         className="button is-primary is-fullwidth"
@@ -269,8 +276,8 @@ const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailabi
           border: "none",
           borderRadius: "4px",
           cursor: "pointer",
-          marginTop: "30px", 
-          bottom: "20px", 
+          marginTop: "30px",
+          bottom: "20px",
         }}
       >
         {isSettingAvailability ? "Guardar disponibilidad" : "Confirmar turno"}
