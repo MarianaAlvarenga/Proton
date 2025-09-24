@@ -31,7 +31,6 @@ if (!isset($_GET['id_peluquero'])) {
 
 $id_peluquero = $conn->real_escape_string($_GET['id_peluquero']);
 
-// Query para obtener todas las disponibilidades del peluquero
 $query = "
     SELECT 
         dd.fecha_disponible,
@@ -53,21 +52,15 @@ $result = $stmt->get_result();
 
 $availabilities = [];
 while ($row = $result->fetch_assoc()) {
-    // Cada disponibilidad se devuelve con fecha y horas
     $availabilities[] = [
         'fecha_disponible' => $row['fecha_disponible'],
         'hora_inicial' => $row['hora_inicial'],
         'hora_final' => $row['hora_final'],
-        'esRango' => false // ya no se usan rangos, cada día es independiente
+        'esRango' => false
     ];
 }
 
-// Si no hay disponibilidades, devolver array vacío
-if (empty($availabilities)) {
-    echo json_encode([]);
-} else {
-    echo json_encode($availabilities);
-}
+echo json_encode($availabilities);
 
 $conn->close();
 ?>

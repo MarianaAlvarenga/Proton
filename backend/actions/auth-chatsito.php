@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $conn->close();
 
 function registerUser($data, $conn) {
-    if (empty($data['nombre']) || empty($data['apellido']) || empty($data['email']) || empty($data['telefono']) || empty($data['contrasenia'])) {
+    if (empty($data['nombre']) || empty($data['apellido']) || empty($data['email']) || empty($data['telefono']) || empty($data['contrasenia']) || empty($data['especialidad'])) {
         echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios"]);
         return;
     }
@@ -72,16 +72,29 @@ function registerUser($data, $conn) {
 
     $insertQuery = "INSERT INTO usuario (nombre, apellido, telefono, email, rol, contrasenia) VALUES ('$nombre', '$apellido', '$telefono', '$email', '$rol', '$hashedPassword')";
 
-    if ($conn->query($insertQuery) === TRUE) 
-        {$newUserId = $conn->insert_id; // <-- OBTIENE EL ID DEL USUARIO RECIÉN CREADO
-        echo json_encode([
-            "success" => true,
-            "message" => "Usuario registrado correctamente",
-            "id_usuario" => $newUserId // <-- Devuelve al frontend
-    ]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Error al registrar el usuario: " . $conn->error]);
+if ($conn->query($insertQuery) === TRUE) {
+    $newUserId = $conn->insert_id; // <-- ID del usuario recién creado
+
+    // 🔹 Si el rol corresponde a "peluquero", insertamos en peluquero_ofrece_servicio
+    if ($rol == 3 && !empty($data['especialidad'])) { // <-- asumí que rol=2 es peluquero
+        $especialidad = intval($data['especialidad']);
+        $insertRelacion = "INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) 
+                           VALUES ($newUserId, $especialidad)";
+        if (!$conn->query($insertRelacion)) {
+            echo json_encode(["success" => false, "message" => "Error al asignar especialidad: " . $conn->error]);
+            return;
+        }
     }
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Usuario registrado correctamente",
+        "id_usuario" => $newUserId
+    ]);
+} else {
+    echo json_encode(["success" => false, "message" => "Error al registrar el usuario: " . $conn->error]);
+}
+
 }
 
 function loginUser($data, $conn) {

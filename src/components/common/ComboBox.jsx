@@ -1,50 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const ComboBox = ({ onChange }) => {
-  const [roles, setRoles] = useState([]);
-
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/Proton/backend/actions/getRoles.php'); // Cambia la URL si es necesario
-        const data = response.data;
-
-        if (Array.isArray(data)) {
-          setRoles(data); // Asegúrate de que el backend devuelva un array
-        } else {
-          setRoles([]); // Si no es un array, lo dejamos vacío
-        }
-      } catch (error) {
-        console.error('Error al obtener los roles:', error);
-        setRoles([]); // En caso de error, roles queda vacío
-      }
-    };
-
-    fetchRoles();
-  }, []);
-
+const ComboBox = ({ options = [], value, onChange, placeholder }) => {
   return (
-    <div className="field" style={{ margin: '1em' }}>
+    <div className="field" style={{ margin: '1em 0' }}>
       <div className="select is-fullwidth">
-        <select onChange={(e) => onChange(e.target.value)} defaultValue="">
-          {/* Opción inicial como leyenda */}
-          <option value="" disabled hidden>Seleccione un rol</option>
-          {roles.length > 0 ? (
-            roles.map((rol) => (
-              <option key={rol.id} value={rol.id}>
-                {rol.rol}
-              </option>
-            ))
-          ) : (
-            <option disabled>No hay roles disponibles</option>
-          )}
+        <select
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          <option value="" disabled hidden>
+            {placeholder || 'Seleccione...'}
+          </option>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
     </div>
   );
-  
-  
 };
 
 export default ComboBox;

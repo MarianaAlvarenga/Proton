@@ -5,6 +5,7 @@ import SubNavBar from "../common/SubNavBar";
 import CancelButton from "../common/CancelButton";
 import OkButton from "../common/OkButton";
 import UserTypeSelector from "../common/UserTypeSelector";
+import PaymentButton from "./PaymentButton"; // 👈 importado
 
 const UserSaleInfo = () => {
   const [userInfo, setUserInfo] = useState({ isRegistered: false, email: "" });
@@ -40,7 +41,6 @@ const UserSaleInfo = () => {
   // Función para actualizar el estado de userInfo
   const handleUserInfoChange = (newUserInfo) => {
     setUserInfo((prevUserInfo) => {
-      // Solo actualiza si los valores han cambiado
       if (
         prevUserInfo.isRegistered !== newUserInfo.isRegistered ||
         prevUserInfo.email !== newUserInfo.email
@@ -104,6 +104,8 @@ const UserSaleInfo = () => {
           email={userInfo.email}
           total={total}
         />
+        {/* 👇 Agregado el PaymentButton */}
+        <PaymentButton product={{ price: parseFloat(total) }} />
       </div>
     </div>
   );

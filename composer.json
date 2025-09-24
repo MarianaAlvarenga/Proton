@@ -1,0 +1,15 @@
+{
+    "name": "usuario1/proton",
+    "autoload": {
+        "psr-4": {
+            "Usuario1\\Proton\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gastón García Bauer",
+            "email": "gaston.garcia89@hotmail.com"
+        }
+    ],
+    "require": {}
+}

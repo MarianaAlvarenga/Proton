@@ -20,6 +20,7 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
+    especialidad: "", // <-- nuevo campo para peluquero
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -27,29 +28,36 @@ const SignUp = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [especialidades, setEspecialidades] = useState([]); // <-- lista de especialidades
 
   // Estado para vista previa de imagen
   const [imagenPreview, setImagenPreview] = useState(null);
-
-  // NUEVO: archivo de imagen elegido en registro (sin userId aún)
   const [tempImageFile, setTempImageFile] = useState(null);
 
+  // 🔹 Obtener roles y especialidades
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
-        const data = await response.json();
-        if (data.error) {
-          console.error(data.message);
-        } else {
-          setRoles(data);
-        }
+        const res = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
+        const data = await res.json();
+        if (!data.error) setRoles(data);
       } catch (error) {
-        console.error("Error al obtener los roles:", error);
+        console.error("Error al obtener roles:", error);
+      }
+    };
+
+    const fetchEspecialidades = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+        const data = await res.json();
+        setEspecialidades(data);
+      } catch (error) {
+        console.error("Error al obtener especialidades:", error);
       }
     };
 
     fetchRoles();
+    fetchEspecialidades();
 
     if (location.state) {
       const { userData, isEditMode, showComboBox } = location.state;
@@ -64,13 +72,9 @@ const SignUp = () => {
           contrasenia: "",
           confirmarContrasenia: "",
           rol: userData.rol || 1,
+          especialidad: userData.especialidad || "",
         });
-
-        // Si hay imagen del usuario, guardarla como preview
-        if (userData.img_url) {
-          setImagenPreview(userData.img_url);
-        }
-
+        if (userData.img_url) setImagenPreview(userData.img_url);
         setIsEditMode(isEditMode || false);
         setShowComboBox(showComboBox || false);
       }
@@ -87,11 +91,9 @@ const SignUp = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!isEditMode) {
-      if (formData.contrasenia !== formData.confirmarContrasenia) {
-        setErrorMessage("Las contraseñas no coinciden");
-        return;
-      }
+    if (!isEditMode && formData.contrasenia !== formData.confirmarContrasenia) {
+      setErrorMessage("Las contraseñas no coinciden");
+      return;
     }
 
     const endpoint = isEditMode
@@ -105,23 +107,20 @@ const SignUp = () => {
     };
 
     try {
-      const response = await fetch(endpoint, {
+      const res = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
       });
 
-      const result = await response.json();
+      const result = await res.json();
 
       if (result.success) {
-        // NUEVO: si es registro y el usuario eligió una imagen, la subimos ahora usando el id que retorna el backend
+        // Subir imagen si corresponde
         if (!isEditMode && tempImageFile && result.id_usuario) {
           const formDataImg = new FormData();
           formDataImg.append("image", tempImageFile);
           formDataImg.append("userId", String(result.id_usuario));
-
           try {
             await fetch("http://localhost:8080/Proton/backend/actions/upload_user_image.php", {
               method: "POST",
@@ -129,19 +128,12 @@ const SignUp = () => {
               credentials: "include",
             });
           } catch (err) {
-            console.error("Error subiendo imagen luego del registro:", err);
+            console.error("Error subiendo imagen:", err);
           }
         }
 
-        setSuccessMessage(
-          isEditMode
-            ? "Usuario actualizado correctamente"
-            : "Usuario registrado exitosamente"
-        );
-
-        setTimeout(() => {
-          navigate("/UsersAdmin");
-        }, 1500);
+        setSuccessMessage(isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente");
+        setTimeout(() => navigate("/UsersAdmin"), 1500);
       } else {
         setErrorMessage(result.message || "Error al procesar la solicitud");
       }
@@ -155,117 +147,71 @@ const SignUp = () => {
     return role ? role.rol : "Rol desconocido";
   };
 
+  // 🔹 Determinar si mostrar combo de especialidad
+  const mostrarEspecialidad = () => {
+    const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
+    return roleObj && roleObj.rol.toLowerCase().includes("peluquero");
+  };
+
   return (
     <>
-      <NavBar showHomeButton={false} showProfileButton={false}/>
+      <NavBar showHomeButton={false} showProfileButton={false} />
       <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
       <div className="container">
-        <div
-          className="columns is-centered is-vcentered"
-          style={{ minHeight: "100vh", padding: "10px" }}
-        >
+        <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
               
-              {!showComboBox && isEditMode && (
-                <p>{getRoleName(formData.rol)}</p>
-              )}
+              {!showComboBox && isEditMode && <p>{getRoleName(formData.rol)}</p>}
 
-              {/* Imagen del usuario si está en edición */}
               {isEditMode && imagenPreview ? (
-                <img
-                  src={imagenPreview}
-                  alt="Foto de perfil"
-                  style={{
-                    width: "120px",
-                    height: "120px",
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                    margin: "0 auto 20px",
-                    display: "block",
-                  }}
-                />
+                <img src={imagenPreview} alt="Foto de perfil" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", margin: "0 auto 20px", display: "block" }} />
               ) : (
                 <UserImage
-                  // NUEVO: en registro pasamos null; en edición (sin preview) pasarías el id si lo tuvieras
                   userId={isEditMode && location.state?.userData?.id_usuario ? location.state.userData.id_usuario : null}
-                  // NUEVO: recibimos el archivo elegido en registro para luego subirlo tras crear el usuario
                   onTempImageSelected={(file) => setTempImageFile(file)}
-                  style={{
-                    margin: "0 auto 20px",
-                    display: "block",
-                  }}
+                  style={{ margin: "0 auto 20px", display: "block" }}
                 />
               )}
 
               <form onSubmit={handleSubmit}>
+                {/* 🔹 ComboBox de rol */}
                 {showComboBox && !isEditMode && (
                   <ComboBox
-                    className="is-fullwidth"
+                    value={formData.rol}
                     onChange={(value) =>
-                      setFormData({ ...formData, rol: parseInt(value, 10) })
+                      setFormData({ ...formData, rol: parseInt(value, 10), especialidad: "" })
                     }
+                    options={roles.map((r) => ({ value: r.id, label: r.rol }))}
+                    placeholder="Seleccione un rol"
+                  />
+                )}
+
+                {/* 🔹 ComboBox de especialidad solo si rol es peluquero */}
+                {mostrarEspecialidad() && (
+                  <ComboBox
+                    value={formData.especialidad}
+                    onChange={(value) => setFormData({ ...formData, especialidad: value })}
+                    options={especialidades.map((e) => ({ value: e.id_tipo, label: e.nombre }))}
+                    placeholder="Seleccione una especialidad"
                   />
                 )}
 
                 <section className="is-flex is-flex-direction-column">
-                  <Label
-                    labelContent="Ingrese su nombre"
-                    inputName="nombre"
-                    inputValue={formData.nombre}
-                    handleChange={handleChange}
-                  />
-                  <Label
-                    labelContent="Ingrese su apellido"
-                    inputName="apellido"
-                    inputValue={formData.apellido}
-                    handleChange={handleChange}
-                  />
-                  <Label
-                    labelContent="Ingrese su email"
-                    inputName="email"
-                    inputValue={formData.email}
-                    handleChange={handleChange}
-                    autoComplete="off"
-                  />
-                  <Label
-                    labelContent="Número de teléfono"
-                    inputName="telefono"
-                    inputValue={formData.telefono}
-                    handleChange={handleChange}
-                    type="tel"
-                  />
+                  <Label labelContent="Ingrese su nombre" inputName="nombre" inputValue={formData.nombre} handleChange={handleChange} />
+                  <Label labelContent="Ingrese su apellido" inputName="apellido" inputValue={formData.apellido} handleChange={handleChange} />
+                  <Label labelContent="Ingrese su email" inputName="email" inputValue={formData.email} handleChange={handleChange} autoComplete="off" />
+                  <Label labelContent="Número de teléfono" inputName="telefono" inputValue={formData.telefono} handleChange={handleChange} type="tel" />
                   {!isEditMode && (
                     <>
-                      <Label
-                        labelContent="Contraseña"
-                        inputName="contrasenia"
-                        inputValue={formData.contrasenia}
-                        handleChange={handleChange}
-                        type="password"
-                        autoComplete="new-password"
-                      />
-                      <Label
-                        labelContent="Confirmar contraseña"
-                        inputName="confirmarContrasenia"
-                        inputValue={formData.confirmarContrasenia}
-                        handleChange={handleChange}
-                        type="password"
-                        autoComplete="new-password"
-                      />
+                      <Label labelContent="Contraseña" inputName="contrasenia" inputValue={formData.contrasenia} handleChange={handleChange} type="password" autoComplete="new-password" />
+                      <Label labelContent="Confirmar contraseña" inputName="confirmarContrasenia" inputValue={formData.confirmarContrasenia} handleChange={handleChange} type="password" autoComplete="new-password" />
                     </>
                   )}
-                  {errorMessage && (
-                    <p className="has-text-danger">{errorMessage}</p>
-                  )}
-                  {successMessage && (
-                    <p className="has-text-success">{successMessage}</p>
-                  )}
-                  <LargeButton
-                    textButton={isEditMode ? "Actualizar" : "Registrarse"}
-                    buttonType="submit"
-                    className="is-fullwidth"
-                  />
+
+                  {errorMessage && <p className="has-text-danger">{errorMessage}</p>}
+                  {successMessage && <p className="has-text-success">{successMessage}</p>}
+                  <LargeButton textButton={isEditMode ? "Actualizar" : "Registrarse"} buttonType="submit" className="is-fullwidth" />
                 </section>
               </form>
             </div>

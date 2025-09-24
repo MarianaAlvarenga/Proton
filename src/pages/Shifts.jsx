@@ -12,8 +12,9 @@ const Shifts = () => {
   
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userRole = user.rol || location.state?.userRole || '3';
-  const isRange = userRole === '3';
-  const isSettingAvailability = !showUserTypeSelector;
+  const isRange = false; // ya no manejamos rangos datetime
+const isSettingAvailability = !showUserTypeSelector;
+  
 
   const handleCalendarClose = async (dates) => {
     if (!dates || dates.length === 0) {

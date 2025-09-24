@@ -1,289 +1,148 @@
-import React, { useEffect, useRef, useState } from "react";
-import "bulma-calendar/dist/css/bulma-calendar.min.css";
-import "./custom-calendar.css";
-import axios from "axios";
+// Calendar.jsx
+import React, { useState, useEffect } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import "bulma/css/bulma.min.css";
+import "./Calendar.css";
 
-const Calendar = ({ isRange, isMultiple, onClose, peluqueroId, isSettingAvailability }) => {
-  const inputRef = useRef(null);
-  const calendarInstance = useRef(null);
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [existingAvailabilities, setExistingAvailabilities] = useState([]);
-  const [showEditBtn, setShowEditBtn] = useState(false); // controla visibilidad del botón
-  const [isLoading, setIsLoading] = useState(true); // agregado: control de carga
+export default function Calendar({ userRole, isSettingAvailability }) {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (peluqueroId) {
-      fetchAvailabilities();
-    } else {
-      setIsLoading(false);
+  const idPeluquero = JSON.parse(localStorage.getItem("user")).id_usuario;
+
+  const fetchDisponibilidades = () => {
+    setLoading(true);
+    fetch(`http://localhost:8080/Proton/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.map((avail) => ({
+          title: "Disponible",
+          start: `${avail.fecha_disponible}T${avail.hora_inicial}`,
+          end: `${avail.fecha_disponible}T${avail.hora_final}`,
+        }));
+        setEvents(mapped);
+        setLoading(false);
+      })
+      .catch((error) => { console.error(error); setLoading(false); });
+  };
+
+  useEffect(() => { fetchDisponibilidades(); }, []);
+
+  const handleSelect = (info) => {
+    if (!isSettingAvailability) return;
+
+    const startDate = new Date(info.start);
+    const endDate = new Date(info.end);
+
+    const newEvents = [];
+    let current = new Date(startDate);
+
+    while (current < endDate) {
+      const fechaStr = current.toISOString().split("T")[0];
+      const horaInicio = current.toTimeString().substring(0, 5);
+
+      const next = new Date(current.getTime() + 60 * 60 * 1000);
+      let horaFin = next.toTimeString().substring(0, 5);
+
+      if (next > endDate) horaFin = endDate.toTimeString().substring(0, 5);
+
+      newEvents.push({
+        title: "Disponible",
+        start: `${fechaStr}T${horaInicio}`,
+        end: `${fechaStr}T${horaFin}`,
+      });
+
+      current = next;
     }
-  }, [peluqueroId]);
 
-  const fetchAvailabilities = async () => {
+    setEvents([...events, ...newEvents]);
+  };
+
+  const handleEventClick = async (info) => {
+    if (!isSettingAvailability) return;
+    if (!window.confirm("¿Eliminar este horario?")) return;
+
+    const startDate = new Date(info.event.start);
+    const endDate = new Date(info.event.end);
+
+    const fecha_disponible = startDate.toISOString().split("T")[0];
+    const hora_inicial = startDate.toTimeString().substring(0, 5);
+    const hora_final = endDate.toTimeString().substring(0, 5);
+
     try {
-      setIsLoading(true);
-      const response = await axios.get(
-        `http://localhost:8080/Proton/backend/actions/get_availabilities.php?id_peluquero=${peluqueroId}`
-      );
-      setExistingAvailabilities(response.data);
+      await fetch("http://localhost:8080/Proton/backend/actions/delete_availability.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_peluquero: idPeluquero, fecha_disponible, hora_inicial, hora_final })
+      });
+
+      fetchDisponibilidades();
     } catch (error) {
-      console.error("Error fetching availabilities:", error);
-    } finally {
-      setIsLoading(false);
+      console.error(error);
+      alert("No se pudo eliminar el horario de la base de datos.");
     }
   };
 
-  useEffect(() => {
-    if (isLoading || !inputRef.current) return;
+  const handleSave = async () => {
+    try {
+      const payload = events.map((e) => {
+        const startDate = new Date(e.start);
+        const endDate = new Date(e.end);
 
-    const bulmaCalendar = require("bulma-calendar");
+        return {
+          fecha_disponible: startDate.toISOString().split("T")[0],
+          hora_inicial: startDate.toTimeString().substring(0, 5),
+          hora_final: endDate.toTimeString().substring(0, 5),
+          esRango: false
+        };
+      });
 
-    const initCalendar = () => {
-      // Destruir instancia previa si existe
-      if (calendarInstance.current) {
-        try {
-          calendarInstance.current.destroy();
-        } catch (e) {
-          console.warn("Error al destruir calendario previo:", e);
-        }
-        calendarInstance.current = null;
-      }
+      await fetch("http://localhost:8080/Proton/backend/actions/availability.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_peluquero: idPeluquero, disponibilidades: payload })
+      });
 
-      const options = {
-        type: "datetime",
-        dateFormat: "yyyy-MM-dd",
-        timeFormat: "HH:mm",
-        lang: "es",
-        isRange: isSettingAvailability,
-        isMultiple: isSettingAvailability,
-        displayMode: "inline",
-        showHeader: true,
-        showFooter: false,
-        showButtons: true,
-        validateLabel: "Confirmar",
-        cancelLabel: "Cancelar",
-        clearLabel: "Limpiar",
-        disabledDates: getDisabledDates(),
-        availableDates: !isSettingAvailability
-          ? existingAvailabilities.map((avail) => ({
-              date: avail.fecha_disponible,
-              time: avail.hora_inicial,
-            }))
-          : [],
-        highlightAvailableDates: !isSettingAvailability,
-      };
-
-      try {
-        // Hacer el input visible temporalmente para que Bulma pueda inicializarlo
-        inputRef.current.style.display = "block";
-
-        calendarInstance.current = bulmaCalendar.attach(inputRef.current, options)[0];
-
-        // Ocultar el input después de la inicialización
-        inputRef.current.style.display = "none";
-
-        // Establecer fechas seleccionadas si hay disponibilidades existentes
-        if (existingAvailabilities.length > 0 && isSettingAvailability) {
-          setTimeout(() => {
-            if (calendarInstance.current) {
-              try {
-                const datesToSelect = existingAvailabilities.map(avail => {
-                  return `${avail.fecha_disponible} ${avail.hora_inicial}`;
-                });
-
-                calendarInstance.current.value(datesToSelect);
-
-                // 🔥 Forzar highlight en el calendario
-                datesToSelect.forEach(date => {
-                  try {
-                    calendarInstance.current.select(date);
-                  } catch (e) {
-                    console.warn("Error seleccionando fecha inicial:", e);
-                  }
-                });
-
-                setSelectedDates(existingAvailabilities);
-
-              } catch (error) {
-                console.error("Error setting calendar value:", error);
-              }
-            }
-          }, 800); // Aumentado a 800ms para asegurar la inicialización completa
-        }
-
-        // Evento al seleccionar fechas (solo si la instancia existe)
-        if (calendarInstance.current && typeof calendarInstance.current.on === "function") {
-          calendarInstance.current.on("select", (datepicker) => {
-            const rawDates = datepicker.data.value();
-            if (!rawDates) return;
-
-            let processedDates = [];
-
-            if (isSettingAvailability && typeof rawDates === 'string' && rawDates.includes(" - ")) {
-              const [start, end] = rawDates.split(" - ");
-              const [startDate, startTime] = start.trim().split(" ");
-              const [endDate, endTime] = end.trim().split(" ");
-
-              processedDates.push({
-                fecha_inicio: startDate,
-                fecha_fin: endDate,
-                hora_inicial: startTime,
-                hora_final: endTime,
-                esRango: true,
-              });
-            } else {
-              const datesToProcess = Array.isArray(rawDates) ? rawDates : [rawDates];
-
-              processedDates = datesToProcess
-                .map((dateStr) => {
-                  if (!dateStr) return null;
-                  const [datePart, timePart] = dateStr.trim().split(" ");
-                  return {
-                    fecha_disponible: datePart,
-                    hora_inicial: timePart,
-                    hora_final: calculateEndTime(timePart),
-                    esRango: false,
-                  };
-                })
-                .filter(Boolean);
-            }
-
-            setSelectedDates(processedDates);
-
-            // Mostrar botón si hay fechas seleccionadas
-            setShowEditBtn(processedDates.length > 0);
-          });
-
-          // Evento al cerrar el calendario
-          calendarInstance.current.on("hide", () => {
-            setShowEditBtn(false);
-          });
-        }
-      } catch (error) {
-        console.error("Error initializing calendar:", error);
-        // Asegurar que el input se oculte si hubo fallo
-        try { inputRef.current.style.display = "none"; } catch (e) {}
-      }
-    };
-
-    const timer = setTimeout(initCalendar, 100);
-    return () => clearTimeout(timer);
-  }, [isRange, isMultiple, existingAvailabilities, isSettingAvailability, isLoading]);
-
-  useEffect(() => {
-    // Cleanup al desmontar el componente
-    return () => {
-      if (calendarInstance.current) {
-        try {
-          calendarInstance.current.destroy();
-        } catch (e) {
-          console.warn("Error al destruir calendario durante cleanup:", e);
-        }
-      }
-    };
-  }, []);
-
-  const getDisabledDates = () => {
-    const disabledDates = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const pastDate = new Date(today);
-    pastDate.setDate(today.getDate() - 1);
-
-    while (pastDate >= new Date(2020, 0, 1)) {
-      disabledDates.push(pastDate.toISOString().split("T")[0]);
-      pastDate.setDate(pastDate.getDate() - 1);
+      alert("Disponibilidad y turnos guardados correctamente.");
+      window.location.href = "/MenuGroomer"; 
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al guardar la disponibilidad.");
     }
-
-    if (!isSettingAvailability) {
-      const availableDates = existingAvailabilities.map((avail) => avail.fecha_disponible);
-      const futureDate = new Date(today);
-      futureDate.setFullYear(today.getFullYear() + 1);
-
-      while (today <= futureDate) {
-        const dateStr = today.toISOString().split("T")[0];
-        if (!availableDates.includes(dateStr)) {
-          disabledDates.push(dateStr);
-        }
-        today.setDate(today.getDate() + 1);
-      }
-    }
-
-    return disabledDates;
   };
 
-  const calculateEndTime = (startTime) => {
-    const [hours, minutes] = startTime.split(":").map(Number);
-    const endHours = (hours + 1) % 24;
-    return `${endHours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-  };
-
-  const handleSave = () => {
-    if (selectedDates.length === 0) {
-      alert("Por favor selecciona fechas válidas usando el selector de fechas");
-      return;
-    }
-    onClose(selectedDates);
-  };
-
-  if (isLoading) {
-    return <div>Cargando calendario...</div>;
-  }
+  if (loading) return <p>Cargando calendario...</p>;
 
   return (
-      <div
-        style={{
-          position: "relative",
-          minHeight: "100vh",          // ocupa toda la pantalla
-          display: "flex",             // activamos flexbox
-          justifyContent: "center",    // centra horizontalmente
-          alignItems: "center",        // centra verticalmente
-          flexDirection: "column",     // para que el botón quede debajo
-          textAlign: "center",
-        }}
-      >
+    <div className="calendar-container">
+      <h1 className="title is-3 has-text-centered">Calendario</h1>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="timeGridWeek"
+        selectable={true}
+        events={events}
+        select={handleSelect}
+        eventClick={handleEventClick}
+      />
 
-      <input type="datetime" ref={inputRef} style={{ display: "none" }} />
-      {showEditBtn && (
-      <button
-      className="button is-warning"
-      style={{
-        position: "fixed",        // ahora siempre sobre la pantalla
-        top: "120px",              // separación desde arriba
-        right: "20px",            // separación desde la derecha
-        zIndex: 9999,
-        padding: "10px 12px",
-        minWidth: "200px",
-        whiteSpace: "nowrap",
-        backgroundColor: "#9655C5",
-        color: "white",
-      }}
-      onClick={() => alert("Editar disponibilidad")}
-    >
-      Editar disponibilidad
-    </button>
-
+      {isSettingAvailability && (
+        <div className="calendar-footer" style={{ marginTop: "1rem", marginBottom: "2rem" }}>
+          <button
+            className="button is-fullwidth"
+            style={{
+              backgroundColor: "#9b59b6", // morado estilo foto
+              color: "white",
+              fontWeight: "bold",
+            }}
+            onClick={handleSave}
+          >
+            Guardar disponibilidad
+          </button>
+        </div>
       )}
-
-      <button
-        onClick={handleSave}
-        className="button is-primary is-fullwidth"
-        style={{
-          backgroundColor: "#9655C5",
-          color: "white",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginTop: "30px",
-          bottom: "20px",
-        }}
-      >
-        {isSettingAvailability ? "Guardar disponibilidad" : "Confirmar turno"}
-      </button>
     </div>
   );
-};
-
-export default Calendar;
+}

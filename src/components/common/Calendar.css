@@ -1,0 +1,56 @@
+/* Archivo: src/styles/Calendar.css */
+
+/* Contenedor general del calendario */
+.fc {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Cabecera del calendario (mes, semana, día) */
+.fc-toolbar {
+  margin-bottom: 10px;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Botones de navegación */
+.fc-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.fc-button:hover {
+  background-color: #2980b9;
+}
+
+/* Días y eventos */
+.fc-daygrid-day-number {
+  font-weight: bold;
+}
+
+.fc-event {
+  background-color: #2ecc71;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.fc-event:hover {
+  background-color: #27ae60;
+}
