@@ -1,6 +1,6 @@
 <?php
 
-require_once 'db.php'; // Incluir la conexión
+require_once '../includes/db.php'; // Incluir la conexión
 
 function registrarUsuario($nombre, $apellido, $telefono, $email, $contrasenia, $rol) {
     global $conn;
