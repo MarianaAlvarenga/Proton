@@ -5,7 +5,6 @@ header("Content-Type: application/json");
 
 require_once '../includes/db.php';
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
-
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
 }
@@ -45,6 +44,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($stmt->execute()) {
+            // 🔹 Actualizar especialidades peluquero
+            if ($rol === 3) {
+                if (!isset($data['especialidad']) || empty($data['especialidad'])) {
+                    echo json_encode(["success" => false, "message" => "Los peluqueros deben tener al menos una especialidad"]);
+                    return;
+                }
+
+                $conn->query("DELETE FROM peluquero_ofrece_servicio WHERE peluquero_id_usuario = $id");
+
+                $especialidades = is_array($data['especialidad']) ? $data['especialidad'] : [$data['especialidad']];
+                foreach ($especialidades as $esp) {
+                    $espId = intval($esp);
+                    if ($espId <= 0) {
+                        echo json_encode(["success" => false, "message" => "ID de especialidad inválido: $esp"]);
+                        return;
+                    }
+                    $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($id, $espId)");
+                }
+            }
+
             echo json_encode(["success" => true, "message" => "Usuario actualizado correctamente"]);
         } else {
             echo json_encode(["success" => false, "message" => "Error al actualizar el usuario: " . $stmt->error]);

@@ -38,24 +38,35 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     }, [userId]);
 
     const handleFileChange = async (event) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-        // Validación cliente adicional
-        if (file.size > 2 * 1024 * 1024) { // 2MB
-            alert("La imagen no debe exceder 2MB");
-            return;
-        }
+    // Validación de tamaño
+    if (file.size > 2 * 1024 * 1024) {
+        alert("La imagen no debe exceder 2MB");
+        return;
+    }
 
-        // CASO 1: REGISTRO (sin userId): solo preview local y aviso al padre
-        if (!userId) {
-            setSelectedImage(URL.createObjectURL(file)); // preview inmediata
+    // CASO REGISTRO (sin userId)
+    if (!userId) {
+        try {
+            // Crear preview local
+            const imageUrl = URL.createObjectURL(file);
+            setSelectedImage(imageUrl);
+            
+            // Notificar al padre
             if (typeof onTempImageSelected === "function") {
-                onTempImageSelected(file); // el padre guardará el archivo para subirlo después del registro
+                onTempImageSelected(file);
             }
+            
+        } catch (error) {
+            console.error("Error procesando imagen:", error);
+            alert("Error al procesar la imagen seleccionada");
+        } finally {
             if (fileInputRef.current) fileInputRef.current.value = "";
-            return;
         }
+        return;
+    }
 
         // CASO 2: EDICIÓN (con userId): subir al servidor
         const formData = new FormData();

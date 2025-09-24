@@ -20,7 +20,7 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
-    especialidad: "", // <-- nuevo campo para peluquero
+    especialidad: [], // ahora siempre es array de IDs
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -28,13 +28,11 @@ const SignUp = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
   const [roles, setRoles] = useState([]);
-  const [especialidades, setEspecialidades] = useState([]); // <-- lista de especialidades
+  const [especialidades, setEspecialidades] = useState([]);
 
-  // Estado para vista previa de imagen
   const [imagenPreview, setImagenPreview] = useState(null);
   const [tempImageFile, setTempImageFile] = useState(null);
 
-  // 🔹 Obtener roles y especialidades
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -72,7 +70,7 @@ const SignUp = () => {
           contrasenia: "",
           confirmarContrasenia: "",
           rol: userData.rol || 1,
-          especialidad: userData.especialidad || "",
+          especialidad: userData.especialidad ? [].concat(userData.especialidad.map(id => Number(id))) : [],
         });
         if (userData.img_url) setImagenPreview(userData.img_url);
         setIsEditMode(isEditMode || false);
@@ -96,6 +94,14 @@ const SignUp = () => {
       return;
     }
 
+    const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
+    const isPeluquero = roleObj && roleObj.rol.toLowerCase().includes("peluquero");
+
+    if (isPeluquero && formData.especialidad.length === 0) {
+      setErrorMessage("Los peluqueros deben seleccionar al menos una especialidad");
+      return;
+    }
+
     const endpoint = isEditMode
       ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
       : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
@@ -104,7 +110,11 @@ const SignUp = () => {
       ...formData,
       action: isEditMode ? "update" : "register",
       id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
+      especialidad: formData.especialidad.map(id => Number(id)), // enviamos IDs numéricos
     };
+
+    // 👇 agregado el console.log
+    console.log("Datos enviados al backend:", userData);
 
     try {
       const res = await fetch(endpoint, {
@@ -113,32 +123,47 @@ const SignUp = () => {
         body: JSON.stringify(userData),
       });
 
-      const result = await res.json();
+      const responseText = await res.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Respuesta no JSON del servidor:", responseText);
+        setErrorMessage("Error inesperado del servidor. Verifica la consola para más detalles.");
+        return;
+      }
 
       if (result.success) {
-        // Subir imagen si corresponde
         if (!isEditMode && tempImageFile && result.id_usuario) {
-          const formDataImg = new FormData();
-          formDataImg.append("image", tempImageFile);
-          formDataImg.append("userId", String(result.id_usuario));
           try {
-            await fetch("http://localhost:8080/Proton/backend/actions/upload_user_image.php", {
-              method: "POST",
-              body: formDataImg,
-              credentials: "include",
-            });
-          } catch (err) {
-            console.error("Error subiendo imagen:", err);
-          }
-        }
+            const formDataImg = new FormData();
+            formDataImg.append("image", tempImageFile);
+            formDataImg.append("userId", String(result.id_usuario));
 
-        setSuccessMessage(isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente");
-        setTimeout(() => navigate("/UsersAdmin"), 1500);
+            const imgRes = await fetch(
+              "http://localhost:8080/Proton/backend/actions/upload_user_image.php",
+              { method: "POST", body: formDataImg, credentials: "include" }
+            );
+
+            const imgResult = await imgRes.json();
+            if (!imgResult.success) {
+              setSuccessMessage("Usuario registrado correctamente (pero la imagen no se pudo subir)");
+            } else {
+              setSuccessMessage("Usuario registrado exitosamente con imagen");
+            }
+          } catch (err) {
+            setSuccessMessage("Usuario registrado correctamente (error subiendo imagen)");
+          }
+        } else {
+          setSuccessMessage(isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente");
+        }
+        setTimeout(() => navigate("/UsersAdmin"), 2000);
       } else {
         setErrorMessage(result.message || "Error al procesar la solicitud");
       }
     } catch (error) {
-      setErrorMessage("Error de conexión con el servidor");
+      console.error("Error de conexión:", error);
+      setErrorMessage("Error de conexión con el servidor: " + error.message);
     }
   };
 
@@ -147,7 +172,6 @@ const SignUp = () => {
     return role ? role.rol : "Rol desconocido";
   };
 
-  // 🔹 Determinar si mostrar combo de especialidad
   const mostrarEspecialidad = () => {
     const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
     return roleObj && roleObj.rol.toLowerCase().includes("peluquero");
@@ -160,8 +184,7 @@ const SignUp = () => {
       <div className="container">
         <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
-            <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
-              
+            <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
               {!showComboBox && isEditMode && <p>{getRoleName(formData.rol)}</p>}
 
               {isEditMode && imagenPreview ? (
@@ -175,24 +198,20 @@ const SignUp = () => {
               )}
 
               <form onSubmit={handleSubmit}>
-                {/* 🔹 ComboBox de rol */}
                 {showComboBox && !isEditMode && (
                   <ComboBox
                     value={formData.rol}
-                    onChange={(value) =>
-                      setFormData({ ...formData, rol: parseInt(value, 10), especialidad: "" })
-                    }
+                    onChange={(value) => setFormData({ ...formData, rol: Number(value), especialidad: [] })}
                     options={roles.map((r) => ({ value: r.id, label: r.rol }))}
                     placeholder="Seleccione un rol"
                   />
                 )}
 
-                {/* 🔹 ComboBox de especialidad solo si rol es peluquero */}
                 {mostrarEspecialidad() && (
                   <ComboBox
                     value={formData.especialidad}
-                    onChange={(value) => setFormData({ ...formData, especialidad: value })}
-                    options={especialidades.map((e) => ({ value: e.id_tipo, label: e.nombre }))}
+                    onChange={(value) => setFormData({ ...formData, especialidad: [Number(value)] })}
+                    options={especialidades.map((e) => ({ value: e.id_servicio, label: e.nombre }))}
                     placeholder="Seleccione una especialidad"
                   />
                 )}
