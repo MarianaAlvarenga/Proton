@@ -37,7 +37,7 @@ const LogOut = () => {
   return (
     <div>
       <a href="#" onClick={handleLogout}>
-        <PowerIcon style={{ fill: "white", width: "20px", height: "20px", marginTop: "7px", cursor: "pointer" }} />
+        <PowerIcon style={{ fill: "white", width: "20px", height: "20px", marginTop: "14px", cursor: "pointer" }} />
       </a>
     </div>
   );

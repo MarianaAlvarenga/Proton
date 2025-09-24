@@ -30,7 +30,7 @@ const HomeButton = () => {
             <img
                 src={require("../../assets/images/home.png")}
                 alt="HomeButton"
-                style={{ fill: 'white', color: 'white', height:'35px', marginTop:'6px'}}
+                style={{ fill: 'white', color: 'white', height:'35px', marginTop:'-2px'}}
             />
         </a>
     );
