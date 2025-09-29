@@ -7,13 +7,17 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
 
-export default function Calendar({ userRole, isSettingAvailability }) {
+export default function Calendar({ peluqueroId, isSettingAvailability }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const idPeluquero = JSON.parse(localStorage.getItem("user")).id_usuario;
+  const fetchDisponibilidades = (idPeluquero) => {
+    if (!idPeluquero) {
+      setEvents([]);
+      setLoading(false);
+      return;
+    }
 
-  const fetchDisponibilidades = () => {
     setLoading(true);
     fetch(`http://localhost:8080/Proton/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
       .then((res) => res.json())
@@ -29,7 +33,10 @@ export default function Calendar({ userRole, isSettingAvailability }) {
       .catch((error) => { console.error(error); setLoading(false); });
   };
 
-  useEffect(() => { fetchDisponibilidades(); }, []);
+  // 🔄 Cada vez que peluqueroId cambie, hacemos fetch
+  useEffect(() => {
+    fetchDisponibilidades(peluqueroId);
+  }, [peluqueroId]);
 
   const handleSelect = (info) => {
     if (!isSettingAvailability) return;
@@ -76,10 +83,10 @@ export default function Calendar({ userRole, isSettingAvailability }) {
       await fetch("http://localhost:8080/Proton/backend/actions/delete_availability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_peluquero: idPeluquero, fecha_disponible, hora_inicial, hora_final })
+        body: JSON.stringify({ id_peluquero: peluqueroId, fecha_disponible, hora_inicial, hora_final })
       });
 
-      fetchDisponibilidades();
+      fetchDisponibilidades(peluqueroId);
     } catch (error) {
       console.error(error);
       alert("No se pudo eliminar el horario de la base de datos.");
@@ -103,7 +110,7 @@ export default function Calendar({ userRole, isSettingAvailability }) {
       await fetch("http://localhost:8080/Proton/backend/actions/availability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_peluquero: idPeluquero, disponibilidades: payload })
+        body: JSON.stringify({ id_peluquero: peluqueroId, disponibilidades: payload })
       });
 
       alert("Disponibilidad y turnos guardados correctamente.");
@@ -133,7 +140,7 @@ export default function Calendar({ userRole, isSettingAvailability }) {
           <button
             className="button is-fullwidth"
             style={{
-              backgroundColor: "#9b59b6", // morado estilo foto
+              backgroundColor: "#9b59b6",
               color: "white",
               fontWeight: "bold",
             }}

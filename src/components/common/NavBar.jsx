@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MenuDesplegable from "./MenuDesplegable.jsx";
 import './NavBar.css';
 import LogOut from "./LogOut.jsx";
-import ProfileButton from "./ProfileButton.jsx";
+import ProfileButton from "./profileButton.jsx";
 import HomeButton from "./HomeButton.jsx";
 
 const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileButton = true, showHomeButton = true }) => {

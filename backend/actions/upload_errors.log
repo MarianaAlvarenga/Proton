@@ -70,5 +70,17 @@
 [27-Aug-2025 00:21:56 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68ae338416220.png
 [20-Sep-2025 04:44:44 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68ce151c02a8a.png
 [21-Sep-2025 00:55:44 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68cf30f00d962.jpg
-[24-Sep-2025 04:02:07 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68d3511fe7e01.jpeg
-[24-Sep-2025 04:21:19 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68d3559f0ec72.jpeg
+[24-Sep-2025 03:40:02 Europe/Berlin] Intentando mover archivo a: C:\xampp\htdocs\Proton\backend\uploads\68d34bf2c578c.png
+[24-Sep-2025 04:28:27 Europe/Berlin] Imagen subida exitosamente para usuario 42: img_68d3574b029c8.png
+[24-Sep-2025 04:29:18 Europe/Berlin] Imagen subida exitosamente para usuario 43: img_68d3577e923a9.png
+[24-Sep-2025 04:40:22 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86
+[24-Sep-2025 04:41:34 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86
+[24-Sep-2025 04:42:15 Europe/Berlin] Imagen subida exitosamente para usuario 46: img_68d35a87e9a96.jpg
+[24-Sep-2025 04:42:48 Europe/Berlin] Imagen subida exitosamente para usuario 47: img_68d35aa867e1d.jpg
+[24-Sep-2025 17:11:59 Europe/Berlin] Imagen subida exitosamente para usuario 71: img_68d40a3f25831.jpg
+[24-Sep-2025 17:12:57 Europe/Berlin] Imagen subida exitosamente para usuario 72: img_68d40a791c4fe.jpg
+[24-Sep-2025 17:24:39 Europe/Berlin] Imagen subida exitosamente para usuario 74: img_68d40d374e673.png
+[24-Sep-2025 17:31:31 Europe/Berlin] Imagen subida exitosamente para usuario 75: img_68d40ed341f9a.png
+[24-Sep-2025 17:32:15 Europe/Berlin] Imagen subida exitosamente para usuario 76: img_68d40eff12d0b.png
+[24-Sep-2025 17:39:07 Europe/Berlin] Imagen subida exitosamente para usuario 77: img_68d4109b48fb5.jpg
+[24-Sep-2025 17:47:16 Europe/Berlin] Imagen subida exitosamente para usuario 78: img_68d41284d3085.png
