@@ -4,6 +4,7 @@ import UserImage from "./UserImage.jsx";
 import PetImage from "./PetImage.jsx";
 import NavBar from "./NavBar.jsx";
 import SubNavBar from "./SubNavBar.jsx";
+import ComboBox from "./ComboBox";
 
 const ProfileUser = () => {
     const [mascotas, setMascotas] = useState([]);
@@ -17,6 +18,7 @@ const ProfileUser = () => {
     const [mascotaEdit, setMascotaEdit] = useState(null);
     const [editandoUsuario, setEditandoUsuario] = useState(false);
     const [usuarioEdit, setUsuarioEdit] = useState(null);
+    const [especialidades, setEspecialidades] = useState([]);
 
     const navigate = useNavigate();
 
@@ -56,6 +58,18 @@ const ProfileUser = () => {
 
                 setUserData(userJson.user);
                 setContrasenia("");
+
+                const fetchEspecialidades = async () => {
+                    try {
+                        const res = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+                        const data = await res.json();
+                        setEspecialidades(data);
+                    } catch (error) {
+                        console.error("Error al obtener especialidades:", error);
+                    }
+                };
+
+                fetchEspecialidades();
 
                 const petsResponse = await fetch(
                     `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`,
@@ -102,6 +116,7 @@ const ProfileUser = () => {
         const fecha_nacimiento = document.getElementById('born').value;
         const telefono = document.getElementById('phone').value.trim();
         const email = document.getElementById('email').value.trim();
+        const especialidad = document.getElementById('especialidad').value.trim();
 
         if (!nombre || !apellido || !fecha_nacimiento || !telefono || !email) {
             setMensaje({ tipo: 'error', texto: "Por favor complete todos los campos." });
@@ -112,6 +127,7 @@ const ProfileUser = () => {
             id_usuario: userData.id_usuario,
             nombre,
             apellido,
+            especialidad,
             fecha_nacimiento,
             telefono,
             email,
@@ -120,6 +136,11 @@ const ProfileUser = () => {
 
         if (contrasenia.trim() !== "") {
             payload.contrasenia = contrasenia.trim();
+        }
+
+        // Agregar especialidad si el rol es 3
+        if (userData.rol === 3) {
+            payload.especialidad = usuarioEdit?.especialidad || '';
         }
 
         try {
@@ -204,7 +225,14 @@ const ProfileUser = () => {
                     <label className="label" htmlFor="LastName">Apellido:</label>
                     <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} 
                            readOnly={!editandoUsuario}/>
-
+                    {userData?.rol === 3 && (
+                        <ComboBox
+                            value={userData.especialidad}
+                            onChange={(value) => setUserData({ ...userData, especialidad: value })}
+                            options={especialidades.map((e) => ({ value: e.id_tipo, label: e.nombre }))}
+                            placeholder="Seleccione una especialidad"
+                        />
+                    )}
                     <label className="label" htmlFor="born">Fecha de nacimiento:</label>
                     <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01" 
                            readOnly={!editandoUsuario}/>
