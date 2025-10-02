@@ -1,6 +1,5 @@
-// Shifts.jsx
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Calendar from '../components/common/Calendar';
 import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
@@ -10,7 +9,7 @@ import axios from 'axios';
 
 const Shifts = () => {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userRole = Number(user.rol || location.state?.userRole || 3); // convertir a número
   const isRange = false;
@@ -41,7 +40,7 @@ const Shifts = () => {
   // Traer peluqueros asociados a la especialidad seleccionada (solo cliente o admin)
   useEffect(() => {
     if (!(userRole === 1 || userRole === 4)) return;
-
+    
     if (!selectedEspecialidad) {
       setPeluqueros([]);
       setSelectedPeluquero('');
@@ -63,6 +62,12 @@ const Shifts = () => {
   }, [selectedEspecialidad, userRole]);
 
   const handleCalendarClose = async (dates) => {
+    if (isSettingAvailability) {
+      // Para peluqueros, redirigir al MenuGroomer después de guardar
+      navigate('/MenuGroomer');
+      return;
+    }
+
     if (!dates || dates.length === 0) {
       alert("Por favor selecciona al menos una fecha válida");
       return;
@@ -70,35 +75,26 @@ const Shifts = () => {
 
     try {
       const userData = JSON.parse(localStorage.getItem('user'));
-
-      if (isSettingAvailability) {
-        if (!userData?.id_usuario) throw new Error("Debes iniciar sesión para guardar disponibilidad");
-
-        await axios.post('http://localhost:8080/Proton/backend/actions/availability.php', {
-          id_peluquero: userData.id_usuario,
-          disponibilidades: dates
-        }, { headers: { 'Content-Type': 'application/json' } });
-
-        alert("¡Disponibilidad guardada correctamente!");
-      } else {
-        if (!selectedPeluquero) {
-          throw new Error("Por favor selecciona un peluquero");
-        }
-
-        let emailCliente;
-        if (userRole === 4) emailCliente = emailAdmin;
-        else if (userRole === 1) emailCliente = undefined;
-
-        await axios.post('http://localhost:8080/Proton/backend/actions/save_appointment.php', {
-          id_peluquero: selectedPeluquero || userData.id_usuario,
-          fecha: dates[0].fecha_disponible,
-          hora_inicio: dates[0].hora_inicial,
-          hora_fin: dates[0].hora_final,
-          email_cliente: emailCliente
-        }, { headers: { 'Content-Type': 'application/json' } });
-
-        alert("¡Turno agendado correctamente!");
+      
+      if (!selectedPeluquero) {
+        throw new Error("Por favor selecciona un peluquero");
       }
+
+      let emailCliente;
+      if (userRole === 4) emailCliente = emailAdmin;
+      else if (userRole === 1) emailCliente = undefined;
+
+      await axios.post('http://localhost:8080/Proton/backend/actions/save_appointment.php', {
+        id_peluquero: selectedPeluquero || userData.id_usuario,
+        fecha: dates[0].fecha_disponible,
+        hora_inicio: dates[0].hora_inicial,
+        hora_fin: dates[0].hora_final,
+        email_cliente: emailCliente
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      alert("¡Turno agendado correctamente!");
     } catch (error) {
       console.error("Error:", error);
       alert(error.response?.data?.message || error.message || "Error desconocido");
@@ -109,7 +105,6 @@ const Shifts = () => {
     <div>
       <NavBar />
       <SubNavBar showBack currentPage='Turnos' />
-
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
         {/* Campo email solo admin */}
         {userRole === 4 && (
@@ -149,9 +144,10 @@ const Shifts = () => {
           isRange={isRange}
           isMultiple={userRole === 3}
           onClose={handleCalendarClose}
-          peluqueroId={userRole === 3 ? user.id_usuario : selectedPeluquero} // 👈 usar peluquero seleccionado o el propio
+          peluqueroId={userRole === 3 ? user.id_usuario : selectedPeluquero} // usar peluquero seleccionado o el propio
           isSettingAvailability={isSettingAvailability}
           userRole={userRole}
+          selectedServicioId={selectedEspecialidad} // <-- PASAMOS la especialidad seleccionada
         />
       </div>
     </div>
