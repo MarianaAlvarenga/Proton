@@ -45,21 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute()) {
             // 🔹 Actualizar especialidades peluquero
-            if ($rol === 3) {
-                if (!isset($data['especialidad']) || empty($data['especialidad'])) {
-                    echo json_encode(["success" => false, "message" => "Los peluqueros deben tener al menos una especialidad"]);
-                    return;
-                }
-
+            if ($rol === 3 && isset($data['especialidad'])) {
                 $conn->query("DELETE FROM peluquero_ofrece_servicio WHERE peluquero_id_usuario = $id");
 
                 $especialidades = is_array($data['especialidad']) ? $data['especialidad'] : [$data['especialidad']];
                 foreach ($especialidades as $esp) {
                     $espId = intval($esp);
-                    if ($espId <= 0) {
-                        echo json_encode(["success" => false, "message" => "ID de especialidad inválido: $esp"]);
-                        return;
-                    }
+                    if ($espId <= 0) continue;
                     $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($id, $espId)");
                 }
             }

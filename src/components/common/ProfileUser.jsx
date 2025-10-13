@@ -28,49 +28,85 @@ const ProfileUser = () => {
         }
     }, [currentIndex, mascotas]);
 
+    // Normalizamos usuarioEdit cuando cambia userData
     useEffect(() => {
         if (userData) {
-            setUsuarioEdit({ ...userData });
+            let esp = [];
+            if (Array.isArray(userData.especialidades)) {
+                esp = userData.especialidades.map((x) => Number(x.id_servicio ?? x));
+            } else if (userData.especialidad !== undefined && userData.especialidad !== null && userData.especialidad !== "") {
+                esp = [Number(userData.especialidad)];
+            }
+            setUsuarioEdit({ ...userData, especialidades: esp });
         }
     }, [userData]);
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
+        console.log("userId: ", userId);
         if (!userId) {
             setError("Usuario no autenticado");
             setLoading(false);
             return;
         }
+
         const fetchData = async () => {
+            console.log(">>> Ejecutando fetchData");
             try {
-                const userResponse = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/getUserById.php`,
+                const res = await fetch(
+                    "http://localhost:8080/Proton/backend/actions/getUserById.php",
                     {
                         method: "POST",
-                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id: userId })
                     }
                 );
-                if (!userResponse.ok) throw new Error(`Error usuario: ${userResponse.status}`);
 
-                const userJson = await userResponse.json();
-                if (!userJson.success) throw new Error(userJson.message || "Error al obtener datos del usuario");
+                const text = await res.text();
+                console.log("Respuesta cruda del servidor:", text);
+
+                // Intentamos parsear JSON directamente; si falla, tratamos de extraer el substring JSON
+                let userJson = null;
+                try {
+                    userJson = JSON.parse(text);
+                } catch (e) {
+                    // Workaround: extraer el primer objeto JSON que aparece en la respuesta
+                    const start = text.indexOf("{");
+                    const end = text.lastIndexOf("}");
+                    if (start !== -1 && end !== -1 && end > start) {
+                        const maybeJson = text.substring(start, end + 1);
+                        try {
+                            userJson = JSON.parse(maybeJson);
+                            console.warn("Se extrajo JSON del texto sucio del servidor.");
+                        } catch (e2) {
+                            console.error("No se pudo extraer JSON válido de la respuesta cruda.");
+                            throw new Error("El servidor no devolvió JSON válido");
+                        }
+                    } else {
+                        throw new Error("El servidor no devolvió JSON válido");
+                    }
+                }
+
+                if (!userJson || !userJson.success) {
+                    throw new Error(userJson?.message || "Error al obtener usuario");
+                }
 
                 setUserData(userJson.user);
-                setContrasenia("");
 
-                const fetchEspecialidades = async () => {
-                    try {
-                        const res = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
-                        const data = await res.json();
+                // Traer listado de especialidades (para los checkboxes)
+                try {
+                    const resEsp = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+                    if (resEsp.ok) {
+                        const data = await resEsp.json();
                         setEspecialidades(data);
-                    } catch (error) {
-                        console.error("Error al obtener especialidades:", error);
+                    } else {
+                        console.warn("No se pudieron obtener especialidades:", resEsp.status);
                     }
-                };
+                } catch (err) {
+                    console.error("Error al obtener especialidades:", err);
+                }
 
-                fetchEspecialidades();
-
+                // Traer mascotas
                 const petsResponse = await fetch(
                     `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`,
                     {
@@ -82,8 +118,8 @@ const ProfileUser = () => {
 
                 const petsJson = await petsResponse.json();
                 if (!petsJson.success) throw new Error(petsJson.message || "Error al obtener mascotas");
-
                 setMascotas(petsJson.mascotas || []);
+
             } catch (err) {
                 console.error("Error en fetchData:", err);
                 setError(err.message || "Error al cargar datos");
@@ -91,14 +127,17 @@ const ProfileUser = () => {
                 setLoading(false);
             }
         };
+
         fetchData();
     }, []);
 
     const handleNext = () => {
+        if (mascotas.length === 0) return;
         setCurrentIndex((prevIndex) => (prevIndex + 1) % mascotas.length);
     };
 
     const handlePrev = () => {
+        if (mascotas.length === 0) return;
         setCurrentIndex((prevIndex) =>
             prevIndex === 0 ? mascotas.length - 1 : prevIndex - 1
         );
@@ -109,14 +148,13 @@ const ProfileUser = () => {
     };
 
     const handleActualizarUsuario = async () => {
-        if (!userData) return;
+        if (!usuarioEdit || !userData) return;
 
-        const nombre = document.getElementById('name').value.trim();
-        const apellido = document.getElementById('LastName').value.trim();
-        const fecha_nacimiento = document.getElementById('born').value;
-        const telefono = document.getElementById('phone').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const especialidad = document.getElementById('especialidad').value.trim();
+        const nombre = document.getElementById('name')?.value.trim() || "";
+        const apellido = document.getElementById('LastName')?.value.trim() || "";
+        const fecha_nacimiento = document.getElementById('born')?.value || "";
+        const telefono = document.getElementById('phone')?.value.trim() || "";
+        const email = document.getElementById('email')?.value.trim() || "";
 
         if (!nombre || !apellido || !fecha_nacimiento || !telefono || !email) {
             setMensaje({ tipo: 'error', texto: "Por favor complete todos los campos." });
@@ -127,7 +165,6 @@ const ProfileUser = () => {
             id_usuario: userData.id_usuario,
             nombre,
             apellido,
-            especialidad,
             fecha_nacimiento,
             telefono,
             email,
@@ -138,12 +175,19 @@ const ProfileUser = () => {
             payload.contrasenia = contrasenia.trim();
         }
 
-        // Agregar especialidad si el rol es 3
         if (userData.rol === 3) {
-            payload.especialidad = usuarioEdit?.especialidad || '';
+            payload.especialidad = Array.isArray(usuarioEdit?.especialidades)
+                ? usuarioEdit.especialidades.map((x) => Number(x))
+                : (usuarioEdit?.especialidad ? [Number(usuarioEdit.especialidad)] : []);
         }
 
         try {
+            setContrasenia("");
+            // **ACTUALIZACIÓN CORRECTA DE usuarioEdit SIN TOCAR listado completo de especialidades**
+            setUsuarioEdit(prev => ({
+                ...prev,
+                especialidades: payload.especialidad || prev.especialidades || []
+            }));
             const response = await fetch(
                 `http://localhost:8080/Proton/backend/actions/updateUser.php`,
                 {
@@ -152,16 +196,27 @@ const ProfileUser = () => {
                     body: JSON.stringify(payload)
                 }
             );
-
+            
             const json = await response.json();
-
             if (json.success) {
                 setMensaje({ tipo: 'exito', texto: json.message });
-                setUserData(prev => ({ ...prev, nombre, apellido, fecha_nacimiento, telefono, email }));
-                setContrasenia("");
+                setUserData(prev => ({
+                    ...prev,
+                    nombre,
+                    apellido,
+                    fecha_nacimiento,
+                    telefono,
+                    email,
+                    especialidades: payload.especialidad || prev.especialidades || []
+                }));
+                
+                setEditandoUsuario(false); 
+                
             } else {
                 setMensaje({ tipo: 'error', texto: json.message || "Error al actualizar" });
             }
+
+
         } catch (error) {
             setMensaje({ tipo: 'error', texto: "Error en la conexión al servidor." });
         }
@@ -203,10 +258,12 @@ const ProfileUser = () => {
         return <p>Error: {error}</p>;
     }
 
+    console.log("usuarioEdit: ", usuarioEdit);
+
     return (
         <>
-            <NavBar showProfileButton={false}></NavBar>
-            <SubNavBar showBack></SubNavBar>
+            <NavBar showProfileButton={false} />
+            <SubNavBar showBack />
             <div className="field">
                 <div className="container">
                     <div className="">
@@ -218,27 +275,72 @@ const ProfileUser = () => {
                             </button>
                         </p>
                     </div>
+
                     <label className="label" htmlFor="name">Nombre:</label>
-                    <input className="input" type="text" name="name" id="name" defaultValue={userData?.nombre || ''} 
+                    <input className="input" type="text" name="name" id="name" defaultValue={usuarioEdit?.nombre || ''} 
+                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, nombre: e.target.value }))}
                            readOnly={!editandoUsuario}/>
 
                     <label className="label" htmlFor="LastName">Apellido:</label>
-                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={userData?.apellido || ''} 
+                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={usuarioEdit?.apellido || ''} 
+                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, apellido: e.target.value }))}
                            readOnly={!editandoUsuario}/>
+
                     {userData?.rol === 3 && (
-                        <ComboBox
-                            value={userData.especialidad}
-                            onChange={(value) => setUserData({ ...userData, especialidad: value })}
-                            options={especialidades.map((e) => ({ value: e.id_tipo, label: e.nombre }))}
-                            placeholder="Seleccione una especialidad"
-                        />
+                    <div className="field">
+                        <label className="label">Especialidades:</label>
+                        <div className="control">
+                        {editandoUsuario ? (
+                            especialidades.map((e) => {
+                                const espId = Number(e.id_servicio);
+                                const actuales = usuarioEdit?.especialidades || [];
+                                const isChecked = actuales.includes(espId);
+                                return (
+                                    <label key={espId} className="checkbox mr-3">
+                                        <input
+                                            type="checkbox"
+                                            value={espId}
+                                            checked={isChecked}
+                                            onChange={(ev) => {
+                                                setUsuarioEdit((prev) => {
+                                                    const actuales = prev.especialidades || [];
+                                                    if (ev.target.checked) {
+                                                        return { ...prev, especialidades: [...actuales, espId] };
+                                                    } else {
+                                                        return { ...prev, especialidades: actuales.filter(id => id !== espId) };
+                                                    }
+                                                });
+                                            }}
+                                        />
+                                        {e.nombre}
+                                    </label>
+                                );
+                            })
+                        ) : (
+                            <div>
+                                {userData.especialidades && userData.especialidades.length > 0 ? (
+                                    <ul>
+                                        {userData.especialidades.map((esp) => (
+                                            <li key={esp.id_servicio ?? esp.id_especialidad}>{esp.nombre}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p>No tiene especialidades registradas</p>
+                                )}
+                            </div>
+                        )}
+                        </div>
+                    </div>
                     )}
+
                     <label className="label" htmlFor="born">Fecha de nacimiento:</label>
-                    <input className="input" type="date" name="born" id="born" defaultValue={userData?.fecha_nacimiento || ''} min="1900-01-01" 
+                    <input className="input" type="date" name="born" id="born" defaultValue={usuarioEdit?.fecha_nacimiento || ''} min="1900-01-01" 
+                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
                            readOnly={!editandoUsuario}/>
 
                     <label className="label" htmlFor="phone">Teléfono:</label>
-                    <input className="input" type="tel" name="phone" id="phone" defaultValue={userData?.telefono || ''} 
+                    <input className="input" type="tel" name="phone" id="phone" defaultValue={usuarioEdit?.telefono || ''} 
+                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, telefono: e.target.value }))}
                            readOnly={!editandoUsuario} />
 
                     <div className="field">
@@ -249,7 +351,8 @@ const ProfileUser = () => {
                                 type="email"
                                 name="email"
                                 id="email"
-                                defaultValue={userData?.email || ''}
+                                defaultValue={usuarioEdit?.email || ''}
+                                onChange={(e) => setUsuarioEdit(prev => ({ ...prev, email: e.target.value }))}
                                 readOnly={!editandoUsuario}
                             />
                             <span className="icon is-small is-left">
@@ -279,6 +382,7 @@ const ProfileUser = () => {
                             </span>
                         </p>
                     </div>
+
                     <div className="field is-grouped is-grouped-right mb-2">
                         <p className="control">
                             <button className="button is-primary is-link" onClick={handleActualizarUsuario}>
@@ -295,7 +399,6 @@ const ProfileUser = () => {
 
                 <div>
                     {mascotas.length > 1 ? (
-                        
                         <div className="container">
                             <hr />
                             <h2 className="title is-3 has-text-centered">MASCOTAS</h2>
@@ -316,7 +419,6 @@ const ProfileUser = () => {
                                     </button>
                                 </div>
                                 <div className="carousel-item">
-                                    
                                     <div className="column">
                                         <h3 className="title is-2">{mascotas[currentIndex].nombre_mascota}</h3>
                                         <p className="control">
@@ -341,9 +443,7 @@ const ProfileUser = () => {
                                                 id="pet-species"
                                                 name="pet-species"
                                                 value={mascotaEdit?.especie || ''}   
-                                                onChange={(e) => 
-                                                setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))
-                                                }
+                                                onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
                                                 disabled={!editandoMascota}          
                                             >
                                                 <option value="gato">Gato</option>
@@ -367,9 +467,7 @@ const ProfileUser = () => {
                                                 id="pet-sex"
                                                 name="pet-sex"
                                                 value={mascotaEdit?.sexo || ''}   
-                                                onChange={(e) => 
-                                                setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))
-                                                }
+                                                onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
                                                 disabled={!editandoMascota}          
                                             >
                                                 <option value="macho">Macho</option>
@@ -388,9 +486,7 @@ const ProfileUser = () => {
                                                 id="tamanio"
                                                 name="tamanio"
                                                 value={mascotaEdit?.tamanio || ''}   
-                                                onChange={(e) => 
-                                                setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))
-                                                }
+                                                onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
                                                 disabled={!editandoMascota}          
                                             >
                                                 <option value="pequenio">Pequeño</option>
@@ -405,9 +501,7 @@ const ProfileUser = () => {
                                                 id="largo_pelo"
                                                 name="largo_pelo"
                                                 value={mascotaEdit?.largo_pelo || ''}   
-                                                onChange={(e) => 
-                                                setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))
-                                                }
+                                                onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
                                                 disabled={!editandoMascota}          
                                             >
                                                 <option value="muy corto">Muy corto</option>
@@ -416,21 +510,20 @@ const ProfileUser = () => {
                                                 <option value="muy largo">Muy largo</option>
                                             </select>
                                         </div>
-                                    
-                                        
+
                                         <label className="label" htmlFor="pet-color">Color:</label>
                                         <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
                                                onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
                                                readOnly={!editandoMascota}/>
 
-                                        <label className="label" for="pet-detail">Información médica relevante:</label>
+                                        <label className="label" htmlFor="pet-detail">Información médica relevante:</label>
                                         <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
                                                   onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
                                                   readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
                                     </div>
-                                
                                 </div>
                             </div>
+
                             <div className="field is-grouped is-grouped-right mb-2">
                                 <p className="control">
                                     <button className="button is-primary is-link" onClick={handleActualizarMascota}>
@@ -471,9 +564,7 @@ const ProfileUser = () => {
                                             id="pet-species"
                                             name="pet-species"
                                             value={mascotaEdit?.especie || ''}   
-                                            onChange={(e) => 
-                                            setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))
-                                            }
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
                                             disabled={!editandoMascota}          
                                         >
                                             <option value="gato">Gato</option>
@@ -487,7 +578,6 @@ const ProfileUser = () => {
                                     </div>
 
                                     <label className="label" htmlFor="pet-race">Raza:</label>
-                            
                                     <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
                                            readOnly={!editandoMascota}/>
@@ -498,9 +588,7 @@ const ProfileUser = () => {
                                             id="pet-sex"
                                             name="pet-sex"
                                             value={mascotaEdit?.sexo || ''}   
-                                            onChange={(e) => 
-                                            setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))
-                                            }
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
                                             disabled={!editandoMascota}          
                                         >
                                             <option value="macho">Macho</option>
@@ -519,9 +607,7 @@ const ProfileUser = () => {
                                             id="tamanio"
                                             name="tamanio"
                                             value={mascotaEdit?.tamanio || ''}   
-                                            onChange={(e) => 
-                                            setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))
-                                            }
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
                                             disabled={!editandoMascota}          
                                         >
                                             <option value="pequenio">Pequeño</option>
@@ -536,9 +622,7 @@ const ProfileUser = () => {
                                             id="largo_pelo"
                                             name="largo_pelo"
                                             value={mascotaEdit?.largo_pelo || ''}   
-                                            onChange={(e) => 
-                                            setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))
-                                            }
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
                                             disabled={!editandoMascota}          
                                         >
                                             <option value="muy corto">Muy corto</option>
@@ -547,20 +631,20 @@ const ProfileUser = () => {
                                             <option value="muy largo">Muy largo</option>
                                         </select>
                                     </div>
-                                
-                                    
+
                                     <label className="label" htmlFor="pet-color">Color:</label>
                                     <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
                                            readOnly={!editandoMascota}/>
 
-                                    <label className="label" for="pet-detail">Información médica relevante:</label>
+                                    <label className="label" htmlFor="pet-detail">Información médica relevante:</label>
                                     <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
                                               readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
 
                                 </div>
                             </div>
+
                             <div className="field is-grouped is-grouped-right mb-2">
                                 <p className="control">
                                     <button className="button is-primary is-link" onClick={handleActualizarMascota}>
@@ -576,24 +660,18 @@ const ProfileUser = () => {
                         </div>
                     ) : (
                         userData?.rol === 1 ? (
-            <p>No hay mascotas registradas</p>
-        ) : null
+                            <p>No hay mascotas registradas</p>
+                        ) : null
                     )}
                 </div>
 
                 <hr />
 
                 {mensaje && (
-                    <p
-                        style={{
-                            color: mensaje.tipo === "exito" ? "green" : "red",
-                            fontWeight: "bold",
-                        }}
-                    >
+                    <p style={{ color: mensaje.tipo === "exito" ? "green" : "red", fontWeight: "bold" }}>
                         {mensaje.texto}
                     </p>
                 )}
-
             </div>
         </>
     );
