@@ -144,7 +144,8 @@ const ProfileUser = () => {
     };
 
     const handleCancel = () => {
-        navigate(-1);
+        setEditandoMascota(false);
+        setEditandoUsuario(false);
     };
 
     const handleActualizarUsuario = async () => {
@@ -200,6 +201,13 @@ const ProfileUser = () => {
             const json = await response.json();
             if (json.success) {
                 setMensaje({ tipo: 'exito', texto: json.message });
+
+                // ======== FIX: reconstruir userData.especialidades con objetos que tienen nombre/id para render inmediato ========
+                const nuevasEspecialidades =
+                    especialidades.filter(e =>
+                        (payload.especialidad || []).includes(Number(e.id_servicio))
+                    );
+
                 setUserData(prev => ({
                     ...prev,
                     nombre,
@@ -207,9 +215,10 @@ const ProfileUser = () => {
                     fecha_nacimiento,
                     telefono,
                     email,
-                    especialidades: payload.especialidad || prev.especialidades || []
+                    especialidades: nuevasEspecialidades
                 }));
-                
+                // ==============================================================================================================
+
                 setEditandoUsuario(false); 
                 
             } else {
