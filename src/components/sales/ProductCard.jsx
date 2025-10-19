@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 
@@ -12,22 +12,64 @@ const ProductCard = ({
   ShowDeleteButton = false,
   ShowModifyButton = false,
   ShowCount = false,
-  setCartProducts = () => {}, // Evita errores si no se pasa la función
+  cartProducts,
+  setCartProducts = () => {},
+  onCartChange = () => {},
 }) => {
+
   const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
 
-  useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProduct = cart.find((item) => item.id === ProductId);
-    setProductCount(existingProduct ? existingProduct.quantity : 0);
+  // 🔹 Función para cargar la cantidad - useCallback para evitar recreación
+  const loadProductCount = useCallback(() => {
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const foundProduct = savedCart.find(p => p.id === ProductId);
+    const newCount = foundProduct ? foundProduct.quantity : 0;
+    setProductCount(newCount);
+    console.log(`🔄 Producto ${ProductId} - cantidad cargada: ${newCount}`);
   }, [ProductId]);
+
+  // 🔹 Carga inicial al montar
+  useEffect(() => {
+    loadProductCount();
+  }, [loadProductCount]);
+
+  // 🔹 Escuchar cambios globales del carrito
+  useEffect(() => {
+    const handleCartUpdated = () => {
+      console.log(`📢 Evento recibido para producto ${ProductId}`);
+      loadProductCount();
+    };
+
+    window.addEventListener("cartUpdated", handleCartUpdated);
+    return () => window.removeEventListener("cartUpdated", handleCartUpdated);
+  }, [ProductId, loadProductCount]);
+
+  // 🔹 También escuchar cambios de cartProducts si viene del padre
+  useEffect(() => {
+    if (cartProducts && cartProducts.length >= 0) {
+      loadProductCount();
+    }
+  }, [cartProducts, loadProductCount]);
 
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
+    
     if (typeof setCartProducts === "function") {
       setCartProducts([...cart]);
     }
+    
+    if (typeof onCartChange === "function") {
+      onCartChange([...cart]);
+    }
+
+    // 🔹 FORZAR actualización inmediata
+    const foundProduct = cart.find(p => p.id === ProductId);
+    const newCount = foundProduct ? foundProduct.quantity : 0;
+    setProductCount(newCount);
+    
+    window.dispatchEvent(new Event("cartUpdated"));
+    console.log("🛒 Carrito actualizado:", cart);
   };
 
   const handleAddClick = () => {
@@ -47,8 +89,10 @@ const ProductCard = ({
     }
 
     updateCart(cart);
-    setProductCount(cart.find((item) => item.id === ProductId).quantity);
-    navigate("/Cart");
+    
+    if (window.location.pathname !== "/Cart") {
+      navigate("/Cart");
+    }
   };
 
   const incrementCount = () => {
@@ -57,9 +101,17 @@ const ProductCard = ({
 
     if (existingProduct) {
       existingProduct.quantity += 1;
-      updateCart(cart);
-      setProductCount(existingProduct.quantity);
+    } else {
+      cart.push({
+        id: ProductId,
+        name: ProductName,
+        price: parseFloat(ProductPrice),
+        image: ProductImage,
+        quantity: 1,
+      });
     }
+
+    updateCart(cart);
   };
 
   const decrementCount = () => {
@@ -72,8 +124,8 @@ const ProductCard = ({
       } else {
         cart.splice(existingProductIndex, 1);
       }
+
       updateCart(cart);
-      setProductCount(cart.find((item) => item.id === ProductId)?.quantity || 0);
     }
   };
 
@@ -95,9 +147,7 @@ const ProductCard = ({
         "http://localhost:8080/Proton/backend/actions/deleteProduct.php",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );
@@ -115,11 +165,12 @@ const ProductCard = ({
       alert("Error al eliminar el producto.");
     }
   };
-  /* EMC2 */
-  /*Cambia la clase según se indique para que la card se vea cuadrada(card) u horizontal(cardList) mediante la 
-  propiedad "ListMode" */
+
+  // 🔹 Agregar console.log en el render para debug
+  console.log(`🎨 RENDER Producto ${ProductId} - cantidad: ${productCount}`);
+
   return (
-    <div className={`card ${ListMode ? "cardList" : ""}`} >
+    <div className={`card ${ListMode ? "cardList" : ""}`}>
       <div className="card-image" style={{ borderRadius: "0%" }}>
         <figure className="image is-16by9">
           <img
