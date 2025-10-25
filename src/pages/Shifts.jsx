@@ -149,6 +149,7 @@ const Shifts = () => {
           peluqueroId={userRole === 3 ? user.id_usuario : selectedPeluquero} // usar peluquero seleccionado o el propio
           isSettingAvailability={isSettingAvailability}
           userRole={userRole}
+          selectedClientEmail={emailAdmin}
           selectedServicioId={selectedEspecialidad} // <-- PASAMOS la especialidad seleccionada
         />
       </div>
