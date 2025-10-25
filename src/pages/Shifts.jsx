@@ -81,8 +81,10 @@ const Shifts = () => {
       }
 
       let emailCliente;
-      if (userRole === 4) emailCliente = emailAdmin;
-      else if (userRole === 1) emailCliente = undefined;
+      if (userRole === 4) {
+        emailCliente = emailAdmin;
+        
+      } else if (userRole === 1) emailCliente = undefined;
 
       await axios.post('http://localhost:8080/Proton/backend/actions/save_appointment.php', {
         id_peluquero: selectedPeluquero || userData.id_usuario,

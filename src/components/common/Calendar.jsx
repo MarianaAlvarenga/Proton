@@ -6,7 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
 
-export default function Calendar({ peluqueroId, isSettingAvailability, userRole, selectedServicioId, onClose }) {
+export default function Calendar({ peluqueroId, isSettingAvailability, userRole, selectedServicioId, onClose, selectedClientEmail }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -17,7 +17,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
       setLoading(false);
       return;
     }
-    
+
     setLoading(true);
     fetch(`http://localhost:8080/Proton/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
       .then((res) => {
@@ -40,14 +40,14 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
             fecha_disponible: avail.fecha_disponible,
             hora_inicial: avail.hora_inicial,
             hora_final: avail.hora_final,
-            id_peluquero: avail.id_peluquero
+            id_peluquero: avail.id_peluquero,
           },
         }));
         setEvents(mapped);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching disponibilidades:', error);
+        console.error("Error fetching disponibilidades:", error);
         setLoading(false);
       });
   };
@@ -70,11 +70,11 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
       const horaInicio = current.toTimeString().substring(0, 5);
       const next = new Date(current.getTime() + 60 * 60 * 1000);
       let horaFin = next.toTimeString().substring(0, 5);
-      
+
       if (next > endDate) horaFin = endDate.toTimeString().substring(0, 5);
 
       const eventId = `temp-${Date.now()}-${Math.random()}`;
-      
+
       newEvents.push({
         id: eventId,
         title: "Disponible",
@@ -87,7 +87,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
           fecha_disponible: fechaStr,
           hora_inicial: horaInicio,
           hora_final: horaFin,
-          isTemp: true
+          isTemp: true,
         },
       });
 
@@ -95,7 +95,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         fecha_disponible: fechaStr,
         hora_inicial: horaInicio,
         hora_final: horaFin,
-        esRango: false
+        esRango: false,
       });
 
       current = next;
@@ -107,23 +107,25 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
 
   const handleEventClick = async (info) => {
     const estado = info.event.extendedProps?.estado || "disponible";
-    
+
     if (isSettingAvailability) {
       if (!window.confirm("¿Eliminar este horario?")) return;
 
-      // Si es un evento temporal (no guardado), solo eliminar del state
       if (info.event.extendedProps?.isTemp) {
-        setEvents((prev) => prev.filter(e => e.id !== info.event.id));
-        
-        setSelectedSlots((prev) => prev.filter(slot => 
-          !(slot.fecha_disponible === info.event.extendedProps?.fecha_disponible &&
-            slot.hora_inicial === info.event.extendedProps?.hora_inicial &&
-            slot.hora_final === info.event.extendedProps?.hora_final)
-        ));
+        setEvents((prev) => prev.filter((e) => e.id !== info.event.id));
+        setSelectedSlots((prev) =>
+          prev.filter(
+            (slot) =>
+              !(
+                slot.fecha_disponible === info.event.extendedProps?.fecha_disponible &&
+                slot.hora_inicial === info.event.extendedProps?.hora_inicial &&
+                slot.hora_final === info.event.extendedProps?.hora_final
+              )
+          )
+        );
         return;
       }
 
-      // Evento guardado -> eliminar en DB
       try {
         const fecha_disponible = info.event.extendedProps?.fecha_disponible;
         const hora_inicial = info.event.extendedProps?.hora_inicial;
@@ -138,14 +140,14 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         const res = await fetch("http://localhost:8080/Proton/backend/actions/delete_availability.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             id_peluquero: id_peluquero,
             fecha: fecha_disponible,
             hora_inicio: hora_inicial,
-            hora_fin: hora_final
+            hora_fin: hora_final,
           }),
         });
-        
+
         const responseText = await res.text();
         let json;
         try {
@@ -159,11 +161,9 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
           alert(json.message || "No se pudo eliminar la disponibilidad.");
           return;
         }
-        
-        // Recargar las disponibilidades después de eliminar
+
         fetchDisponibilidades(peluqueroId);
         alert("Disponibilidad eliminada correctamente.");
-        
       } catch (error) {
         console.error("Error eliminando disponibilidad:", error);
         alert("Error eliminando disponibilidad: " + error.message);
@@ -192,6 +192,12 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
       return;
     }
 
+    // Si es admin, debe tener un cliente seleccionado
+    if (userRole === 4 && !selectedClientEmail) {
+      alert("Seleccioná un cliente antes de reservar el turno.");
+      return;
+    }
+
     const startDate = new Date(info.event.start);
     const fecha_disponible = startDate.toISOString().split("T")[0];
     const hora_inicial = startDate.toTimeString().substring(0, 5);
@@ -202,28 +208,40 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
 
     const turno_id = info.event.extendedProps?.turno_id;
     const user = JSON.parse(localStorage.getItem("user")) || {};
-    const cliente_id = user.id_usuario || null;
 
     try {
       const res = await fetch("http://localhost:8080/Proton/backend/actions/save_appointment.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          turno_id,
-          servicio_id: selectedServicioId,
-          cliente_id,
           fecha: fecha_disponible,
           hora_inicio: hora_inicial,
           hora_fin: hora_final,
+          id: user.id_usuario,
+          userRole: user.rol,
           id_peluquero: peluqueroId,
+          servicio_id: selectedServicioId,
+          email_cliente: selectedClientEmail || null,
         }),
       });
-      const json = await res.json();
+
+      const responseText = await res.text();
+      let json;
+      try {
+        json = JSON.parse(responseText);
+      } catch (err) {
+        console.error("Respuesta inválida del servidor:", responseText);
+        alert("Error del servidor: respuesta inválida.");
+        fetchDisponibilidades(peluqueroId);
+        return;
+      }
+
       if (!res.ok || !json.success) {
         alert(json.message || "No se pudo reservar el turno.");
         fetchDisponibilidades(peluqueroId);
         return;
       }
+
       fetchDisponibilidades(peluqueroId);
       alert("Turno reservado correctamente.");
     } catch (error) {
@@ -240,7 +258,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
     }
 
     try {
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userData = JSON.parse(localStorage.getItem("user"));
       const id_peluquero = userData?.id_usuario;
 
       if (!id_peluquero) {
@@ -255,11 +273,10 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id_peluquero: id_peluquero,
-          disponibilidades: selectedSlots
+          disponibilidades: selectedSlots,
         }),
       });
 
-      // Verificar si la respuesta es JSON válido
       const responseText = await res.text();
       console.log("Respuesta del servidor:", responseText);
 
@@ -275,12 +292,10 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         throw new Error(result.message || "No se pudo guardar la disponibilidad.");
       }
 
-      // Éxito - llamar onClose para redirigir al MenuGroomer
       alert("Disponibilidad guardada correctamente.");
       if (onClose) {
         onClose(selectedSlots);
       }
-      
     } catch (error) {
       console.error("Error al guardar disponibilidad:", error);
       alert(`Error al guardar la disponibilidad: ${error.message}`);
