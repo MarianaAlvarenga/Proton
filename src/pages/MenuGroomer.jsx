@@ -1,10 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
 import NavBar from "../components/common/NavBar";
+import { useWindowSize } from "../Hooks/useWindowSize";
+import Carousel from "../components/common/Carousel";
+import SubNavBar from "../components/common/SubNavBar";
 
 const MenuGroomer = () => {
     const navigate = useNavigate(); // Obtener la función navigate
+    const { width } = useWindowSize(); // Hook para obtener el tamaño de la ventana
+    const isMobile = width < 768; 
 
+    const links = [
+        { label: "Disponibilidad", path: "/Shifts", icon: "disponibilidad.png" },
+        { label: "Calendario", path: "/Products", icon: "agenda.png" },
+    ];  
     // Función para manejar el clic en "Disponibilidad"
     const handleDisponibilidadClick = () => {
         navigate("/Shifts", { 
@@ -25,57 +34,69 @@ const MenuGroomer = () => {
             <div
                 className="container"
                 style={{
-                    maxWidth: "400px",
+                    width: "100%",
+                    maxWidth: "100%",
+                    margin: "0 auto",
                     height: "100vh",
                     textAlign: "center",
                     backgroundColor: "white",
                 }}
             >
                 <NavBar></NavBar>
-                <div
-                    className="columns is-multiline"
-                    style={{
-                        height: "calc(100% - 4em)", // Ajusta el espacio restante restando el tamaño del NavBar
-                        padding: "1em",
-                    }}
-                >
+                {!isMobile ? (
+                    // Vista para pantallas grandes
+                    <>
+                        <SubNavBar links={links} />
+                        <Carousel />
+                    </>
+                ) : (
                     <div
-                        className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+                        className="columns is-movile"
                         style={{
-                            height: "calc(50% - 1em)", // Altura ajustada para margen interno
-                            marginBottom: "1em",
-                            backgroundColor: "#EEE6FF",
-                            borderRadius: "8px", // Bordes redondeados para estética
+                            marginTop: "1em",
+                            height: "100vh",
+                            display: "flex",
+                            flexDirection: "column",
                         }}
                     >
-                        <a role="button" onClick={handleDisponibilidadClick}> {/* Botón Disponibilidad */}
-                            <img
-                                src={require("../../src/assets/images/disponibilidad.png")}
-                                alt="Disponibilidad"
-                                style={{ width: "5em" }}
-                            />
-                            <h2 className="title is-2">Disponibilidad</h2>
-                        </a>
-                    </div>
+                        <div
+                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+                            style={{
+                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
+                                marginBottom: "1em",
+                                backgroundColor: "#EEE6FF",
+                                borderRadius: "8px", // Bordes redondeados para estética
+                            }}
+                        >
+                            <a role="button" onClick={handleDisponibilidadClick}> {/* Botón Disponibilidad */}
+                                <img
+                                    src={require("../../src/assets/images/disponibilidad.png")}
+                                    alt="Disponibilidad"
+                                    style={{ width: "5em" }}
+                                />
+                                <h2 className="title is-2">Disponibilidad</h2>
+                            </a>
+                        </div>
 
-                    <div
-                        className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-                        style={{
-                            height: "calc(50% - 1em)", // Altura ajustada para margen interno
-                            backgroundColor: "#EEE6FF",
-                            borderRadius: "8px", // Bordes redondeados para estética
-                        }}
-                    >
-                        <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
-                            <img
-                                src={require("../../src/assets/images/agenda.png")}
-                                alt="Agenda"
-                                style={{ width: "5em" }}
-                            />
-                            <h2 className="title is-2">Agendar turno</h2>
-                        </a>
+                        <div
+                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+                            style={{
+                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
+                                backgroundColor: "#EEE6FF",
+                                borderRadius: "8px", // Bordes redondeados para estética
+                            }}
+                        >
+                            <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
+                                <img
+                                    src={require("../../src/assets/images/agenda.png")}
+                                    alt="Agenda"
+                                    style={{ width: "5em" }}
+                                />
+                                <h2 className="title is-2">Agendar turno</h2>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                    )}
             </div>
         </>
     );
