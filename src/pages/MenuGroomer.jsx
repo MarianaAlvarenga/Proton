@@ -13,6 +13,7 @@ const MenuGroomer = () => {
     const links = [
         { label: "Disponibilidad", path: "/Shifts", icon: "disponibilidad.png" },
         { label: "Calendario", path: "/Products", icon: "agenda.png" },
+        { label: "Asistencia", path: "#", icon: "agenda.png" },
     ];  
     // Función para manejar el clic en "Disponibilidad"
     const handleDisponibilidadClick = () => {
@@ -83,6 +84,7 @@ const MenuGroomer = () => {
                             style={{
                                 height: "calc(50% - 1em)", // Altura ajustada para margen interno
                                 backgroundColor: "#EEE6FF",
+                                marginBottom: "1em",
                                 borderRadius: "8px", // Bordes redondeados para estética
                             }}
                         >
@@ -93,6 +95,25 @@ const MenuGroomer = () => {
                                     style={{ width: "5em" }}
                                 />
                                 <h2 className="title is-2">Agendar turno</h2>
+                            </a>
+                        </div>
+
+                        <div
+                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+                            style={{
+                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
+                                backgroundColor: "#EEE6FF",
+                                borderRadius: "8px", // Bordes redondeados para estética
+                                marginBottom: "1em",
+                            }}
+                        >
+                            <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
+                                <img
+                                    src={require("../../src/assets/images/lista-de-verificacion.png")}
+                                    alt="Verificacion"
+                                    style={{ width: "5em" }}
+                                />
+                                <h2 className="title is-2">Asistencia</h2>
                             </a>
                         </div>
                     </div>
