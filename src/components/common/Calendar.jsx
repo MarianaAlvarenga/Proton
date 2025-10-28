@@ -68,7 +68,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
     while (current < endDate) {
       const fechaStr = current.toISOString().split("T")[0];
       const horaInicio = current.toTimeString().substring(0, 5);
-      const next = new Date(current.getTime() + 60 * 60 * 1000);
+      const next = new Date(current.getTime() + 60 * 30 * 1000);
       let horaFin = next.toTimeString().substring(0, 5);
 
       if (next > endDate) horaFin = endDate.toTimeString().substring(0, 5);
