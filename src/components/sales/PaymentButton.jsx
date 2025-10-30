@@ -9,8 +9,8 @@ const PaymentButton = ({ product }) => {
       });
 
       console.log("Respuesta del backend:", response.data);
-debugger; // 👈 se va a detener aquí y podés inspeccionar en la consola
-window.location.href = response.data.init_point;
+      debugger; // 👈 se va a detener aquí y podés inspeccionar en la consola
+      window.location.href = response.data.init_point;
 
       // Redirigir al checkout de MercadoPago
       window.location.href = response.data.init_point;
@@ -21,8 +21,8 @@ window.location.href = response.data.init_point;
 
 
   return (
-    <button className="button is-primary" onClick={handlePayment}>
-      Pagar con MercadoPago
+    <button className="button is-primary center" style={{ backgroundColor: "#6A0DAD", color: "white"}} onClick={handlePayment}>
+      Confirmar compra
     </button>
   );
 };

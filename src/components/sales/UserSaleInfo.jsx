@@ -6,6 +6,7 @@ import CancelButton from "../common/CancelButton";
 import OkButton from "../common/OkButton";
 import UserTypeSelector from "../common/UserTypeSelector";
 import PaymentButton from "./PaymentButton"; // 👈 importado
+import "./UserSaleInfo.css";
 
 const UserSaleInfo = () => {
   const [userInfo, setUserInfo] = useState({ isRegistered: false, email: "" });
@@ -54,7 +55,7 @@ const UserSaleInfo = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NavBar />
-      <SubNavBar currentPage="Información del usuario" />
+      <SubNavBar currentPage="Información de la compra" />
 
       <div
         style={{
@@ -82,31 +83,20 @@ const UserSaleInfo = () => {
           (userRole === 2 || userRole === 4) ? (
             <UserTypeSelector onUserTypeChange={handleUserInfoChange} />
           ) : (
-            <div>Rol no permitido para mostrar UserTypeSelector</div>
+            <div></div>
           )
         )}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "1rem",
-          borderTop: "1px solid #ccc",
-        }}
-      >
-        <CancelButton className="cancel-button" NameButton="Cancelar" clearCart={clearCart} />
-        <OkButton
-          NameButton="Finalizar compra"
-          cartProducts={cartProducts}
-          clearCart={clearCart}
-          isRegistered={userInfo.isRegistered}
-          email={userInfo.email}
-          total={total}
-        />
-        {/* 👇 Agregado el PaymentButton */}
-        <PaymentButton product={{ price: parseFloat(total) }} />
+      <div className="sale-buttons-container">
+        <div className="half-button">
+          <CancelButton NameButton="Cancelar" clearCart={clearCart} />
+        </div>
+        <div className="half-button">
+          <PaymentButton product={{ price: parseFloat(total) }} />
+        </div>
       </div>
+
     </div>
   );
 };

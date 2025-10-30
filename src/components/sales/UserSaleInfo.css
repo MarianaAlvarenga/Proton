@@ -1,0 +1,37 @@
+.sale-buttons-container {
+  display: flex;
+  width: 100%;
+  border-top: 1px solid #ccc;
+  padding: 1rem;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.sale-buttons-container .half-button {
+  flex: 1 1 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.sale-buttons-container .half-button button {
+  width: 100% !important;
+  height: 100%;
+  box-sizing: border-box;
+  display: block;
+  font-size: 1rem;
+  padding: 0.75rem;
+}
+
+/* 🔹 Fuerza el ancho solo para el CancelButton dentro de UserSaleInfo */
+.sale-buttons-container .half-button .center {
+  width: 100% !important;
+  display: flex !important;
+}
+
+.sale-buttons-container .half-button .center .button {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
