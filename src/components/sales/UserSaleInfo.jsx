@@ -23,13 +23,15 @@ const UserSaleInfo = () => {
     const storedUser = localStorage.getItem("userRole");
     console.log("Valor de localStorage (userRole):", storedUser); // Depuración
 
+    
     if (storedUser) {
       setUserRole(Number(storedUser)); // Convierte a número
     }
-
+    
     setLoading(false);
   }, []);
-
+  
+  const NameUser = localStorage.getItem("userName");
   useEffect(() => {
     console.log("userRole actualizado:", userRole);
   }, [userRole]); // Este useEffect se ejecutará cada vez que userRole cambie
@@ -56,7 +58,9 @@ const UserSaleInfo = () => {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NavBar />
       <SubNavBar currentPage="Información de la compra" />
-
+      
+      <h1 className="title is-2">{NameUser}, confirme su compra: </h1>
+      
       <div
         style={{
           flexGrow: 1,
