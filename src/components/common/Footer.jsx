@@ -1,30 +1,43 @@
-import { FaLinkedin, FaYoutube, FaFacebook, FaPinterest, FaTwitter, FaInstagram } from "react-icons/fa";
+import {
+  FaLinkedin,
+  FaYoutube,
+  FaFacebook,
+  FaPinterest,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
 
 const Footer = () => {
+  const iconStyle = {
+    margin: "0 10px",
+    color: "white",
+    transition: "transform 0.3s ease",
+  };
+
   return (
     <footer className="footer" style={{ backgroundColor: "#9655C5", color: "white" }}>
       <div className="content has-text-centered">
-
         {/* Íconos redes sociales */}
         <div style={{ marginBottom: "1rem" }}>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaLinkedin size={24} />
-          </a>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaYoutube size={24} />
-          </a>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaFacebook size={24} />
-          </a>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaPinterest size={24} />
-          </a>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaTwitter size={24} />
-          </a>
-          <a href="#" className="icon" style={{ margin: "0 10px", color: "white" }}>
-            <FaInstagram size={24} />
-          </a>
+          {[
+            FaLinkedin,
+            FaYoutube,
+            FaFacebook,
+            FaPinterest,
+            FaTwitter,
+            FaInstagram,
+          ].map((Icon, i) => (
+            <a
+              key={i}
+              href="#"
+              className="icon"
+              style={iconStyle}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.2)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              <Icon size={24} />
+            </a>
+          ))}
         </div>
 
         {/* Texto principal */}
