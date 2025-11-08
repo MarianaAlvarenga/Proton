@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Calendar from '../components/common/Calendar';
 import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
-import UserTypeSelector from '../components/common/UserTypeSelector';
 import ComboBox from '../components/common/ComboBox';
 import axios from 'axios';
 
@@ -11,20 +10,26 @@ const Shifts = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')) || {};
-  const userRole = Number(user.rol || location.state?.userRole || 3); // convertir a número
-  const isRange = false;
-  const isSettingAvailability = userRole === 3; // solo peluquero configura disponibilidad
 
-  // Estados para combobox de especialidades y peluqueros
+  const {
+    userRole = 3,
+    isSettingAvailability = location.state?.mode === "disponibilidad",
+    isAgendarTurno = location.state?.mode === "agendar",
+    mode = ""
+  } = location.state || {};
+
+  const isRange = false;
+
+  // Estados
   const [especialidades, setEspecialidades] = useState([]);
   const [selectedEspecialidad, setSelectedEspecialidad] = useState('');
   const [peluqueros, setPeluqueros] = useState([]);
   const [selectedPeluquero, setSelectedPeluquero] = useState('');
   const [emailAdmin, setEmailAdmin] = useState('');
 
-  // Traer especialidades solo si es admin o cliente
+  // Traer especialidades (solo admin o cliente o cuando se está agendando)
   useEffect(() => {
-    if (userRole === 1 || userRole === 4) {
+    if (userRole === 1 || userRole === 4 || isAgendarTurno) {
       const fetchEspecialidades = async () => {
         try {
           const res = await axios.get('http://localhost:8080/Proton/backend/actions/getEspecialidades.php');
@@ -35,12 +40,11 @@ const Shifts = () => {
       };
       fetchEspecialidades();
     }
-  }, [userRole]);
+  }, [userRole, isAgendarTurno]);
 
-  // Traer peluqueros asociados a la especialidad seleccionada (solo cliente o admin)
+  // Traer peluqueros según especialidad
   useEffect(() => {
-    if (!(userRole === 1 || userRole === 4)) return;
-    
+    if (!(userRole === 1 || userRole === 4 || isAgendarTurno)) return;
     if (!selectedEspecialidad) {
       setPeluqueros([]);
       setSelectedPeluquero('');
@@ -58,43 +62,80 @@ const Shifts = () => {
         console.error('Error obteniendo peluqueros:', error);
       }
     };
+
     fetchPeluqueros();
-  }, [selectedEspecialidad, userRole]);
+  }, [selectedEspecialidad, userRole, isAgendarTurno]);
 
+  // Calculamos el id de peluquero que le pasamos al Calendar:
+  // - Si estamos definiendo disponibilidad: siempre el usuario autenticado (peluquero).
+  // - Si un peluquero está en modo "agendar": también le pasamos su propio id para ver sus disponibilidades.
+  // - En los demás casos (cliente/admin), se usa selectedPeluquero (se elige en el combobox).
+  const calendarPeluqueroId = isSettingAvailability
+    ? user.id_usuario
+    : (userRole === 3 && isAgendarTurno ? user.id_usuario : selectedPeluquero);
+
+  // Guardar turno o disponibilidad
   const handleCalendarClose = async (dates) => {
-    if (isSettingAvailability) {
-      // Para peluqueros, redirigir al MenuGroomer después de guardar
-      navigate('/MenuGroomer');
-      return;
-    }
-
-    if (!dates || dates.length === 0) {
-      alert("Por favor selecciona al menos una fecha válida");
-      return;
-    }
-
     try {
-      const userData = JSON.parse(localStorage.getItem('user'));
-      
-      if (!selectedPeluquero) {
-        throw new Error("Por favor selecciona un peluquero");
+      const userData = JSON.parse(localStorage.getItem('user')) || {};
+
+      // --- GUARDAR DISPONIBILIDAD (solo peluquero en modo disponibilidad)
+      if (isSettingAvailability) {
+        if (!dates || dates.length === 0) {
+          alert("Por favor seleccioná al menos una fecha válida");
+          return;
+        }
+
+        await axios.post(
+          'http://localhost:8080/Proton/backend/actions/save_availability.php',
+          {
+            id_peluquero: userData.id_usuario,
+            disponibilidad: dates,
+          },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        alert("¡Disponibilidad guardada correctamente!");
+        navigate('/MenuGroomer');
+        return;
       }
 
-      let emailCliente;
-      if (userRole === 4) {
-        emailCliente = emailAdmin;
-        
-      } else if (userRole === 1) emailCliente = undefined;
+      // --- AGENDAR TURNO (admin, cliente o peluquero en modo agendar)
+      if (!dates || dates.length === 0) {
+        alert("Por favor seleccioná al menos una fecha válida");
+        return;
+      }
 
-      await axios.post('http://localhost:8080/Proton/backend/actions/save_appointment.php', {
-        id_peluquero: selectedPeluquero || userData.id_usuario,
-        fecha: dates[0].fecha_disponible,
-        hora_inicio: dates[0].hora_inicial,
-        hora_fin: dates[0].hora_final,
-        email_cliente: emailCliente
-      }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      if (!selectedPeluquero && (userRole === 1 || userRole === 4 || isAgendarTurno) && !(userRole === 3 && isAgendarTurno)) {
+        // Si es admin/cliente requiere selectedPeluquero (salvo peluquero en modo agendar, que usa su propio id)
+        throw new Error("Por favor seleccioná un peluquero");
+      }
+
+      // Determinar email del cliente según rol:
+      let emailCliente = '';
+      if (userRole === 4) {
+        // admin: puede escribir email (si no lo hace, usamos fallback al email del admin??) -> mantenemos comportamiento previo
+        emailCliente = emailAdmin || userData.email;
+      } else if (userRole === 3 && isAgendarTurno) {
+        // peluquero en modo agendar: **debe** ingresar el email del cliente
+        emailCliente = emailAdmin;
+        if (!emailCliente) throw new Error("Por favor ingresá el email del cliente al que le querés sacar el turno");
+      } else if (userRole === 1) {
+        // cliente: se usa su email
+        emailCliente = userData.email;
+      }
+
+      await axios.post(
+        'http://localhost:8080/Proton/backend/actions/save_appointment.php',
+        {
+          id_peluquero: selectedPeluquero || userData.id_usuario,
+          fecha: dates[0].fecha_disponible,
+          hora_inicio: dates[0].hora_inicial,
+          hora_fin: dates[0].hora_final,
+          email_cliente: emailCliente
+        },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
       alert("¡Turno agendado correctamente!");
     } catch (error) {
@@ -102,14 +143,18 @@ const Shifts = () => {
       alert(error.response?.data?.message || error.message || "Error desconocido");
     }
   };
+  
+  console.log("location.state:", location.state);
+
 
   return (
     <div>
       <NavBar />
       <SubNavBar showBack currentPage='Turnos' />
+
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-        {/* Campo email solo admin */}
-        {userRole === 4 && (
+        {/* Campo email solo para admin Y peluquero en modo agendar */}
+        {(userRole === 4 || (userRole === 3 && isAgendarTurno)) && (
           <div style={{ marginBottom: '1em' }}>
             <label className="label">Email del cliente</label>
             <input
@@ -122,35 +167,43 @@ const Shifts = () => {
           </div>
         )}
 
-        {/* Combobox de especialidades solo cliente o admin */}
-        {(userRole === 1 || userRole === 4) && especialidades.length > 0 && (
+        {/* Combobox de especialidades (cliente, admin o peluquero en modo agendar) */}
+        {(userRole === 1 || userRole === 4 || isAgendarTurno) && especialidades.length > 0 && (
           <ComboBox
             value={selectedEspecialidad}
             onChange={(val) => setSelectedEspecialidad(val)}
-            options={especialidades.map((e) => ({ value: e.id_servicio, label: e.nombre }))}
+            options={especialidades.map((e) => ({
+              value: e.id_servicio,
+              label: e.nombre,
+            }))}
             placeholder="Seleccione una especialidad"
           />
         )}
 
-        {/* Combobox de peluqueros solo cliente o admin */}
-        {(userRole === 1 || userRole === 4) && peluqueros.length > 0 && (
+        {/* Combobox de peluqueros (cliente, admin o peluquero en modo agendar) */}
+        {(userRole === 1 || userRole === 4 || isAgendarTurno) && peluqueros.length > 0 && (
           <ComboBox
             value={selectedPeluquero}
             onChange={(val) => setSelectedPeluquero(val)}
-            options={peluqueros.map((p) => ({ value: p.id_usuario, label: p.nombre + ' ' + p.apellido }))}
+            options={peluqueros.map((p) => ({
+              value: p.id_usuario,
+              label: `${p.nombre} ${p.apellido}`,
+            }))}
             placeholder="Seleccione un peluquero"
           />
         )}
 
+        {/* Calendario */}
         <Calendar
+          peluqueroId={calendarPeluqueroId}
           isRange={isRange}
           isMultiple={userRole === 3}
           onClose={handleCalendarClose}
-          peluqueroId={userRole === 3 ? user.id_usuario : selectedPeluquero} // usar peluquero seleccionado o el propio
           isSettingAvailability={isSettingAvailability}
           userRole={userRole}
+          selectedServicioId={selectedEspecialidad}
           selectedClientEmail={emailAdmin}
-          selectedServicioId={selectedEspecialidad} // <-- PASAMOS la especialidad seleccionada
+          isAgendarTurno={isAgendarTurno}
         />
       </div>
     </div>

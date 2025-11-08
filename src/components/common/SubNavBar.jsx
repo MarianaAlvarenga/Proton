@@ -15,12 +15,20 @@ const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage
           {links.map((link, index) => (
             <a
               key={index}
-              onClick={() => navigate(link.path)}
+              onClick={(e) => {
+                e.preventDefault();
+                if (link.onClick) {
+                  link.onClick(); // usa el handler personalizado (ej: handleAgendarTurnoClick)
+                } else if (link.path) {
+                  navigate(link.path); // comportamiento por defecto
+                }
+              }}
               className="navbar-link"
               style={{ margin: "0 10px", color: "white", textDecoration: "none" }}
             >
               {link.label}
             </a>
+
           ))}
         </div>
       ) : (

@@ -12,12 +12,23 @@ const MenuAdmin = () => {
   const { width } = useWindowSize(); // Hook para obtener el tamaño de la ventana
   const isMobile = width < 768; // Determinamos si es móvil (si el ancho es menor que 768px)
 
+  
+  const handleAgendarTurnoClick = () => {
+    navigate("/Shifts", {
+      state: {
+        userRole: 1, // o 2, según tu sistema
+        isSettingAvailability: false,
+        isAgendarTurno: true,
+        mode: "agendar",
+      },
+    });
+  };
+  
   const links = [
-    { label: "Turnos", path: "/Shifts", icon: "peluqueria.png" },
+    { label: "Agendar turno", icon: "agenda.png", onClick: handleAgendarTurnoClick },
     { label: "Ventas", path: "/Products", icon: "ventas.png" },
     { label: "Usuarios", path: "/UsersAdmin", icon: "usuarios.png" },
   ];
-
   return (
     <div
       className="container"
@@ -37,7 +48,14 @@ const MenuAdmin = () => {
       {!isMobile ? (
         // Vista para pantallas grandes
         <>
-          <SubNavBar links={links} />
+          <SubNavBar
+            links={links.map(link => ({
+              label: link.label,
+              path: "#",
+              icon: link.icon,
+              onClick: link.onClick,
+            }))}
+          />
           <Carousel />
         </>
       ) : (
@@ -67,7 +85,17 @@ const MenuAdmin = () => {
             >
               <a
                 role="button"
-                onClick={() => navigate(link.path)}
+                onClick={() => {
+                  if (link.onClick) {
+                    // Si tiene una función personalizada (como Agendar turno)
+                    link.onClick();
+                  } else {
+                    // Si tiene path normal
+                    navigate(link.path, {
+                      state: { mode: link.mode || "", userRole: 4 },
+                    });
+                  }
+                }}
                 style={{
                   display: "flex",
                   flexDirection: "column",
