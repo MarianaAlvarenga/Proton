@@ -6,7 +6,15 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
 
-export default function Calendar({ peluqueroId, isSettingAvailability, userRole, selectedServicioId, onClose, selectedClientEmail }) {
+export default function Calendar({
+  peluqueroId,
+  isSettingAvailability,
+  userRole,
+  selectedServicioId,
+  onClose,
+  selectedClientEmail,
+  isAgendarTurno // Agregamos esta prop
+}) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -51,6 +59,8 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         setLoading(false);
       });
   };
+
+  console.log("isAgendarTurno en Calendar:", isAgendarTurno);
 
   useEffect(() => {
     fetchDisponibilidades(peluqueroId);
@@ -108,7 +118,13 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
   const handleEventClick = async (info) => {
     const estado = info.event.extendedProps?.estado || "disponible";
 
-    if (isSettingAvailability) {
+    // 🔹 Si el peluquero está en modo "definir disponibilidad"
+    if (isSettingAvailability && userRole === 3) {
+      if (estado === "ocupado") {
+        alert("No podés eliminar un turno ya reservado.");
+        return;
+      }
+
       if (!window.confirm("¿Eliminar este horario?")) return;
 
       if (info.event.extendedProps?.isTemp) {
@@ -149,13 +165,7 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         });
 
         const responseText = await res.text();
-        let json;
-        try {
-          json = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error("Error parseando JSON:", parseError);
-          throw new Error(`Respuesta inválida del servidor: ${responseText.substring(0, 100)}`);
-        }
+        const json = JSON.parse(responseText);
 
         if (!res.ok || json.success === false) {
           alert(json.message || "No se pudo eliminar la disponibilidad.");
@@ -168,88 +178,92 @@ export default function Calendar({ peluqueroId, isSettingAvailability, userRole,
         console.error("Error eliminando disponibilidad:", error);
         alert("Error eliminando disponibilidad: " + error.message);
       }
+
       return;
     }
 
-    // --- Reserva de turno por cliente/admin ---
-    if (!(userRole === 1 || userRole === 4)) {
-      alert("No autorizado para reservar turnos.");
-      return;
-    }
+    // 🔹 Si el usuario está en modo "sacar turno"
+    if (!isSettingAvailability || (userRole === 3 && isAgendarTurno)) {
+      // Solo roles válidos: cliente(1), peluquero(3), admin(4)
+      if (!(userRole === 1 || userRole === 3 || userRole === 4)) {
+        alert("No autorizado para reservar turnos.");
+        return;
+      }
 
-    if (estado === "ocupado") {
-      alert("Este turno ya está ocupado.");
-      return;
-    }
+      if (estado === "ocupado") {
+        alert("Este turno ya está ocupado.");
+        return;
+      }
 
-    if (!selectedServicioId) {
-      alert("Por favor seleccioná primero la especialidad a reservar.");
-      return;
-    }
+      if (userRole !== 3 && !selectedServicioId) {
+        alert("Por favor seleccioná primero la especialidad a reservar.");
+        return;
+      }
 
-    if (!peluqueroId) {
-      alert("Por favor seleccioná un peluquero.");
-      return;
-    }
+      if (!peluqueroId) {
+        alert("Por favor seleccioná un peluquero.");
+        return;
+      }
 
-    // Si es admin, debe tener un cliente seleccionado
-    if (userRole === 4 && !selectedClientEmail) {
-      alert("Seleccioná un cliente antes de reservar el turno.");
-      return;
-    }
+      // Si es admin o peluquero en modo agendar, debe tener un cliente seleccionado
+      if ((userRole === 4 || (userRole === 3 && isAgendarTurno)) && !selectedClientEmail) {
+        alert("Seleccioná un cliente antes de reservar el turno.");
+        return;
+      }
 
-    const startDate = new Date(info.event.start);
-    const fecha_disponible = startDate.toISOString().split("T")[0];
-    const hora_inicial = startDate.toTimeString().substring(0, 5);
-    const hora_final = new Date(info.event.end).toTimeString().substring(0, 5);
+      const startDate = new Date(info.event.start);
+      const fecha_disponible = startDate.toISOString().split("T")[0];
+      const hora_inicial = startDate.toTimeString().substring(0, 5);
+      const hora_final = new Date(info.event.end).toTimeString().substring(0, 5);
 
-    const confirmMsg = `¿Confirmás reservar el turno el ${fecha_disponible} de ${hora_inicial} a ${hora_final}?`;
-    if (!window.confirm(confirmMsg)) return;
+      const confirmMsg = `¿Confirmás reservar el turno el ${fecha_disponible} de ${hora_inicial} a ${hora_final}?`;
+      if (!window.confirm(confirmMsg)) return;
 
-    const turno_id = info.event.extendedProps?.turno_id;
-    const user = JSON.parse(localStorage.getItem("user")) || {};
+      const user = JSON.parse(localStorage.getItem("user")) || {};
 
-    try {
-      const res = await fetch("http://localhost:8080/Proton/backend/actions/save_appointment.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fecha: fecha_disponible,
-          hora_inicio: hora_inicial,
-          hora_fin: hora_final,
-          id: user.id_usuario,
-          userRole: user.rol,
-          id_peluquero: peluqueroId,
-          servicio_id: selectedServicioId,
-          email_cliente: selectedClientEmail || null,
-        }),
-      });
-
-      const responseText = await res.text();
-      let json;
       try {
-        json = JSON.parse(responseText);
-      } catch (err) {
-        console.error("Respuesta inválida del servidor:", responseText);
-        alert("Error del servidor: respuesta inválida.");
-        fetchDisponibilidades(peluqueroId);
-        return;
-      }
+        const res = await fetch("http://localhost:8080/Proton/backend/actions/save_appointment.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fecha: fecha_disponible,
+            hora_inicio: hora_inicial,
+            hora_fin: hora_final,
+            id: user.id_usuario,
+            userRole: user.rol,
+            id_peluquero: peluqueroId,
+            servicio_id: selectedServicioId,
+            email_cliente: selectedClientEmail || null,
+          }),
+        });
 
-      if (!res.ok || !json.success) {
-        alert(json.message || "No se pudo reservar el turno.");
-        fetchDisponibilidades(peluqueroId);
-        return;
-      }
+        const responseText = await res.text();
+        let json;
+        try {
+          json = JSON.parse(responseText);
+        } catch {
+          console.error("Respuesta inválida del servidor:", responseText);
+          alert("Error del servidor: respuesta inválida.");
+          fetchDisponibilidades(peluqueroId);
+          return;
+        }
 
-      fetchDisponibilidades(peluqueroId);
-      alert("Turno reservado correctamente.");
-    } catch (error) {
-      console.error(error);
-      alert("Error al reservar turno.");
-      fetchDisponibilidades(peluqueroId);
+        if (!res.ok || !json.success) {
+          alert(json.message || "No se pudo reservar el turno.");
+          fetchDisponibilidades(peluqueroId);
+          return;
+        }
+
+        fetchDisponibilidades(peluqueroId);
+        alert("Turno reservado correctamente.");
+      } catch (error) {
+        console.error(error);
+        alert("Error al reservar turno.");
+        fetchDisponibilidades(peluqueroId);
+      }
     }
   };
+
 
   const handleSave = async () => {
     if (selectedSlots.length === 0) {

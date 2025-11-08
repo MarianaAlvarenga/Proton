@@ -1,126 +1,136 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate
+import { useNavigate } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import { useWindowSize } from "../Hooks/useWindowSize";
 import Carousel from "../components/common/Carousel";
 import SubNavBar from "../components/common/SubNavBar";
 
 const MenuGroomer = () => {
-    const navigate = useNavigate(); // Obtener la función navigate
-    const { width } = useWindowSize(); // Hook para obtener el tamaño de la ventana
-    const isMobile = width < 768; 
+  const navigate = useNavigate();
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
 
-    const links = [
-        { label: "Disponibilidad", path: "/Shifts", icon: "disponibilidad.png" },
-        { label: "Calendario", path: "/Products", icon: "agenda.png" },
-        { label: "Asistencia", path: "#", icon: "agenda.png" },
-    ];  
-    // Función para manejar el clic en "Disponibilidad"
-    const handleDisponibilidadClick = () => {
-        navigate("/Shifts", { 
-            state: { 
-              showUserTypeSelector: false,
-              userRole: 3 // O obténlo del localStorage
-            } 
-          });
-    };
+  // 🔹 Handlers que navegan con state
+  const handleAgendarTurnoClick = () => {
+    navigate("/Shifts", {
+      state: {
+        userRole: 3,
+        isSettingAvailability: false,
+        isAgendarTurno: true,
+        mode: "agendar",
+      },
+    });
+  };
 
-    // Función para manejar el clic en "Agendar turno"
-    const handleAgendarTurnoClick = () => {
-        navigate("/Shifts"); // Mostrar UserTypeSelector (por defecto)
-    };
+  const handleDisponibilidadClick = () => {
+    navigate("/Shifts", {
+      state: {
+        userRole: 3,
+        isSettingAvailability: true,
+        isAgendarTurno: false,
+        mode: "disponibilidad",
+      },
+    });
+  };
 
-    return (
-        <>
+  // 🔹 Links para SubNavBar (solo para desktop)
+  const links = [
+    { label: "Disponibilidad", path: "/Shifts", icon: "disponibilidad.png", onClick: handleDisponibilidadClick },
+    { label: "Agendar turno", path: "/Shifts", icon: "agenda.png", onClick: handleAgendarTurnoClick },
+    { label: "Asistencia", path: "#", icon: "agenda.png" },
+  ];
+
+  return (
+    <>
+      <div
+        className="container"
+        style={{
+          width: "100%",
+          maxWidth: "100%",
+          margin: "0 auto",
+          height: "100vh",
+          textAlign: "center",
+          backgroundColor: "white",
+        }}
+      >
+        <NavBar />
+        {!isMobile ? (
+          <>
+            {/* 🔹 SubNavBar usa los mismos links pero ahora con handlers */}
+            <SubNavBar links={links} />
+            <Carousel />
+          </>
+        ) : (
+          <div
+            className="columns is-movile"
+            style={{
+              marginTop: "1em",
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <div
-                className="container"
-                style={{
-                    width: "100%",
-                    maxWidth: "100%",
-                    margin: "0 auto",
-                    height: "100vh",
-                    textAlign: "center",
-                    backgroundColor: "white",
-                }}
+              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{
+                height: "calc(50% - 1em)",
+                marginBottom: "1em",
+                backgroundColor: "#EEE6FF",
+                borderRadius: "8px",
+              }}
             >
-                <NavBar></NavBar>
-                {!isMobile ? (
-                    // Vista para pantallas grandes
-                    <>
-                        <SubNavBar links={links} />
-                        <Carousel />
-                    </>
-                ) : (
-                    <div
-                        className="columns is-movile"
-                        style={{
-                            marginTop: "1em",
-                            height: "100vh",
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
-                    >
-                        <div
-                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-                            style={{
-                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
-                                marginBottom: "1em",
-                                backgroundColor: "#EEE6FF",
-                                borderRadius: "8px", // Bordes redondeados para estética
-                            }}
-                        >
-                            <a role="button" onClick={handleDisponibilidadClick}> {/* Botón Disponibilidad */}
-                                <img
-                                    src={require("../../src/assets/images/disponibilidad.png")}
-                                    alt="Disponibilidad"
-                                    style={{ width: "5em" }}
-                                />
-                                <h2 className="title is-2">Disponibilidad</h2>
-                            </a>
-                        </div>
-
-                        <div
-                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-                            style={{
-                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
-                                backgroundColor: "#EEE6FF",
-                                marginBottom: "1em",
-                                borderRadius: "8px", // Bordes redondeados para estética
-                            }}
-                        >
-                            <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
-                                <img
-                                    src={require("../../src/assets/images/agenda.png")}
-                                    alt="Agenda"
-                                    style={{ width: "5em" }}
-                                />
-                                <h2 className="title is-2">Agendar turno</h2>
-                            </a>
-                        </div>
-
-                        <div
-                            className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-                            style={{
-                                height: "calc(50% - 1em)", // Altura ajustada para margen interno
-                                backgroundColor: "#EEE6FF",
-                                borderRadius: "8px", // Bordes redondeados para estética
-                                marginBottom: "1em",
-                            }}
-                        >
-                            <a role="button is-medium is-fullwidth" onClick={handleAgendarTurnoClick}> {/* Botón Agendar turno */}
-                                <img
-                                    src={require("../../src/assets/images/lista-de-verificacion.png")}
-                                    alt="Verificacion"
-                                    style={{ width: "5em" }}
-                                />
-                                <h2 className="title is-2">Asistencia</h2>
-                            </a>
-                        </div>
-                    </div>
-                    )}
+              <a role="button" onClick={handleDisponibilidadClick}>
+                <img
+                  src={require("../../src/assets/images/disponibilidad.png")}
+                  alt="Disponibilidad"
+                  style={{ width: "5em" }}
+                />
+                <h2 className="title is-2">Disponibilidad</h2>
+              </a>
             </div>
-        </>
-    );
+
+            <div
+              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{
+                height: "calc(50% - 1em)",
+                backgroundColor: "#EEE6FF",
+                marginBottom: "1em",
+                borderRadius: "8px",
+              }}
+            >
+              <a role="button" onClick={handleAgendarTurnoClick}>
+                <img
+                  src={require("../../src/assets/images/agenda.png")}
+                  alt="Agenda"
+                  style={{ width: "5em" }}
+                />
+                <h2 className="title is-2">Agendar turno</h2>
+              </a>
+            </div>
+
+            <div
+              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{
+                height: "calc(50% - 1em)",
+                backgroundColor: "#EEE6FF",
+                borderRadius: "8px",
+                marginBottom: "1em",
+              }}
+            >
+              <a role="button">
+                <img
+                  src={require("../../src/assets/images/lista-de-verificacion.png")}
+                  alt="Verificacion"
+                  style={{ width: "5em" }}
+                />
+                <h2 className="title is-2">Asistencia</h2>
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
 };
 
 export default MenuGroomer;
