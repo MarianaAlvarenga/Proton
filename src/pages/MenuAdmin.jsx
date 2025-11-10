@@ -24,10 +24,18 @@ const MenuAdmin = () => {
     });
   };
   
+  const handleVentasClick = () => {
+    navigate("/Products");
+  };
+
+  const handleUsersClick = () => {
+    navigate("/UsersAdmin");
+  };
+  
   const links = [
-    { label: "Agendar turno", icon: "agenda.png", onClick: handleAgendarTurnoClick },
-    { label: "Ventas", path: "/Products", icon: "ventas.png" },
-    { label: "Usuarios", path: "/UsersAdmin", icon: "usuarios.png" },
+    { label: "Agendar turno", icon: "agenda.png", onClick: handleAgendarTurnoClick},
+    { label: "Ventas", path: "/Products", icon: "ventas.png", onClick: handleVentasClick},
+    { label: "Usuarios", path: "/UsersAdmin", icon: "usuarios.png", onClick: handleUsersClick },
   ];
   return (
     <div
