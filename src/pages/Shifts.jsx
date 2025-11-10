@@ -9,14 +9,27 @@ import axios from 'axios';
 const Shifts = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const locationState = location.state || {};
+
+  // modos derivados del state (mantener tu lógica actual)
+  const isSettingAvailability = locationState.isSettingAvailability ?? (locationState.mode === "disponibilidad");
+  const isAgendarTurno = locationState.isAgendarTurno ?? (locationState.mode === "agendar");
+  const mode = locationState.mode || "";
+
+  // user desde localStorage
   const user = JSON.parse(localStorage.getItem('user')) || {};
 
-  const {
-    userRole = 3,
-    isSettingAvailability = location.state?.mode === "disponibilidad",
-    isAgendarTurno = location.state?.mode === "agendar",
-    mode = ""
-  } = location.state || {};
+  // userRole: primero el state, luego los campos del user guardado, y finalmente 3
+  const userRole = Number(
+    locationState.userRole ??
+    user.rol ??
+    user.role ??
+    3
+  );
+
+  console.log("DEBUG Shifts: location.state =", locationState, "userFromStorage =", user, "resolved userRole =", userRole, "isAgendarTurno =", isAgendarTurno, "isSettingAvailability =", isSettingAvailability);
+
 
   const isRange = false;
 
@@ -153,8 +166,7 @@ const Shifts = () => {
       <SubNavBar showBack currentPage='Turnos' />
 
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-        {/* Campo email solo para admin Y peluquero en modo agendar */}
-        {(userRole === 4 || (userRole === 3 && isAgendarTurno)) && (
+        {((userRole === 4) || (userRole === 3 && isAgendarTurno)) && (
           <div style={{ marginBottom: '1em' }}>
             <label className="label">Email del cliente</label>
             <input

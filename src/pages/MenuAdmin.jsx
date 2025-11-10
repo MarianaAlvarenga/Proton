@@ -16,7 +16,7 @@ const MenuAdmin = () => {
   const handleAgendarTurnoClick = () => {
     navigate("/Shifts", {
       state: {
-        userRole: 1, // o 2, según tu sistema
+        userRole: 4,
         isSettingAvailability: false,
         isAgendarTurno: true,
         mode: "agendar",

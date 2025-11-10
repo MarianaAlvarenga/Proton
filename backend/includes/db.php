@@ -6,6 +6,6 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "proton";
-$port = 3307    ;
+$port = 3306    ;
 
 ?>
