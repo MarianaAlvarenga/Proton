@@ -1,3 +1,4 @@
+// PaymentButton.jsx
 import React from "react";
 import axios from "axios";
 
@@ -9,22 +10,28 @@ const PaymentButton = ({ product }) => {
         {
           items: [
             {
-              title: "Compra en Proton", // 👈 nombre genérico del pedido
+              title: "Compra en Proton",
               quantity: 1,
-              currency_id: "ARS",
-              unit_price: parseFloat(product.price),
-            },
+              unit_price: Number(product.price || 0),
+              currency_id: "ARS"
+            }
           ],
+          payer: {
+            name: "Cliente de prueba",
+            email: "test_user@example.com"
+          }
+        },
+        {
+          headers: { "Content-Type": "application/json" }
         }
       );
 
       console.log("Respuesta del backend:", response.data);
 
-      // ✅ Asegurarse de que la respuesta tenga el campo 'init_point'
       if (response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        console.error("No se recibió 'init_point' en la respuesta:", response.data);
+        console.error("No se recibió 'init_point':", response.data);
         alert("Hubo un problema al iniciar el pago. Intenta nuevamente.");
       }
     } catch (error) {

@@ -20,6 +20,7 @@ import Cart from './components/sales/Cart';
 import UserSaleInfo from './components/sales/UserSaleInfo';
 import ProfileUser from './components/common/ProfileUser';
 import Landing from './pages/Landing';
+import SuccessPage from './components/common/SuccessPage';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/UserSaleInfo" element={<UserSaleInfo/>} />
           <Route path="/ProfileUser" element={<ProfileUser/>} />
           <Route path="/" element={<Landing />} />
+          <Route path="/success" element={<SuccessPage />} />
         </Routes>
       </Layout>
     </Router>

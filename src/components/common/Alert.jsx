@@ -13,6 +13,8 @@ const Alert = ({
     showCancelButton: true,
     confirmButtonText: Confirm,
     cancelButtonText: Cancel,
+    allowOutsideClick: false,
+    reverseButtons: true,
   });
 };
 

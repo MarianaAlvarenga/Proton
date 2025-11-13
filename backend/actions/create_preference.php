@@ -1,57 +1,75 @@
 <?php
+// === CONFIGURACIÓN CORS ===
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
+header("Access-Control-Allow-Credentials: true");
 
-// ⚠️ Token de prueba, no publiques este valor real
-$access_token = "APP_USR-8049276630499625-090223-fd3706f25dfb57e5378851168592e62f-2663873362";
+// Manejo de preflight (petición OPTIONS)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
-// Recibir datos del frontend
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
+// Cargar las variables de entorno desde mp.env
+require_once __DIR__ . '/../load_env.php';
 
-// Construir item a partir del precio recibido
-$price = isset($data["price"]) ? floatval($data["price"]) : 0;
+// Obtener el access token de Mercado Pago
+$access_token = getenv('MP_ACCESS_TOKEN');
 
-// Crear la preferencia
+if (!$access_token) {
+    http_response_code(500);
+    echo json_encode(["error" => "No se pudo cargar el Access Token."]);
+    exit;
+}
+
+// URL del endpoint de Mercado Pago
+$url = "https://api.mercadopago.com/checkout/preferences";
+
+// Obtener datos enviados desde el frontend (React)
+$body = json_decode(file_get_contents('php://input'), true);
+
+// Validar el cuerpo mínimo
+if (!isset($body['items']) || !is_array($body['items'])) {
+    http_response_code(400);
+    echo json_encode(["error" => "No se recibieron los ítems de la compra."]);
+    exit;
+}
+
+// Crear el objeto de preferencia
 $preference = [
-    "items" => [
-        [
-            "title" => "Compra en Proton Pet Shop",
-            "quantity" => 1,
-            "currency_id" => "ARS",
-            "unit_price" => $price
-        ]
+    "items" => $body["items"],
+
+    "payer" => [
+        "name" => $body["payer"]["name"] ?? "Cliente",
+        "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
+
     "back_urls" => [
-        "success" => "http://localhost:5173/success",
-        "failure" => "http://localhost:5173/failure",
-        "pending" => "http://localhost:5173/pending"
+        "success" => "https://benevolent-kyleigh-dreary.ngrok-free.dev/success",
+        "failure" => "https://benevolent-kyleigh-dreary.ngrok-free.dev/Proton/frontend/failure.html",
+        "pending" => "https://benevolent-kyleigh-dreary.ngrok-free.dev/Proton/frontend/pending.html"
     ],
-    "auto_return" => "approved"
+
+    "auto_return" => "approved",
+    "binary_mode" => true
 ];
 
-// Enviar la solicitud POST a la API de MercadoPago
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL, "https://api.mercadopago.com/checkout/preferences");
+// Inicializar cURL
+$ch = curl_init($url);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Authorization: Bearer $access_token",
     "Content-Type: application/json"
 ]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($preference));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+// Ejecutar la solicitud
 $response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    echo json_encode(["error" => curl_error($ch)]);
-    exit;
-}
-
+$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-// Mostrar respuesta JSON completa
+// Responder al frontend
+http_response_code($http_status);
 echo $response;
