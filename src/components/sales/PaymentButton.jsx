@@ -6,25 +6,28 @@ const PaymentButton = ({ product }) => {
   const handlePayment = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/Proton/backend/actions/create_preference.php",
-        {
-          items: [
-            {
-              title: "Compra en Proton",
-              quantity: 1,
-              unit_price: Number(product.price || 0),
-              currency_id: "ARS"
-            }
-          ],
-          payer: {
-            name: "Cliente de prueba",
-            email: "test_user@example.com"
-          }
-        },
-        {
-          headers: { "Content-Type": "application/json" }
-        }
-      );
+  "https://gcc-compliant-briefing-girls.trycloudflare.com/backend/actions/create_preference.php",
+  {
+    items: [
+      {
+        title: "Compra en Proton",
+        quantity: 1,
+        unit_price: Number(product.price),
+        currency_id: "ARS",
+      },
+    ],
+    payer: {
+      name: "Cliente de prueba",
+      email: "test_user@example.com",
+    },
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    maxRedirects: 0, // 👈 evita que axios transforme la request en GET
+  }
+);
 
       console.log("Respuesta del backend:", response.data);
 

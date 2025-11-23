@@ -88,3 +88,4 @@
 [25-Sep-2025 02:04:43 Europe/Berlin] Imagen subida exitosamente para usuario 80: img_68d4871b1fb67.png
 [10-Nov-2025 21:47:33 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_69124f65af771.jpg
 [10-Nov-2025 22:47:23 Europe/Berlin] Imagen subida exitosamente para usuario 84: img_69125d6b02e66.png
+[23-Nov-2025 14:29:17 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86

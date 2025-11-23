@@ -18,26 +18,29 @@ const SuccessPage = () => {
         icon: "success",
         Confirm: "Volver al inicio",
         Cancel: "Ver comprobante",
+        OnCancel: () => {
+          window.open("https://www.mercadopago.com.ar", "_blank");
+          return false;
+        }   
       });
 
       if (result.isConfirmed) {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) return navigate("/login");
+console.log("USER EN SUCCESSPAGE:", user);
 
-        switch (user.role) {
-          case 1:
-          case 2:
-          case 4:
-            navigate("/Products");
-            break;
-          default:
-            navigate("/");
-            break;
-        }
-      } else {
-        // Abre el comprobante pero mantiene la alerta visible
-        window.open("https://www.mercadopago.com.ar", "_blank");
-        setAlertActive(false); // reabre la alerta automáticamente
+        switch (user.rol) {
+  case 1:
+  case 2:
+    navigate("/Products");
+    break;
+  case 4:
+    navigate("/MenuAdmin");
+    break;
+  default:
+    navigate("/");
+}
+
       }
     };
 
