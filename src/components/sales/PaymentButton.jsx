@@ -6,7 +6,7 @@ const PaymentButton = ({ product }) => {
   const handlePayment = async () => {
     try {
       const response = await axios.post(
-  "https://gcc-compliant-briefing-girls.trycloudflare.com/backend/actions/create_preference.php",
+  "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/create_preference.php",
   {
     items: [
       {

@@ -7,9 +7,34 @@ const SuccessPage = () => {
   const [alertActive, setAlertActive] = useState(false);
 
   useEffect(() => {
-    // Evita múltiples ejecuciones
     if (alertActive) return;
     setAlertActive(true);
+
+    // Intento recuperar el user directamente desde localStorage.
+    const stored = localStorage.getItem("user");
+
+    // Si no hay user en localStorage -> no podemos continuar; ir a login.
+    if (!stored) {
+      console.warn("SuccessPage: no hay 'user' en localStorage. Redirigiendo a /login.");
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    let user = null;
+    try {
+      user = JSON.parse(stored);
+    } catch (err) {
+      console.error("SuccessPage: error parseando localStorage user:", err);
+      // Si está corrupto, borrarlo y mandar a login.
+      localStorage.removeItem("user");
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    console.log("USER EN SUCCESSPAGE:", user);
+
+    // Asegurarnos de que el rol sea NUMBER -> evitar problemas con '4' vs 4
+    const rolNumber = Number(user.rol);
 
     const showAlert = async () => {
       const result = await Alert({
@@ -21,33 +46,38 @@ const SuccessPage = () => {
         OnCancel: () => {
           window.open("https://www.mercadopago.com.ar", "_blank");
           return false;
-        }   
+        },
       });
 
       if (result.isConfirmed) {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) return navigate("/login");
-console.log("USER EN SUCCESSPAGE:", user);
+        // Debug: confirmar tipos y contenido
+        console.log("Rol raw:", user.rol, "Rol number:", rolNumber);
 
-        switch (user.rol) {
-  case 1:
-  case 2:
-    navigate("/Products");
-    break;
-  case 4:
-    navigate("/MenuAdmin");
-    break;
-  default:
-    navigate("/");
-}
-
+        // Navegar según rol ya convertido a número.
+        switch (rolNumber) {
+          case 1:
+          case 2:
+            navigate("/Products", { replace: true });
+            break;
+          case 4:
+            navigate("/MenuAdmin", { replace: true });
+            break;
+          default:
+            // Por seguridad, si rol no está claro, quedate en la landing pero no borres nada.
+            console.warn("SuccessPage: rol desconocido, navegando a / (landing).");
+            navigate("/", { replace: true });
+        }
+      } else {
+        // Si canceló (Ver comprobante), no navegamos automáticamente.
+        // Podés agregar lógica si querés abrir un comprobante específico.
+        console.log("Usuario eligió ver comprobante.");
       }
     };
 
     showAlert();
   }, [navigate, alertActive]);
 
-  return null; // no se muestra nada más, solo el Alert
+  return null;
 };
 
 export default SuccessPage;

@@ -65,9 +65,9 @@ $preference = [
     ],
 
     "back_urls" => [
-    "success" => "https://gcc-compliant-briefing-girls.trycloudflare.com/backend/actions/success.php",
-"failure" => "https://gcc-compliant-briefing-girls.trycloudflare.com/backend/actions/failure.php",
-"pending" => "https://gcc-compliant-briefing-girls.trycloudflare.com/backend/actions/pending.php"
+    "success" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/success.php",
+"failure" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/failure.php",
+"pending" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/pending.php"
 
 ],
 
