@@ -7,6 +7,27 @@ const PetImage = ({ petId }) => {
 
     const fetchPetImage = async () => {
         try {
+            // Si no hay petId, siempre mostrar imagen por defecto
+            if (!petId) {
+                return (
+                    <div>
+                        <figure style={{ padding: "10px" }}>
+                            <img 
+                                src={DefaultPetImage} 
+                                alt="Foto de mascota" 
+                                style={{
+                                    width: "128px",
+                                    height: "128px",
+                                    borderRadius: "100%",
+                                    objectFit: "cover",
+                                    border: "2px solid #ddd"
+                                }}
+                            />
+                        </figure>
+                    </div>
+                );
+            }
+
             const response = await fetch(
                 `http://localhost:8080/Proton/backend/actions/get_pet_image.php?petId=${petId}`,
                 { credentials: "include" }
