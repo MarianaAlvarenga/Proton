@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/Proton/backend/actions/getCategories.php")
+            .get("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);
@@ -77,7 +77,7 @@ const Desplegable = () => {
                         </li>
                     </>
                 )}
-                
+
                 <li className={activeOption === "/products" ? "disabled" : ""}>
                     <Link to="/products">Todos los Productos</Link>
                 </li>

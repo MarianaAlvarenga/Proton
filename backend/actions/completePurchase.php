@@ -2,81 +2,114 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
-
+require_once '../includes/session_config.php';
 require_once '../includes/db.php';
 
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
+// =======================================================
+// 1) RECUPERAR DATOS DEL CARRITO, SESIÓN Y EMAIL
+// =======================================================
+$cart = $_SESSION["cart"] ?? [];
+$total = $_SESSION["total"] ?? 0;
+$currentUserId = $_SESSION["currentUserId"] ?? null;
+$currentUserRole = $_SESSION["currentUserRole"] ?? null;
 
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
-}
+$email = $_POST["userEmail"] ?? $_SESSION["email"] ?? null;
 
-// Establecer el conjunto de caracteres
-$conn->set_charset('utf8');
-
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data["cart"]) || !is_array($data["cart"])) {
-    echo json_encode(["success" => false, "message" => "Datos inválidos"]);
+// =======================================================
+// 2) VALIDACIONES
+// =======================================================
+if (empty($cart)) {
+    $frontend = "https://proved-yukon-alive-boost.trycloudflare.com";
+    header("Location: $frontend/success?error=1&msg=CarritoVacio");
     exit;
 }
-
-$isRegistered = $data["isRegistered"] ?? false;
-$email = $data["email"] ?? null; // Correo electrónico (solo si el usuario está registrado)
-$total = $data["total"] ?? 0;
-
-// Obtener el ID y el rol del usuario que está realizando la compra
-$currentUserId = $data["currentUserId"] ?? null;
-$currentUserRole = $data["currentUserRole"] ?? null;
 
 if (!$currentUserId || !$currentUserRole) {
-    echo json_encode(["success" => false, "message" => "ID o rol del usuario actual no proporcionado"]);
+    $frontend = "https://proved-yukon-alive-boost.trycloudflare.com";
+    header("Location: $frontend/success?error=1&msg=SesionIncompleta");
     exit;
 }
 
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+if ($conn->connect_error) {
+    $frontend = "https://proved-yukon-alive-boost.trycloudflare.com";
+    header("Location: $frontend/success?error=1&msg=ConexionBD");
+    exit;
+}
+
+$conn->set_charset('utf8');
 $conn->begin_transaction();
 
 try {
-    // Verificar stock y actualizar productos
-    foreach ($data["cart"] as $item) {
+
+    // =======================================================
+    // 3) VERIFICAR STOCK Y DESCONTAR
+    // =======================================================
+    foreach ($cart as $item) {
         $productId = $item["id"];
-        $quantity = $item["quantity"];
+        $quantity  = $item["quantity"];
 
         $query = $conn->prepare("SELECT stock_producto FROM producto WHERE codigo_producto = ?");
         $query->bind_param("i", $productId);
         $query->execute();
-        $result = $query->get_result();
-        $row = $result->fetch_assoc();
+        $stockData = $query->get_result()->fetch_assoc();
 
-        if (!$row || $row["stock_producto"] < $quantity) {
+        if (!$stockData || $stockData["stock_producto"] < $quantity) {
             throw new Exception("Stock insuficiente para el producto ID $productId");
         }
 
-        // Actualizar stock
-        $updateQuery = $conn->prepare("UPDATE producto SET stock_producto = stock_producto - ? WHERE codigo_producto = ?");
-        $updateQuery->bind_param("ii", $quantity, $productId);
-        $updateQuery->execute();
+        $updateStock = $conn->prepare(
+            "UPDATE producto SET stock_producto = stock_producto - ? WHERE codigo_producto = ?"
+        );
+        $updateStock->bind_param("ii", $quantity, $productId);
+        $updateStock->execute();
     }
 
-    // Insertar en la tabla carrito
-    $insertCarritoQuery = $conn->prepare("INSERT INTO carrito (fecha_carrito, hora_carrito, total) VALUES (CURDATE(), CURTIME(), ?)");
-    $insertCarritoQuery->bind_param("d", $total);
-    $insertCarritoQuery->execute();
-    $carritoId = $conn->insert_id; // Obtener el ID del carrito insertado
+    // =======================================================
+    // 4) CREAR CARRITO SEGÚN ROL DEL USUARIO
+    // =======================================================
+    $clienteField = null;
+    $vendedorField = null;
+    $adminField   = null;
 
     if ($currentUserRole == 1) {
-        // Si el usuario es un cliente, asignar su ID a cliente_id_usuario1
-        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
-        $updateCarritoQuery->bind_param("ii", $currentUserId, $carritoId);
-        $updateCarritoQuery->execute();
-    } elseif ($isRegistered) {
-        // Verificar si el usuario existe (solo si está registrado y no es un cliente)
+        $clienteField = $currentUserId;
+    } elseif ($currentUserRole == 2) {
+        $vendedorField = $currentUserId;
+    } elseif ($currentUserRole == 4) {
+        $adminField = $currentUserId;
+    } else {
+        throw new Exception("Rol no autorizado para realizar compras.");
+    }
+
+    $insertCarrito = $conn->prepare("
+        INSERT INTO carrito (
+            fecha_carrito,
+            total,
+            cliente_id_usuario1,
+            vendedor_id_usuario,
+            administrador_id_usuario
+        ) VALUES (
+            CURDATE(), ?, ?, ?, ?
+        )
+    ");
+
+    $insertCarrito->bind_param(
+        "diii",
+        $total,
+        $clienteField,
+        $vendedorField,
+        $adminField
+    );
+
+    $insertCarrito->execute();
+    $carritoId = $conn->insert_id;
+
+    // =======================================================
+    // 5) ASIGNAR CLIENTE REAL (solo vendedor/admin)
+    // =======================================================
+    if ($email && ($currentUserRole == 2 || $currentUserRole == 4)) {
+
         $userQuery = $conn->prepare("SELECT id_usuario FROM usuario WHERE email = ?");
         $userQuery->bind_param("s", $email);
         $userQuery->execute();
@@ -84,49 +117,47 @@ try {
         $userRow = $userResult->fetch_assoc();
 
         if (!$userRow) {
-            throw new Exception("El usuario no está registrado.");
+            throw new Exception("El email ingresado no pertenece a un usuario registrado.");
         }
 
-        $userId = $userRow["id_usuario"];
+        $clienteId = $userRow["id_usuario"];
 
-        // Asignar el ID del usuario registrado en la columna cliente_id_usuario1
-        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
-        $updateCarritoQuery->bind_param("ii", $userId, $carritoId);
-        $updateCarritoQuery->execute();
-    } else {
-        // Insertar en la tabla usuario_no_registrado
-        $insertUnregisteredQuery = $conn->prepare("INSERT INTO usuario_no_registrado (id_carrito) VALUES (?)");
-        $insertUnregisteredQuery->bind_param("i", $carritoId);
-        $insertUnregisteredQuery->execute();
-        $usuarioNoRegistradoId = $conn->insert_id; // Obtener el ID del usuario no registrado recién insertado
-
-        // Asignar el ID del usuario no registrado en la columna cliente_id_usuario_no_registrado
-        $updateCarritoUnregistered = $conn->prepare("UPDATE carrito SET cliente_id_usuario_no_registrado = ? WHERE id_carrito = ?");
-        $updateCarritoUnregistered->bind_param("ii", $usuarioNoRegistradoId, $carritoId);
-        $updateCarritoUnregistered->execute();
+        $assignClient = $conn->prepare(
+            "UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?"
+        );
+        $assignClient->bind_param("ii", $clienteId, $carritoId);
+        $assignClient->execute();
     }
 
-    // Asignar el ID del usuario que realiza la compra (vendedor o administrador)
-    if ($currentUserRole == 4) { // Administrador
-        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET administrador_id_usuario = ? WHERE id_carrito = ?");
-    } elseif ($currentUserRole == 2) { // Vendedor
-        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET vendedor_id_usuario = ? WHERE id_carrito = ?");
-    } elseif ($currentUserRole == 1) { // Cliente
-        $updateCarritoQuery = $conn->prepare("UPDATE carrito SET cliente_id_usuario1 = ? WHERE id_carrito = ?");
-    } else {
-        throw new Exception("Rol del usuario actual no válido.");
+    // =======================================================
+    // 6) ASOCIAR PRODUCTOS A LA TABLA tienev1
+    // =======================================================
+    $insertTiene = $conn->prepare("
+        INSERT INTO tienev1 (producto_codigo_producto, carrito_id_carrito)
+        VALUES (?, ?)
+    ");
+
+    foreach ($cart as $item) {
+        $productId = $item["id"];
+
+        $insertTiene->bind_param("ii", $productId, $carritoId);
+        $insertTiene->execute();
     }
 
-    if ($currentUserRole != 1) { // Solo asignar vendedor o administrador si no es un cliente
-        $updateCarritoQuery->bind_param("ii", $currentUserId, $carritoId);
-        $updateCarritoQuery->execute();
-    }
-
+    // =======================================================
+    // 7) CONFIRMAR TODO Y LIMPIAR CARRITO
+    // =======================================================
     $conn->commit();
-    echo json_encode(["success" => true, "message" => "Compra realizada con éxito"]);
+    unset($_SESSION["cart"]);
+
+    $frontend = "https://proved-yukon-alive-boost.trycloudflare.com";
+    header("Location: $frontend/success?ok=1&carritoId={$carritoId}");
+    exit;
+
 } catch (Exception $e) {
     $conn->rollback();
-    error_log("Error: " . $e->getMessage());
-    echo json_encode(["success" => false, "message" => $e->getMessage()]);
+    $frontend = "https://proved-yukon-alive-boost.trycloudflare.com";
+    $msg = urlencode($e->getMessage());
+    header("Location: $frontend/success?error=1&msg=$msg");
+    exit;
 }
-?>

@@ -1,26 +1,12 @@
 <?php
 // Configuración de cookies para CORS
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', 'true');
-session_set_cookie_params([
-    'lifetime' => 86400,
-    'path' => '/',
-    'domain' => 'localhost',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-session_start();
+require_once '../includes/session_config.php';
+
 
 // 🔹 Mostrar errores para debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
-header("Access-Control-Allow-Credentials: true");
 
 require_once '../includes/db.php';
 
@@ -147,9 +133,10 @@ function loginUser($data, $conn) {
 
     $user = $result->fetch_assoc();
     if (password_verify($password, $user['contrasenia'])) {
-        $_SESSION['user_id'] = $user['id_usuario'];
-        $_SESSION['user_name'] = $user['nombre'];
-        $_SESSION['user_role'] = $user['rol'];
+        $_SESSION["currentUserId"] = $user["id_usuario"];
+$_SESSION["currentUserRole"] = $user["rol"];
+$_SESSION["currentUserName"] = $user["nombre"];
+
 
         unset($user['contrasenia']);
 

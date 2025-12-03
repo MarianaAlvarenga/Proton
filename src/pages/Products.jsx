@@ -22,7 +22,7 @@ const Products = () => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
     setSelectedCategory(category || "");
-  
+
     const userRole = parseInt(localStorage.getItem("userRole"), 10);
     const purchaseMode = location.state?.purchaseMode ?? false;
 
@@ -37,7 +37,7 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/proton/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
+          `https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener los productos");
@@ -64,37 +64,37 @@ const Products = () => {
   };
 
   return (
-      <section className="section" style={{ margin: "0px" }}>
-            <NavBar showSearch showMenu onSearch={handleSearch}/>
-            <SubNavBar showBack showCart currentPage="Productos"/>
-          <div className="product-container" style={{ margin: "0px" }}>
-            <div className="columns is-mobile is-multiline">
-              {products.map((product) => (
-              <div
-                className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
-                key={product.id}
-              >
-                <ProductCard
-                  ProductName={product.nombre_producto}
-                  ProductPrice={product.precio_producto}
-                  ProductImage={product.image_url}
-                  ProductId={product.id}
-                  ShowAddButton
-                  {...(isAdmin
-                    ? { ShowModifyButton: true, ShowDeleteButton: true}
-                    : { ShowDeleteButton: false, ShowAddButton: true  })
-                  }/>
-              </div>
-            ))}
-          </div>
+    <section className="section" style={{ margin: "0px" }}>
+      <NavBar showSearch showMenu onSearch={handleSearch} />
+      <SubNavBar showBack showCart currentPage="Productos" />
+      <div className="product-container" style={{ margin: "0px" }}>
+        <div className="columns is-mobile is-multiline">
+          {products.map((product) => (
+            <div
+              className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
+              key={product.id}
+            >
+              <ProductCard
+                ProductName={product.nombre_producto}
+                ProductPrice={product.precio_producto}
+                ProductImage={product.image_url}
+                ProductId={product.id}
+                ShowAddButton
+                {...(isAdmin
+                  ? { ShowModifyButton: true, ShowDeleteButton: true }
+                  : { ShowDeleteButton: false, ShowAddButton: true })
+                } />
+            </div>
+          ))}
         </div>
-        <div className="pagination-container">  
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}/>
-        </div>
-        </section>
+      </div>
+      <div className="pagination-container">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange} />
+      </div>
+    </section>
   );
 };
 

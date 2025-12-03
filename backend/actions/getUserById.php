@@ -1,8 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:3000"); // origen permitido (tu React)
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");   // métodos permitidos
-header("Access-Control-Allow-Headers: Content-Type");        // cabeceras permitidas
-header("Content-Type: application/json");
+require_once '../includes/session_config.php';
 
 // Incluir archivo de conexión y crear objeto de conexión
 require_once '../includes/db.php';

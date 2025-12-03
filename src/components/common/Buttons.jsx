@@ -41,7 +41,7 @@ const ModifyButton = ({ urlImage = ModifyImage }) => {
     const userId = selectedCheckbox.id.split("-")[1]; // Extraer el ID del usuario seleccionado
 
     // Fetch para obtener los datos del usuario seleccionado
-    fetch("http://localhost:8080/Proton/backend/actions/getUserById.php", {
+    fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getUserById.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,14 +79,14 @@ const AddButton = ({ urlImage = AddImage }) => {
   const handleAddUser = () => {
     navigate("/SignUp", { state: { showComboBox: true }, });
   };
-    
-    return (
-      
+
+  return (
+
     <figure className="image is-inline-block" onClick={handleAddUser}>
       <img src={urlImage} alt="Agregar" style={{ height: "15px", width: "20px" }} />
 
     </figure>
-      
+
   );
 };
 

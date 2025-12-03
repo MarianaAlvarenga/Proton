@@ -1,7 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once '../includes/session_config.php';
 
 // Configuración de la base de datos
 require_once '../includes/db.php';

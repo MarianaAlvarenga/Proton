@@ -1,9 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
-
+require_once '../includes/session_config.php';
 require_once '../includes/db.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);

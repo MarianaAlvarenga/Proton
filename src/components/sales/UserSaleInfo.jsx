@@ -97,7 +97,11 @@ const UserSaleInfo = () => {
           <CancelButton NameButton="Cancelar" clearCart={clearCart} />
         </div>
         <div className="half-button">
-          <PaymentButton product={{ price: parseFloat(total) }} />
+          <PaymentButton 
+  cart={cartProducts} 
+  userEmail={userInfo.email} 
+/>
+
         </div>
       </div>
 

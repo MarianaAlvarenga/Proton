@@ -1,5 +1,13 @@
 <?php
-// Redirige al frontend luego del pago.
-// Agregamos "?mp=ok" para evitar problemas de aislamiento del navegador.
-header("Location: http://localhost:3000/success?mp=ok");
+
+require_once '../includes/session_config.php';
+
+// Marcar que el pago volvió correctamente
+$_SESSION["payment_ok"] = true;
+
+// 🔥 URL FIJA AL TÚNEL CLOUDFLARE (NO localhost, NO HTTP_HOST)
+$redirect = "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
+
+// Redirigir a la URL Cloudflare
+header("Location: $redirect");
 exit;

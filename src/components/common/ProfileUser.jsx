@@ -54,7 +54,7 @@ const ProfileUser = () => {
             console.log(">>> Ejecutando fetchData");
             try {
                 const res = await fetch(
-                    "http://localhost:8080/Proton/backend/actions/getUserById.php",
+                    "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ const ProfileUser = () => {
 
                 // Traer listado de especialidades (para los checkboxes)
                 try {
-                    const resEsp = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+                    const resEsp = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getEspecialidades.php");
                     if (resEsp.ok) {
                         const data = await resEsp.json();
                         setEspecialidades(data);
@@ -108,7 +108,7 @@ const ProfileUser = () => {
 
                 // Traer mascotas
                 const petsResponse = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${userId}`,
+                    `https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${userId}`,
                     {
                         method: "GET",
                         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
@@ -190,14 +190,14 @@ const ProfileUser = () => {
                 especialidades: payload.especialidad || prev.especialidades || []
             }));
             const response = await fetch(
-                `http://localhost:8080/Proton/backend/actions/updateUser.php`,
+                `https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/updateUser.php`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 }
             );
-            
+
             const json = await response.json();
             if (json.success) {
                 setMensaje({ tipo: 'exito', texto: json.message });
@@ -219,8 +219,8 @@ const ProfileUser = () => {
                 }));
                 // ==============================================================================================================
 
-                setEditandoUsuario(false); 
-                
+                setEditandoUsuario(false);
+
             } else {
                 setMensaje({ tipo: 'error', texto: json.message || "Error al actualizar" });
             }
@@ -236,7 +236,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/Proton/backend/actions/updatePet.php`,
+                `https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/updatePet.php`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -286,71 +286,71 @@ const ProfileUser = () => {
                     </div>
 
                     <label className="label" htmlFor="name">Nombre:</label>
-                    <input className="input" type="text" name="name" id="name" defaultValue={usuarioEdit?.nombre || ''} 
-                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, nombre: e.target.value }))}
-                           readOnly={!editandoUsuario}/>
+                    <input className="input" type="text" name="name" id="name" defaultValue={usuarioEdit?.nombre || ''}
+                        onChange={(e) => setUsuarioEdit(prev => ({ ...prev, nombre: e.target.value }))}
+                        readOnly={!editandoUsuario} />
 
                     <label className="label" htmlFor="LastName">Apellido:</label>
-                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={usuarioEdit?.apellido || ''} 
-                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, apellido: e.target.value }))}
-                           readOnly={!editandoUsuario}/>
+                    <input className="input" type="text" name="LastName" id="LastName" defaultValue={usuarioEdit?.apellido || ''}
+                        onChange={(e) => setUsuarioEdit(prev => ({ ...prev, apellido: e.target.value }))}
+                        readOnly={!editandoUsuario} />
 
                     {userData?.rol === 3 && (
-                    <div className="field">
-                        <label className="label">Especialidades:</label>
-                        <div className="control">
-                        {editandoUsuario ? (
-                            especialidades.map((e) => {
-                                const espId = Number(e.id_servicio);
-                                const actuales = usuarioEdit?.especialidades || [];
-                                const isChecked = actuales.includes(espId);
-                                return (
-                                    <label key={espId} className="checkbox mr-3">
-                                        <input
-                                            type="checkbox"
-                                            value={espId}
-                                            checked={isChecked}
-                                            onChange={(ev) => {
-                                                setUsuarioEdit((prev) => {
-                                                    const actuales = prev.especialidades || [];
-                                                    if (ev.target.checked) {
-                                                        return { ...prev, especialidades: [...actuales, espId] };
-                                                    } else {
-                                                        return { ...prev, especialidades: actuales.filter(id => id !== espId) };
-                                                    }
-                                                });
-                                            }}
-                                        />
-                                        {e.nombre}
-                                    </label>
-                                );
-                            })
-                        ) : (
-                            <div>
-                                {userData.especialidades && userData.especialidades.length > 0 ? (
-                                    <ul>
-                                        {userData.especialidades.map((esp) => (
-                                            <li key={esp.id_servicio ?? esp.id_especialidad}>{esp.nombre}</li>
-                                        ))}
-                                    </ul>
+                        <div className="field">
+                            <label className="label">Especialidades:</label>
+                            <div className="control">
+                                {editandoUsuario ? (
+                                    especialidades.map((e) => {
+                                        const espId = Number(e.id_servicio);
+                                        const actuales = usuarioEdit?.especialidades || [];
+                                        const isChecked = actuales.includes(espId);
+                                        return (
+                                            <label key={espId} className="checkbox mr-3">
+                                                <input
+                                                    type="checkbox"
+                                                    value={espId}
+                                                    checked={isChecked}
+                                                    onChange={(ev) => {
+                                                        setUsuarioEdit((prev) => {
+                                                            const actuales = prev.especialidades || [];
+                                                            if (ev.target.checked) {
+                                                                return { ...prev, especialidades: [...actuales, espId] };
+                                                            } else {
+                                                                return { ...prev, especialidades: actuales.filter(id => id !== espId) };
+                                                            }
+                                                        });
+                                                    }}
+                                                />
+                                                {e.nombre}
+                                            </label>
+                                        );
+                                    })
                                 ) : (
-                                    <p>No tiene especialidades registradas</p>
+                                    <div>
+                                        {userData.especialidades && userData.especialidades.length > 0 ? (
+                                            <ul>
+                                                {userData.especialidades.map((esp) => (
+                                                    <li key={esp.id_servicio ?? esp.id_especialidad}>{esp.nombre}</li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No tiene especialidades registradas</p>
+                                        )}
+                                    </div>
                                 )}
                             </div>
-                        )}
                         </div>
-                    </div>
                     )}
 
                     <label className="label" htmlFor="born">Fecha de nacimiento:</label>
-                    <input className="input" type="date" name="born" id="born" defaultValue={usuarioEdit?.fecha_nacimiento || ''} min="1900-01-01" 
-                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
-                           readOnly={!editandoUsuario}/>
+                    <input className="input" type="date" name="born" id="born" defaultValue={usuarioEdit?.fecha_nacimiento || ''} min="1900-01-01"
+                        onChange={(e) => setUsuarioEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
+                        readOnly={!editandoUsuario} />
 
                     <label className="label" htmlFor="phone">Teléfono:</label>
-                    <input className="input" type="tel" name="phone" id="phone" defaultValue={usuarioEdit?.telefono || ''} 
-                           onChange={(e) => setUsuarioEdit(prev => ({ ...prev, telefono: e.target.value }))}
-                           readOnly={!editandoUsuario} />
+                    <input className="input" type="tel" name="phone" id="phone" defaultValue={usuarioEdit?.telefono || ''}
+                        onChange={(e) => setUsuarioEdit(prev => ({ ...prev, telefono: e.target.value }))}
+                        readOnly={!editandoUsuario} />
 
                     <div className="field">
                         <label className="label" htmlFor="email">Email:</label>
@@ -437,23 +437,23 @@ const ProfileUser = () => {
                                         </p>
                                         <PetImage petId={mascotas[currentIndex].id_mascota} />
                                         <label className="label" htmlFor="pet-name">Nombre:</label>
-                                        <input className="input" type="text" name="pet-name" id="pet-name" value={mascotaEdit?.nombre_mascota || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))} 
-                                               readOnly={!editandoMascota}/>
+                                        <input className="input" type="text" name="pet-name" id="pet-name" value={mascotaEdit?.nombre_mascota || ''}
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))}
+                                            readOnly={!editandoMascota} />
 
                                         <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                        <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01" 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01"
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
+                                            readOnly={!editandoMascota} />
 
                                         <label className="label" htmlFor="pet-species">Especie:</label>
                                         <div className="select is-fullwidth">
                                             <select
                                                 id="pet-species"
                                                 name="pet-species"
-                                                value={mascotaEdit?.especie || ''}   
+                                                value={mascotaEdit?.especie || ''}
                                                 onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
-                                                disabled={!editandoMascota}          
+                                                disabled={!editandoMascota}
                                             >
                                                 <option value="gato">Gato</option>
                                                 <option value="perro">Perro</option>
@@ -466,18 +466,18 @@ const ProfileUser = () => {
                                         </div>
 
                                         <label className="label" htmlFor="pet-race">Raza:</label>
-                                        <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''}
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
+                                            readOnly={!editandoMascota} />
 
                                         <label className="label" htmlFor="pet-sex">Sexo:</label>
                                         <div className="select is-fullwidth">
                                             <select
                                                 id="pet-sex"
                                                 name="pet-sex"
-                                                value={mascotaEdit?.sexo || ''}   
+                                                value={mascotaEdit?.sexo || ''}
                                                 onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
-                                                disabled={!editandoMascota}          
+                                                disabled={!editandoMascota}
                                             >
                                                 <option value="macho">Macho</option>
                                                 <option value="hembra">Hembra</option>
@@ -485,18 +485,18 @@ const ProfileUser = () => {
                                         </div>
 
                                         <label className="label" htmlFor="weight-name">Peso:</label>
-                                        <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''}
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
+                                            readOnly={!editandoMascota} />
 
                                         <label className="label" htmlFor="pet-size">Tamaño:</label>
                                         <div className="select is-fullwidth">
                                             <select
                                                 id="tamanio"
                                                 name="tamanio"
-                                                value={mascotaEdit?.tamanio || ''}   
+                                                value={mascotaEdit?.tamanio || ''}
                                                 onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
-                                                disabled={!editandoMascota}          
+                                                disabled={!editandoMascota}
                                             >
                                                 <option value="pequenio">Pequeño</option>
                                                 <option value="mediano">Mediano</option>
@@ -509,9 +509,9 @@ const ProfileUser = () => {
                                             <select
                                                 id="largo_pelo"
                                                 name="largo_pelo"
-                                                value={mascotaEdit?.largo_pelo || ''}   
+                                                value={mascotaEdit?.largo_pelo || ''}
                                                 onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
-                                                disabled={!editandoMascota}          
+                                                disabled={!editandoMascota}
                                             >
                                                 <option value="muy corto">Muy corto</option>
                                                 <option value="corto">Corto</option>
@@ -521,14 +521,14 @@ const ProfileUser = () => {
                                         </div>
 
                                         <label className="label" htmlFor="pet-color">Color:</label>
-                                        <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
-                                               onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
-                                               readOnly={!editandoMascota}/>
+                                        <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''}
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
+                                            readOnly={!editandoMascota} />
 
                                         <label className="label" htmlFor="pet-detail">Información médica relevante:</label>
                                         <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
-                                                  onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
-                                                  readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
+                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
+                                            readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -558,23 +558,23 @@ const ProfileUser = () => {
                                     </p>
                                     <PetImage petId={mascotas[0].id_mascota} />
                                     <label className="label" htmlFor="pet-name">Nombre:</label>
-                                    <input className="input" type="text" name="pet-name" id="name" value={mascotaEdit?.nombre_mascota || ''} 
-                                            onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))}
-                                            readOnly={!editandoMascota}/>
+                                    <input className="input" type="text" name="pet-name" id="name" value={mascotaEdit?.nombre_mascota || ''}
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, nombre_mascota: e.target.value }))}
+                                        readOnly={!editandoMascota} />
 
                                     <label className="label" htmlFor="pet-born">Fecha de nacimiento:</label>
-                                    <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01" 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <input className="input" type="date" name="pet-born" id="pet-born" value={mascotaEdit?.fecha_nacimiento || ''} min="1900-01-01"
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))}
+                                        readOnly={!editandoMascota} />
 
                                     <label className="label" htmlFor="pet-species">Especie:</label>
                                     <div className="select is-fullwidth">
                                         <select
                                             id="pet-species"
                                             name="pet-species"
-                                            value={mascotaEdit?.especie || ''}   
+                                            value={mascotaEdit?.especie || ''}
                                             onChange={(e) => setMascotaEdit(prev => ({ ...prev, especie: e.target.value }))}
-                                            disabled={!editandoMascota}          
+                                            disabled={!editandoMascota}
                                         >
                                             <option value="gato">Gato</option>
                                             <option value="perro">Perro</option>
@@ -587,18 +587,18 @@ const ProfileUser = () => {
                                     </div>
 
                                     <label className="label" htmlFor="pet-race">Raza:</label>
-                                    <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <input className="input" type="text" name="pet-race" id="pet-race" value={mascotaEdit?.raza || ''}
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, raza: e.target.value }))}
+                                        readOnly={!editandoMascota} />
 
                                     <label className="label" htmlFor="pet-sex">Sexo:</label>
                                     <div className="select is-fullwidth">
                                         <select
                                             id="pet-sex"
                                             name="pet-sex"
-                                            value={mascotaEdit?.sexo || ''}   
+                                            value={mascotaEdit?.sexo || ''}
                                             onChange={(e) => setMascotaEdit(prev => ({ ...prev, sexo: e.target.value }))}
-                                            disabled={!editandoMascota}          
+                                            disabled={!editandoMascota}
                                         >
                                             <option value="macho">Macho</option>
                                             <option value="hembra">Hembra</option>
@@ -606,18 +606,18 @@ const ProfileUser = () => {
                                     </div>
 
                                     <label className="label" htmlFor="weight-name">Peso:</label>
-                                    <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <input className="input" type="text" name="weight-name" id="weight-name" value={mascotaEdit?.peso || ''}
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, peso: e.target.value }))}
+                                        readOnly={!editandoMascota} />
 
                                     <label className="label" htmlFor="pet-size">Tamaño:</label>
                                     <div className="select is-fullwidth">
                                         <select
                                             id="tamanio"
                                             name="tamanio"
-                                            value={mascotaEdit?.tamanio || ''}   
+                                            value={mascotaEdit?.tamanio || ''}
                                             onChange={(e) => setMascotaEdit(prev => ({ ...prev, tamanio: e.target.value }))}
-                                            disabled={!editandoMascota}          
+                                            disabled={!editandoMascota}
                                         >
                                             <option value="pequenio">Pequeño</option>
                                             <option value="mediano">Mediano</option>
@@ -630,9 +630,9 @@ const ProfileUser = () => {
                                         <select
                                             id="largo_pelo"
                                             name="largo_pelo"
-                                            value={mascotaEdit?.largo_pelo || ''}   
+                                            value={mascotaEdit?.largo_pelo || ''}
                                             onChange={(e) => setMascotaEdit(prev => ({ ...prev, largo_pelo: e.target.value }))}
-                                            disabled={!editandoMascota}          
+                                            disabled={!editandoMascota}
                                         >
                                             <option value="muy corto">Muy corto</option>
                                             <option value="corto">Corto</option>
@@ -642,14 +642,14 @@ const ProfileUser = () => {
                                     </div>
 
                                     <label className="label" htmlFor="pet-color">Color:</label>
-                                    <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''} 
-                                           onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
-                                           readOnly={!editandoMascota}/>
+                                    <input className="input" type="text" name="pet-color" id="pet-color" value={mascotaEdit?.color || ''}
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, color: e.target.value }))}
+                                        readOnly={!editandoMascota} />
 
                                     <label className="label" htmlFor="pet-detail">Información médica relevante:</label>
                                     <textarea className="textarea" id="pet-detail" name="pet-detail" rows="5" cols="30"
-                                              onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
-                                              readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
+                                        onChange={(e) => setMascotaEdit(prev => ({ ...prev, detalle: e.target.value }))}
+                                        readOnly={!editandoMascota}>{mascotaEdit?.detalle || ''}</textarea>
 
                                 </div>
                             </div>

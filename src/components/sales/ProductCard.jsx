@@ -5,7 +5,7 @@ import "./ProductCard.css";
 const ProductCard = ({
   ProductName = "Producto",
   ProductPrice = "0.00",
-  ListMode = false, 
+  ListMode = false,
   ProductImage = "",
   ProductId,
   ShowAddButton = false,
@@ -13,8 +13,8 @@ const ProductCard = ({
   ShowModifyButton = false,
   ShowCount = false,
   cartProducts,
-  setCartProducts = () => {},
-  onCartChange = () => {},
+  setCartProducts = () => { },
+  onCartChange = () => { },
 }) => {
 
   const navigate = useNavigate();
@@ -54,11 +54,11 @@ const ProductCard = ({
 
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
-    
+
     if (typeof setCartProducts === "function") {
       setCartProducts([...cart]);
     }
-    
+
     if (typeof onCartChange === "function") {
       onCartChange([...cart]);
     }
@@ -67,7 +67,7 @@ const ProductCard = ({
     const foundProduct = cart.find(p => p.id === ProductId);
     const newCount = foundProduct ? foundProduct.quantity : 0;
     setProductCount(newCount);
-    
+
     window.dispatchEvent(new Event("cartUpdated"));
     console.log("🛒 Carrito actualizado:", cart);
   };
@@ -89,7 +89,7 @@ const ProductCard = ({
     }
 
     updateCart(cart);
-    
+
     if (window.location.pathname !== "/Cart") {
       navigate("/Cart");
     }
@@ -144,7 +144,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "http://localhost:8080/Proton/backend/actions/deleteProduct.php",
+        "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

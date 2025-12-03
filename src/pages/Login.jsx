@@ -13,7 +13,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/Proton/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -55,11 +55,18 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8080/Proton/backend/actions/auth-chatsito.php', {
-        action: 'login',
-        email,
-        contrasenia: password,
-      });
+      const response = await axios.post(
+        'https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/auth-chatsito.php',
+        {
+          action: 'login',
+          email,
+          contrasenia: password,
+        },
+        {
+          withCredentials: true,   // 🟣 OBLIGATORIO para que la cookie viaje
+        }
+      );
+
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data.success) {
@@ -157,18 +164,18 @@ const Login = () => {
           </div>
           {error && <p className="help is-danger">{error}</p>}
           <div className="field" style={{ width: '100%' }}>
-          <div className="control" style={{ width: '100%' }}>
-            <button
-              className="button is-fullwidth"
-              style={{
-                backgroundColor: '#6A0DAD',
-                color: 'white',
-              }}
-            >
-              Ingresar
-            </button>
+            <div className="control" style={{ width: '100%' }}>
+              <button
+                className="button is-fullwidth"
+                style={{
+                  backgroundColor: '#6A0DAD',
+                  color: 'white',
+                }}
+              >
+                Ingresar
+              </button>
+            </div>
           </div>
-        </div>
 
 
 
@@ -176,13 +183,13 @@ const Login = () => {
         <div className="is-fullwidth">
           <p >o inicia sesión con:</p>
         </div>
-        
+
         <div className="buttons" style={{ marginTop: '1rem' }}>
           <button className="button"
-                  style={{
-                    backgroundColor: '#6A0DAD',
-                    color: 'white',
-                  }}>
+            style={{
+              backgroundColor: '#6A0DAD',
+              color: 'white',
+            }}>
             <span className="icon">
               <i className="fab fa-google"></i>
             </span>

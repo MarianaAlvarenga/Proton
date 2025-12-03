@@ -36,7 +36,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
+        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -46,7 +46,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -103,8 +103,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
-      : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
+      ? "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,
@@ -141,7 +141,7 @@ const SignUp = () => {
             formDataImg.append("userId", String(result.id_usuario));
 
             const imgRes = await fetch(
-              "http://localhost:8080/Proton/backend/actions/upload_user_image.php",
+              "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/upload_user_image.php",
               { method: "POST", body: formDataImg, credentials: "include" }
             );
 

@@ -20,7 +20,7 @@ const OkButton = ({ NameButton = "Agregar", cartProducts = [], clearCart, isRegi
 
         // Verificar si el correo electrónico está registrado (solo si el usuario está registrado)
         if (isRegistered) {
-          const checkEmailResponse = await fetch("http://localhost:8080/Proton/backend/actions/checkEmail.php", {
+          const checkEmailResponse = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/checkEmail.php", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -37,7 +37,7 @@ const OkButton = ({ NameButton = "Agregar", cartProducts = [], clearCart, isRegi
         }
 
         // Si el correo electrónico está registrado o el usuario no está registrado, proceder con la compra
-        const purchaseResponse = await fetch("http://localhost:8080/Proton/backend/actions/completePurchase.php", {
+        const purchaseResponse = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/completePurchase.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

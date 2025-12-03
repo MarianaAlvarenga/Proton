@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": ["/static/*", "/*.css", "/*.js", "/*.json"],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/.*", "dest": "/index.html", "status": 200 }
+  ]
+}

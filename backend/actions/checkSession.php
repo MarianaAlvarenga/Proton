@@ -1,19 +1,7 @@
 <?php
-// Configurar CORS para permitir cookies
-ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_secure', 'true');
-session_set_cookie_params([
-    'lifetime' => 86400,
-    'path' => '/',
-    'domain' => 'localhost',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-session_start();
+require_once '../includes/session_config.php';
 
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Credentials: true");
+
 header("Content-Type: application/json");
 
 if (isset($_SESSION['user_id'])) {

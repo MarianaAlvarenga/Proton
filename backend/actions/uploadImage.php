@@ -1,8 +1,7 @@
 <?php
+require_once '../includes/session_config.php';
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: http://localhost:3000"); // Permitir solicitudes desde el frontend
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS"); // Métodos permitidos
-header("Access-Control-Allow-Headers: Content-Type"); // Cabeceras permitidas
+
 
 $uploadDir = "../uploads/";
 if (!is_dir($uploadDir)) {
