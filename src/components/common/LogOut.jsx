@@ -18,7 +18,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

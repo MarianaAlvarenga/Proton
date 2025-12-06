@@ -27,7 +27,7 @@ export default function Calendar({
     }
 
     setLoading(true);
-    fetch(`https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
+    fetch(`https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Error ${res.status}: ${res.statusText}`);
@@ -153,7 +153,7 @@ export default function Calendar({
           return;
         }
 
-        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/delete_availability.php", {
+        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/delete_availability.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -222,7 +222,7 @@ export default function Calendar({
       const user = JSON.parse(localStorage.getItem("user")) || {};
 
       try {
-        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/save_appointment.php", {
+        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/save_appointment.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -282,7 +282,7 @@ export default function Calendar({
 
       console.log("Enviando disponibilidades:", selectedSlots);
 
-      const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/availability.php", {
+      const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/availability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

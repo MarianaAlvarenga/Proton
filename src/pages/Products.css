@@ -1,3 +1,9 @@
+.section,
+.columns,
+.product-container {
+  overflow: visible !important;
+  z-index: 1;
+}
 /* Ajuste general para el wrapper principal */
 .page-wrapper {
   display: flex;
@@ -8,17 +14,16 @@
 
 /* Sección principal */
 .section {
-  flex: 1; /* Asegura que la sección ocupe el espacio restante */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Evita desbordamiento externo */
-  min-height: 100vh; /* 🔧 NUEVO: asegura altura mínima para que el menú no se corte */
+  overflow: visible !important;  /* 👈 antes decía hidden */
+  min-height: 100vh;
 }
 
 /* Contenedor de productos con scroll */
 .products-container {
-  flex: 1; /* Ocupa todo el espacio vertical disponible */
-  overflow-y: auto; /* Activa el desplazamiento vertical */
+  flex: 1;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -27,6 +32,8 @@
 .columns {
   display: flex;
   flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
   margin: 0; /* Elimina márgenes entre columnas */
   padding: 0; /* Elimina padding entre columnas */
 }
@@ -44,3 +51,4 @@
   align-items: center; /* Alinea los botones verticalmente */
   width: 100%; /* Asegura que ocupe todo el ancho disponible */
 }
+

@@ -144,7 +144,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

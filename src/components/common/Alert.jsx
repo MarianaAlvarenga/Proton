@@ -12,7 +12,7 @@ const Alert = ({
     title: Title,
     text: Detail,
     icon: icon,            // 👈 reemplaza el warning hardcodeado
-    showCancelButton: true,
+    showCancelButton: !!(Cancel && OnCancel),
     confirmButtonText: Confirm,
     cancelButtonText: Cancel,
     allowOutsideClick: false,

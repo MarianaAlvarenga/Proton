@@ -6,6 +6,7 @@ import Label from "./Label";
 import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
+import Alert from "./Alert";   // 👈 agregado
 import "./SignUp.css";
 
 const SignUp = () => {
@@ -20,12 +21,10 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
-    especialidad: [], // ahora siempre es array de IDs
+    especialidad: [],
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
   const [roles, setRoles] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
@@ -36,7 +35,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -46,7 +45,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -74,7 +73,6 @@ const SignUp = () => {
         });
         if (userData.img_url) setImagenPreview(userData.img_url);
         setIsEditMode(isEditMode || false);
-        setShowComboBox(showComboBox || false);
       }
     }
   }, [location]);
@@ -86,35 +84,40 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
 
     if (!isEditMode && formData.contrasenia !== formData.confirmarContrasenia) {
-      setErrorMessage("Las contraseñas no coinciden");
-      return;
+      return Alert({
+        Title: "Error",
+        Detail: "Las contraseñas no coinciden",
+        Confirm: "Entendido",
+        Cancel: null,    // 👈 sin botón cancelar
+        icon: "error"
+      });
     }
 
     const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
     const isPeluquero = roleObj && roleObj.rol.toLowerCase().includes("peluquero");
 
     if (isPeluquero && formData.especialidad.length === 0) {
-      setErrorMessage("Los peluqueros deben seleccionar al menos una especialidad");
-      return;
+      return Alert({
+        Title: "Atención",
+        Detail: "Los peluqueros deben seleccionar al menos una especialidad",
+        Confirm: "Entendido",
+        Cancel: null,
+        icon: "warning"
+      });
     }
 
     const endpoint = isEditMode
-      ? "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,
       action: isEditMode ? "update" : "register",
       id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
-      especialidad: formData.especialidad.map(id => Number(id)), // enviamos IDs numéricos
+      especialidad: formData.especialidad.map(id => Number(id)),
     };
-
-    // 👇 agregado el console.log
-    console.log("Datos enviados al backend:", userData);
 
     try {
       const res = await fetch(endpoint, {
@@ -128,42 +131,42 @@ const SignUp = () => {
       try {
         result = JSON.parse(responseText);
       } catch (parseError) {
-        console.error("Respuesta no JSON del servidor:", responseText);
-        setErrorMessage("Error inesperado del servidor. Verifica la consola para más detalles.");
-        return;
+        return Alert({
+          Title: "Error del servidor",
+          Detail: "La respuesta no es válida. Revisá consola.",
+          Confirm: "Entendido",
+          Cancel: null,
+          icon: "error"
+        });
       }
 
       if (result.success) {
-        if (!isEditMode && tempImageFile && result.id_usuario) {
-          try {
-            const formDataImg = new FormData();
-            formDataImg.append("image", tempImageFile);
-            formDataImg.append("userId", String(result.id_usuario));
-
-            const imgRes = await fetch(
-              "https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/upload_user_image.php",
-              { method: "POST", body: formDataImg, credentials: "include" }
-            );
-
-            const imgResult = await imgRes.json();
-            if (!imgResult.success) {
-              setSuccessMessage("Usuario registrado correctamente (pero la imagen no se pudo subir)");
-            } else {
-              setSuccessMessage("Usuario registrado exitosamente con imagen");
-            }
-          } catch (err) {
-            setSuccessMessage("Usuario registrado correctamente (error subiendo imagen)");
-          }
-        } else {
-          setSuccessMessage(isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente");
-        }
-        setTimeout(() => navigate("/UsersAdmin"), 2000);
+        // 👇 al confirmar → redirige
+        return Alert({
+          Title: "Éxito",
+          Detail: isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente",
+          Confirm: "Continuar",
+          Cancel: null,
+          icon: "success",
+          OnCancel: null, // no existe botón cancelar
+        }).then(() => navigate("/UsersAdmin"));
       } else {
-        setErrorMessage(result.message || "Error al procesar la solicitud");
+        return Alert({
+          Title: "Error",
+          Detail: result.message || "Error al procesar la solicitud",
+          Confirm: "Entendido",
+          Cancel: null,
+          icon: "error"
+        });
       }
     } catch (error) {
-      console.error("Error de conexión:", error);
-      setErrorMessage("Error de conexión con el servidor: " + error.message);
+      return Alert({
+        Title: "Error de conexión",
+        Detail: "No se pudo conectar con el servidor",
+        Confirm: "Entendido",
+        Cancel: null,
+        icon: "error"
+      });
     }
   };
 
@@ -185,7 +188,7 @@ const SignUp = () => {
         <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
-              {!showComboBox && isEditMode && <p>{getRoleName(formData.rol)}</p>}
+              {!showComboBox && isEditMode}
 
               {isEditMode && imagenPreview ? (
                 <img src={imagenPreview} alt="Foto de perfil" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", margin: "0 auto 20px", display: "block" }} />
@@ -228,8 +231,6 @@ const SignUp = () => {
                     </>
                   )}
 
-                  {errorMessage && <p className="has-text-danger">{errorMessage}</p>}
-                  {successMessage && <p className="has-text-success">{successMessage}</p>}
                   <LargeButton textButton={isEditMode ? "Actualizar" : "Registrarse"} buttonType="submit" className="is-fullwidth" />
                 </section>
               </form>

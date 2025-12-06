@@ -1,42 +1,82 @@
 import React from "react";
 import './ButtonPanelUsers.css';
 import { AddButton, ModifyButton, DeleteButton } from "../common/Buttons";
+import Alert from "../common/Alert";
 
-const ButtonPanelUsers = () => {
-  const handleDeleteUser = async (userId) => {
-    try {
-      const response = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/deleteUser.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: userId }), // Envía el ID del usuario a eliminar
-      });
+const ButtonPanelUsers = ({ selectedUserId }) => {
 
-      if (!response.ok) {
-        throw new Error("Error al eliminar el usuario.");
-      }
+  const handleNoSelection = (type) => {
+    Alert({
+      Title: "Atención",
+      Detail:
+        type === "delete"
+          ? "No ha seleccionado ningún usuario para eliminar."
+          : "No ha seleccionado ningún usuario para modificar.",
+      Confirm: "Entendido",
+      icon: "info"
+    });
+  };
 
-      const result = await response.json();
-      if (result.success) {
-        alert("Usuario eliminado correctamente.");
-        window.location.reload(); // Recarga la página para actualizar la tabla
-      } else {
-        alert("Hubo un problema al eliminar el usuario.");
-      }
-    } catch (error) {
-      alert("Error: " + error.message);
+  const handleDeleteUser = async () => {
+    if (!selectedUserId) {
+      return handleNoSelection("delete");
     }
+
+    Alert({
+      Title: "Confirmación",
+      Detail: "¿Estás seguro de eliminar este usuario?",
+      Confirm: "Eliminar",
+      Cancel: "Cancelar",
+      OnCancel: () => {},
+      icon: "warning",
+    }).then(async (res) => {
+      if (!res.isConfirmed) return;
+
+      try {
+        const response = await fetch(
+          "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/deleteUser.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: selectedUserId })
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          Alert({
+            Title: "Éxito",
+            Detail: "Usuario eliminado correctamente.",
+            Confirm: "OK",
+            icon: "success"
+          }).then(() => window.location.reload());
+        } else {
+          Alert({
+            Title: "Error",
+            Detail: "Hubo un problema al eliminar el usuario.",
+            Confirm: "OK",
+            icon: "error"
+          });
+        }
+      } catch (error) {
+        Alert({
+          Title: "Error",
+          Detail: error.message,
+          Confirm: "OK",
+          icon: "error"
+        });
+      }
+    });
   };
 
   return (
     <div className="button-container">
       <AddButton />
-      <ModifyButton />
-      <DeleteButton onDelete={handleDeleteUser} />
+      <ModifyButton selectedUserId={selectedUserId} onNoSelection={handleNoSelection} />
+      <DeleteButton selectedUserId={selectedUserId} onDelete={handleDeleteUser} onNoSelection={handleNoSelection} />
     </div>
   );
 };
-
 
 export default ButtonPanelUsers;

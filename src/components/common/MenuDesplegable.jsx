@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

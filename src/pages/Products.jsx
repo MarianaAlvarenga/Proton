@@ -37,7 +37,7 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
+          `https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getProducts.php?page=${currentPage}&search=${searchQuery}&category=${selectedCategory}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener los productos");

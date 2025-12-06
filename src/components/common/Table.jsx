@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './custom-bulma.css';
 
-const Table = ({ searchQuery }) => {
+const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ const Table = ({ searchQuery }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getUsers.php");
+        const response = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }
@@ -29,7 +29,6 @@ const Table = ({ searchQuery }) => {
   if (loading) return <p>Cargando usuarios...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Filtrado de usuarios según el texto de búsqueda
   const filteredUsers = users.filter((user) =>
     user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.apellido.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +36,9 @@ const Table = ({ searchQuery }) => {
   );
 
   const handleCheckboxChange = (id) => {
-    setSelectedCheckbox(id === selectedCheckbox ? null : id);
+    const newValue = id === selectedCheckbox ? null : id;
+    setSelectedCheckbox(newValue);
+    onSelectUser(newValue); // 👈 ahora notifico arriba
   };
 
   return (

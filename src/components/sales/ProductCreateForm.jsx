@@ -21,7 +21,7 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getCategories.php')
+        axios.get('https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getCategories.php')
             .then(response => {
                 setCategories(response.data);
             })
@@ -30,7 +30,7 @@ const ProductCreateForm = () => {
             });
 
         if (productId) {
-            axios.get(`https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -82,7 +82,7 @@ const ProductCreateForm = () => {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
                     {
                         headers: { 'Content-Type': 'multipart/form-data' },
@@ -90,7 +90,7 @@ const ProductCreateForm = () => {
                 );
             } else {
                 response = await axios.post(
-                    'https://cabinet-rights-enrollment-searching.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/addProduct.php',
                     data,
                     {
                         headers: { 'Content-Type': 'multipart/form-data' },

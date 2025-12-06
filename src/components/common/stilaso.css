@@ -1,6 +1,13 @@
+.navbar {
+  overflow: visible !important;
+  z-index: 99999 !important;
+}
+
 .menu-container {
-    position: relative; /* Cambiar a relativo para que el dropdown se alinee con este contenedor */
-    display: inline-block; /* Asegura que el contenedor ocupe solo el espacio necesario */
+    position: relative;
+    display: inline-block;
+    overflow: visible !important; /* 👈 clave para que no se corte */
+    z-index: 9999;
 }
 
 .menu-icon {
@@ -14,19 +21,21 @@
     display: inline-block;
 }
 
+
 .dropdown-menu {
     list-style: none;
-    position: absolute; /* Dependiente de .menu-container */
-    top: 100%; /* Colocado justo debajo del icono */
-    left: -100px; /* Desplazado ligeramente a la izquierda */
+    position: absolute;
+    top: 100%;
+    left: 0; /* 👈 quitamos el -100px que lo estaba cortando */
     background-color: #9655C5;
-    min-width: 150px;
-    display: none; /* Oculto por defecto */
+    min-width: 180px; /* un toque más grande */
+    display: none;
     padding: 0;
     margin: 0;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    z-index: 10000; /* 👈 aseguramos que quede arriba de todo */
     border-radius: 4px;
+    overflow: visible !important; /* 👈 otro clave */
 }
 
 
@@ -60,5 +69,17 @@
 .dropdown-menu li.disabled {
   pointer-events: none;  /* No se puede hacer clic */
   opacity: 0.5;          /* Se ve atenuado */
+}
+
+.navbar,
+.navbar-menu,
+.navbar-end,
+.navbar-brand {
+  overflow: visible !important;
+  z-index: 999999 !important;
+}
+
+.navbar-menu {
+  overflow: visible !important;
 }
 
