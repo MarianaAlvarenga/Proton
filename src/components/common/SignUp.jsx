@@ -3,10 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import UserImage from "./UserImage";
 import Label from "./Label";
-import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
-import Alert from "./Alert";   // 👈 agregado
+import Alert from "./Alert";
 import "./SignUp.css";
 
 const SignUp = () => {
@@ -112,7 +111,6 @@ const SignUp = () => {
       ? "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updateUser.php"
       : "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/auth-chatsito.php";
 
-    // 🚨 CAMBIO: ahora usamos FormData
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");
     fd.append("nombre", formData.nombre);
@@ -127,8 +125,6 @@ const SignUp = () => {
     if (isEditMode && location.state.userData.id_usuario) {
       fd.append("id_usuario", location.state.userData.id_usuario);
     }
-
-    // 🚨 si seleccionó imagen, la mandamos
     if (tempImageFile) {
       fd.append("img", tempImageFile);
     }
@@ -223,7 +219,30 @@ const SignUp = () => {
                       <Label labelContent="Confirmar contraseña" inputName="confirmarContrasenia" inputValue={formData.confirmarContrasenia} handleChange={handleChange} type="password" autoComplete="new-password" />
                     </>
                   )}
-                  <LargeButton textButton={isEditMode ? "Actualizar" : "Registrarse"} buttonType="submit" className="is-fullwidth" />
+
+                  {/* 🔥🔥 SOLO MODIFICACIÓN DE BOTONES 🔥🔥 */}
+                  <div className="is-flex" style={{ gap: "10px", marginTop: "20px" }}>
+                    <button
+                      type="submit"
+                      className="button is-primary is-fullwidth has-text-white"
+                      style={{ flex: 1 }}
+                    >
+                      {isEditMode ? "Actualizar" : "Registrarse"}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="button is-primary is-fullwidth has-text-white"
+                      style={{ flex: 1 }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(-1);
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  {/* 🔥🔥 FIN BOTONES 🔥🔥 */}
                 </section>
               </form>
             </div>
