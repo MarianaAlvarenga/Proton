@@ -35,7 +35,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -45,7 +45,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -90,7 +90,7 @@ const SignUp = () => {
         Title: "Error",
         Detail: "Las contraseñas no coinciden",
         Confirm: "Entendido",
-        Cancel: null,    // 👈 sin botón cancelar
+        Cancel: null,
         icon: "error"
       });
     }
@@ -109,51 +109,50 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/auth-chatsito.php";
 
-    const userData = {
-      ...formData,
-      action: isEditMode ? "update" : "register",
-      id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
-      especialidad: formData.especialidad.map(id => Number(id)),
-    };
+    // 🚨 CAMBIO: ahora usamos FormData
+    const fd = new FormData();
+    fd.append("action", isEditMode ? "update" : "register");
+    fd.append("nombre", formData.nombre);
+    fd.append("apellido", formData.apellido);
+    fd.append("email", formData.email);
+    fd.append("telefono", formData.telefono);
+    fd.append("rol", formData.rol);
+    fd.append("especialidad", JSON.stringify(formData.especialidad));
+    if (!isEditMode) {
+      fd.append("contrasenia", formData.contrasenia);
+    }
+    if (isEditMode && location.state.userData.id_usuario) {
+      fd.append("id_usuario", location.state.userData.id_usuario);
+    }
+
+    // 🚨 si seleccionó imagen, la mandamos
+    if (tempImageFile) {
+      fd.append("img", tempImageFile);
+    }
 
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
+        body: fd
       });
 
-      const responseText = await res.text();
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        return Alert({
-          Title: "Error del servidor",
-          Detail: "La respuesta no es válida. Revisá consola.",
-          Confirm: "Entendido",
-          Cancel: null,
-          icon: "error"
-        });
-      }
+      const response = await res.json();
 
-      if (result.success) {
-        // 👇 al confirmar → redirige
+      if (response.success) {
         return Alert({
           Title: "Éxito",
           Detail: isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente",
           Confirm: "Continuar",
           Cancel: null,
-          icon: "success",
-          OnCancel: null, // no existe botón cancelar
+          icon: "success"
         }).then(() => navigate("/UsersAdmin"));
       } else {
         return Alert({
           Title: "Error",
-          Detail: result.message || "Error al procesar la solicitud",
+          Detail: response.message || "Error al procesar la solicitud",
           Confirm: "Entendido",
           Cancel: null,
           icon: "error"
@@ -170,11 +169,6 @@ const SignUp = () => {
     }
   };
 
-  const getRoleName = (roleId) => {
-    const role = roles.find((r) => r.id === roleId);
-    return role ? role.rol : "Rol desconocido";
-  };
-
   const mostrarEspecialidad = () => {
     const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
     return roleObj && roleObj.rol.toLowerCase().includes("peluquero");
@@ -188,7 +182,6 @@ const SignUp = () => {
         <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
-              {!showComboBox && isEditMode}
 
               {isEditMode && imagenPreview ? (
                 <img src={imagenPreview} alt="Foto de perfil" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", margin: "0 auto 20px", display: "block" }} />
@@ -230,7 +223,6 @@ const SignUp = () => {
                       <Label labelContent="Confirmar contraseña" inputName="confirmarContrasenia" inputValue={formData.confirmarContrasenia} handleChange={handleChange} type="password" autoComplete="new-password" />
                     </>
                   )}
-
                   <LargeButton textButton={isEditMode ? "Actualizar" : "Registrarse"} buttonType="submit" className="is-fullwidth" />
                 </section>
               </form>

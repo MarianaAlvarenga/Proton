@@ -11,7 +11,7 @@ const PaymentButton = ({ cart, userEmail }) => {
 
       // 1) Guardar carrito + email en sesión en el backend
       await axios.post(
-        "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/save_cart.php",
+        "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/save_cart.php",
         { cart, userEmail }, // ⚡ ahora mandamos email también
         {
           withCredentials: true,
@@ -28,7 +28,7 @@ const PaymentButton = ({ cart, userEmail }) => {
       }));
 
       const response = await axios.post(
-        "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/create_preference.php",
+        "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: userEmail, name: "Cliente" },

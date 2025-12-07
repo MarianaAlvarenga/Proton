@@ -27,14 +27,14 @@ const ButtonPanelUsers = ({ selectedUserId }) => {
       Detail: "¿Estás seguro de eliminar este usuario?",
       Confirm: "Eliminar",
       Cancel: "Cancelar",
-      OnCancel: () => {},
+      OnCancel: () => { },
       icon: "warning",
     }).then(async (res) => {
       if (!res.isConfirmed) return;
 
       try {
         const response = await fetch(
-          "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/deleteUser.php",
+          "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/deleteUser.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

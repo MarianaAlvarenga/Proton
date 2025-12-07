@@ -19,20 +19,20 @@
     // 2) VALIDACIONES
     // =======================================================
     if (empty($cart)) {
-        $frontend = "https://back-philips-extension-sponsor.trycloudflare.com";
+        $frontend = "https://idaho-rated-publishing-acquisitions.trycloudflare.com";
         header("Location: $frontend/success?error=1&msg=CarritoVacio");
         exit;
     }
 
     if (!$currentUserId || !$currentUserRole) {
-        $frontend = "https://back-philips-extension-sponsor.trycloudflare.com";
+        $frontend = "https://idaho-rated-publishing-acquisitions.trycloudflare.com";
         header("Location: $frontend/success?error=1&msg=SesionIncompleta");
         exit;
     }
 
     $conn = new mysqli($servername, $username, $password, $dbname, $port);
     if ($conn->connect_error) {
-        $frontend = "https://back-philips-extension-sponsor.trycloudflare.com";
+        $frontend = "https://idaho-rated-publishing-acquisitions.trycloudflare.com";
         header("Location: $frontend/success?error=1&msg=ConexionBD");
         exit;
     }
@@ -158,13 +158,13 @@ foreach ($cart as $item) {
         $conn->commit();
         unset($_SESSION["cart"]);
 
-        $frontend = "https://back-philips-extension-sponsor.trycloudflare.com";
+        $frontend = "https://idaho-rated-publishing-acquisitions.trycloudflare.com";
         header("Location: $frontend/success?ok=1&carritoId={$carritoId}");
         exit;
 
     } catch (Exception $e) {
         $conn->rollback();
-        $frontend = "https://back-philips-extension-sponsor.trycloudflare.com";
+        $frontend = "https://idaho-rated-publishing-acquisitions.trycloudflare.com";
         $msg = urlencode($e->getMessage());
         header("Location: $frontend/success?error=1&msg=$msg");
         exit;

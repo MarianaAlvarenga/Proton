@@ -1,9 +1,6 @@
 <?php
-// Configuración de cookies para CORS
 require_once '../includes/session_config.php';
 
-
-// 🔹 Mostrar errores para debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -17,33 +14,54 @@ if ($conn->connect_error) {
 }
 $conn->set_charset('utf8');
 
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(["success" => false, "message" => "Error en el formato JSON: " . json_last_error_msg()]);
-    exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // 🚨 si llega FormData, no usamos php://input
+    if (empty($_POST)) {
+    $rawData = file_get_contents("php://input");
+    $jsonData = json_decode($rawData, true);
+
+    if (json_last_error() === JSON_ERROR_NONE && is_array($jsonData)) {
+        $_POST = $jsonData;
+    }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($data['action'])) {
-        switch ($data['action']) {
-            case 'register':
-                registerUser($data, $conn);
-                break;
-            case 'login':
-                loginUser($data, $conn);
-                break;
-            default:
-                echo json_encode(["success" => false, "message" => "Acción no válida"]);
-        }
-    } else {
-        echo json_encode(["success" => false, "message" => "Acción no especificada"]);
-    }
+    $action = $_POST['action'] ?? $_GET['action'] ?? null;
+
+/* 👇 si no llega acción, asumimos LOGIN (esto pasa solo cuando el front manda JSON simple desde el formulario de login) */
+if (!$action) {
+    $action = "login";
+}
+
+if ($action === 'register') {
+    registerUser($_POST, $conn);
+} elseif ($action === 'login') {
+    loginUser($_POST, $conn);
+} elseif ($action === 'update') {
+    updateUser($_POST, $conn); // 👈 por si también lo manejás en este archivo
 } else {
-    echo json_encode(["success" => false, "message" => "Método no permitido"]);
+    echo json_encode(["success" => false, "message" => "Acción no válida"]);
+}
 }
 
 $conn->close();
+
+function guardarImagen($id_usuario) {
+    if (!isset($_FILES["img"]) || $_FILES["img"]["error"] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    $dir = "../uploads/users/";
+    if (!file_exists($dir)) mkdir($dir, 0777, true);
+
+    $ext = pathinfo($_FILES["img"]["name"], PATHINFO_EXTENSION);
+    $fileName = "user_" . $id_usuario . "." . $ext;
+    $path = $dir . $fileName;
+
+    move_uploaded_file($_FILES["img"]["tmp_name"], $path);
+
+    return "https://favourites-roof-lone-welcome.trycloudflare.com/backend/uploads/users/" . $fileName;
+}
 
 function registerUser($data, $conn) {
     if (!isset($data['rol'])) {
@@ -78,30 +96,23 @@ function registerUser($data, $conn) {
     if ($conn->query($insertQuery) === TRUE) {
         $newUserId = $conn->insert_id;
 
-        // Si es peluquero, insertar especialidades
+        $imgUrl = guardarImagen($newUserId);
+        if ($imgUrl) {
+            $conn->query("UPDATE usuario SET img_url='$imgUrl' WHERE id_usuario=$newUserId");
+        }
+
         if ($rol === 3) {
-            if (!isset($data['especialidad']) || empty($data['especialidad'])) {
+            $especialidades = json_decode($data['especialidad'], true);
+
+            if (!$especialidades || count($especialidades) === 0) {
                 $conn->query("DELETE FROM usuario WHERE id_usuario = $newUserId");
-                echo json_encode(["success" => false, "message" => "Los peluqueros deben seleccionar al menos una especialidad"]);
+                echo json_encode(["success" => false, "message" => "Peluqueros deben seleccionar al menos una especialidad"]);
                 return;
             }
 
-            $especialidades = is_array($data['especialidad']) ? $data['especialidad'] : [$data['especialidad']];
             foreach ($especialidades as $esp) {
                 $espId = intval($esp);
-                if ($espId <= 0) {
-                    $conn->query("DELETE FROM usuario WHERE id_usuario = $newUserId");
-                    echo json_encode(["success" => false, "message" => "ID de especialidad inválido: $esp"]);
-                    return;
-                }
-
-                $insertRelacion = "INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) 
-                                   VALUES ($newUserId, $espId)";
-                if (!$conn->query($insertRelacion)) {
-                    $conn->query("DELETE FROM usuario WHERE id_usuario = $newUserId");
-                    echo json_encode(["success" => false, "message" => "Error al asignar especialidad: " . $conn->error]);
-                    return;
-                }
+                $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($newUserId, $espId)");
             }
         }
 
@@ -124,7 +135,7 @@ function loginUser($data, $conn) {
     $email = $conn->real_escape_string($data['email']);
     $password = $data['contrasenia'];
 
-    $query = "SELECT id_usuario, nombre, apellido, email, rol, contrasenia FROM usuario WHERE email = '$email'";
+    $query = "SELECT id_usuario, nombre, apellido, email, rol, contrasenia, img_url FROM usuario WHERE email = '$email'";
     $result = $conn->query($query);
     if ($result->num_rows === 0) {
         echo json_encode(["success" => false, "message" => "Usuario no encontrado"]);
@@ -134,20 +145,15 @@ function loginUser($data, $conn) {
     $user = $result->fetch_assoc();
     if (password_verify($password, $user['contrasenia'])) {
         $_SESSION["currentUserId"] = $user["id_usuario"];
-$_SESSION["currentUserRole"] = $user["rol"];
-$_SESSION["currentUserName"] = $user["nombre"];
-
+        $_SESSION["currentUserRole"] = $user["rol"];
+        $_SESSION["currentUserName"] = $user["nombre"];
 
         unset($user['contrasenia']);
 
         echo json_encode([
             "success" => true,
             "message" => "Inicio de sesión exitoso",
-            "user" => [
-                "id_usuario" => $user['id_usuario'],
-                "rol" => $user['rol'],
-                "nombre" => $user['nombre']
-            ]
+            "user" => $user
         ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);

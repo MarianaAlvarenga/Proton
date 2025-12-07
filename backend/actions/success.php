@@ -6,7 +6,7 @@ require_once '../includes/session_config.php';
 $_SESSION["payment_ok"] = true;
 
 // 🔥 URL FIJA AL TÚNEL CLOUDFLARE (NO localhost, NO HTTP_HOST)
-$redirect = "https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
+$redirect = "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
 
 // Redirigir a la URL Cloudflare
 header("Location: $redirect");

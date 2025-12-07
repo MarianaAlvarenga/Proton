@@ -13,7 +13,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -56,7 +56,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://bean-burner-ensures-institutes.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,
