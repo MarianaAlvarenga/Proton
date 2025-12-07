@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://favourites-roof-lone-welcome.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

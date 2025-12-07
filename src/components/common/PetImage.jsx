@@ -8,7 +8,7 @@ const PetImage = ({ petId }) => {
     const fetchPetImage = async () => {
         try {
             const response = await fetch(
-                `https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
+                `https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
                 { credentials: "include" }
             );
 
@@ -54,7 +54,7 @@ const PetImage = ({ petId }) => {
 
         try {
             const response = await fetch(
-                "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/upload_pet_image.php",
+                "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/upload_pet_image.php",
                 {
                     method: "POST",
                     body: formData,

@@ -1,25 +1,24 @@
 import React from "react";
 import axios from "axios";
 
-const PaymentButton = ({ cart, userEmail }) => {
+const PaymentButton = ({ cart, userEmail, isRegistered }) => {
   const handlePayment = async () => {
     try {
-      if (!userEmail) {
+      // 👇 solo se exige email si el usuario es registrado
+      if (isRegistered && !userEmail) {
         alert("Debe ingresar un email válido para continuar.");
         return;
       }
 
-      // 1) Guardar carrito + email en sesión en el backend
       await axios.post(
-        "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/save_cart.php",
-        { cart, userEmail }, // ⚡ ahora mandamos email también
+        "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/save_cart.php",
+        { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" }
         }
       );
 
-      // 2) Crear preferencia de MercadoPago
       const mpItems = cart.map(item => ({
         title: item.name,
         quantity: item.quantity,
@@ -28,10 +27,10 @@ const PaymentButton = ({ cart, userEmail }) => {
       }));
 
       const response = await axios.post(
-        "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/create_preference.php",
+        "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
-          payer: { email: userEmail, name: "Cliente" },
+          payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
         },
         {
           withCredentials: true,
@@ -43,7 +42,6 @@ const PaymentButton = ({ cart, userEmail }) => {
       if (response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        console.error("No se recibió 'init_point':", response.data);
         alert("Hubo un problema al iniciar el pago.");
       }
 

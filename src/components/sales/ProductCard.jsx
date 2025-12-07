@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
+import Alert from "../common/Alert.jsx"; // 👈 NUEVO
 
 const ProductCard = ({
   ProductName = "Producto",
@@ -20,7 +21,6 @@ const ProductCard = ({
   const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
 
-  // 🔹 Función para cargar la cantidad - useCallback para evitar recreación
   const loadProductCount = useCallback(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const foundProduct = savedCart.find(p => p.id === ProductId);
@@ -29,12 +29,10 @@ const ProductCard = ({
     console.log(`🔄 Producto ${ProductId} - cantidad cargada: ${newCount}`);
   }, [ProductId]);
 
-  // 🔹 Carga inicial al montar
   useEffect(() => {
     loadProductCount();
   }, [loadProductCount]);
 
-  // 🔹 Escuchar cambios globales del carrito
   useEffect(() => {
     const handleCartUpdated = () => {
       console.log(`📢 Evento recibido para producto ${ProductId}`);
@@ -45,12 +43,12 @@ const ProductCard = ({
     return () => window.removeEventListener("cartUpdated", handleCartUpdated);
   }, [ProductId, loadProductCount]);
 
-  // 🔹 También escuchar cambios de cartProducts si viene del padre
   useEffect(() => {
     if (cartProducts && cartProducts.length >= 0) {
       loadProductCount();
     }
   }, [cartProducts, loadProductCount]);
+
 
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -63,7 +61,6 @@ const ProductCard = ({
       onCartChange([...cart]);
     }
 
-    // 🔹 FORZAR actualización inmediata
     const foundProduct = cart.find(p => p.id === ProductId);
     const newCount = foundProduct ? foundProduct.quantity : 0;
     setProductCount(newCount);
@@ -133,18 +130,26 @@ const ProductCard = ({
     navigate(`/ProductCreateForm/${ProductId}`);
   };
 
+
+  // 🔥 REEMPLAZADO CON ALERT
   const handleDeleteClick = async () => {
-    const confirmDelete = window.confirm(
-      `¿Estás seguro de que deseas eliminar el producto "${ProductName}"?`
-    );
-    if (!confirmDelete) return;
+    
+    // 1️⃣ Modal de confirmación
+    const result = await Alert({
+      Title: "Eliminar producto",
+      Detail: `¿Deseás eliminar "${ProductName}"?`,
+      icon: "warning",
+      Confirm: "Sí, eliminar",
+      Cancel: "Cancelar",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
-      console.log("Código del producto a eliminar:", ProductId);
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -152,21 +157,33 @@ const ProductCard = ({
         }
       );
 
-      const result = await response.json();
+      const resultData = await response.json();
 
-      if (result.success) {
-        alert(result.message);
+      // 2️⃣ Mostrar modal final según respuesta
+      await Alert({
+        Title: resultData.success ? "Éxito" : "Error",
+        Detail: resultData.message,
+        icon: resultData.success ? "success" : "error",
+        Confirm: "Aceptar",
+      });
+
+      // 3️⃣ Si ok → recargar
+      if (resultData.success) {
         window.location.reload();
-      } else {
-        alert(result.message);
       }
+
     } catch (error) {
-      console.error("Error al eliminar el producto:", error);
-      alert("Error al eliminar el producto.");
+      console.error("Error al eliminar:", error);
+
+      await Alert({
+        Title: "Error",
+        Detail: "No se pudo conectar con el servidor.",
+        icon: "error",
+        Confirm: "Aceptar",
+      });
     }
   };
 
-  // 🔹 Agregar console.log en el render para debug
   console.log(`🎨 RENDER Producto ${ProductId} - cantidad: ${productCount}`);
 
   return (
@@ -178,16 +195,19 @@ const ProductCard = ({
             alt="Product"
             style={{ borderRadius: "0%" }}
           />
+
           {ShowAddButton && (
             <button className="buttonImage add-button" onClick={handleAddClick}>
               <img src={require("../../assets/images/agregar.png")} alt="AddButton" />
             </button>
           )}
+
           {ShowDeleteButton && (
             <button className="buttonImage delete-button" onClick={handleDeleteClick}>
               <img src={require("../../assets/images/delete.png")} alt="DeleteButton" />
             </button>
           )}
+
           {ShowModifyButton && (
             <button className="buttonImage modify-button" onClick={handleUpdateClick}>
               <img src={require("../../assets/images/modify.png")} alt="ModifyButton" />
@@ -195,14 +215,17 @@ const ProductCard = ({
           )}
         </figure>
       </div>
+
       <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
+
       <div className="card-content">
         <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
+
         {ShowCount && (
           <div className="product-counter">
-            <button className="counter-button" onClick={decrementCount}>-</button>
-            <span className="counter-value">{productCount}</span>
             <button className="counter-button" onClick={incrementCount}>+</button>
+            <span className="counter-value">{productCount}</span>
+            <button className="counter-button" onClick={decrementCount}>-</button>
           </div>
         )}
       </div>

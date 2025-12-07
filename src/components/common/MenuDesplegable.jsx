@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

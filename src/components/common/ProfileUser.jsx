@@ -54,7 +54,7 @@ const ProfileUser = () => {
             console.log(">>> Ejecutando fetchData");
             try {
                 const res = await fetch(
-                    "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ const ProfileUser = () => {
 
                 // Traer listado de especialidades (para los checkboxes)
                 try {
-                    const resEsp = await fetch("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getEspecialidades.php");
+                    const resEsp = await fetch("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getEspecialidades.php");
                     if (resEsp.ok) {
                         const data = await resEsp.json();
                         setEspecialidades(data);
@@ -108,7 +108,7 @@ const ProfileUser = () => {
 
                 // Traer mascotas
                 const petsResponse = await fetch(
-                    `https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${userId}`,
+                    `https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${userId}`,
                     {
                         method: "GET",
                         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
@@ -190,7 +190,7 @@ const ProfileUser = () => {
                 especialidades: payload.especialidad || prev.especialidades || []
             }));
             const response = await fetch(
-                `https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updateUser.php`,
+                `https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/updateUser.php`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -236,7 +236,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                `https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updatePet.php`,
+                `https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/updatePet.php`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

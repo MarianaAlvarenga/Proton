@@ -14,7 +14,9 @@ if ($_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
     $filePath = $uploadDir . $name;
 
     if (move_uploaded_file($tmpName, $filePath)) {
-        echo json_encode(["success" => true, "url" => $filePath]);
+        $publicURL = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . "/backend/uploads/" . $name;
+echo json_encode(["success" => true, "url" => $publicURL]);
+
     } else {
         echo json_encode(["success" => false, "message" => "No se pudo guardar la imagen."]);
     }

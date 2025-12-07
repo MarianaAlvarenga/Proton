@@ -4,12 +4,15 @@ import CancelButton from "../common/CancelButton";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductImage from "./ProductImage";
 import axios from "axios";
+import Alert from "../common/Alert"; // 👈 agregado
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
     const { productId } = useParams();
     const [categories, setCategories] = useState([]);
     const [image, setImage] = useState(null);
+    const [preview, setPreview] = useState(null);
+
     const [formData, setFormData] = useState({
         nombre_producto: "",
         descripcion_producto: "",
@@ -21,16 +24,12 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getCategories.php')
-            .then(response => {
-                setCategories(response.data);
-            })
-            .catch(error => {
-                console.error("Hubo un error al obtener las categorías:", error);
-            });
+        axios.get('https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getCategories.php')
+            .then(response => setCategories(response.data))
+            .catch(error => console.error("Hubo un error al obtener las categorías:", error));
 
         if (productId) {
-            axios.get(`https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -43,12 +42,19 @@ const ProductCreateForm = () => {
                             precio_producto: product.precio_producto,
                             codigo_producto: product.id,
                         });
+
                         setImage(product.image_url);
+                        setPreview(product.image_url);
                     }
                 })
-                .catch(error => {
+                .catch(async (error) => {
                     console.error("Hubo un error al obtener el producto:", error);
-                    alert("No se pudo cargar el producto para editar.");
+                    await Alert({
+                        Title: "Error",
+                        Detail: "No se pudo cargar el producto para editar.",
+                        icon: "error",
+                        Confirm: "Aceptar"
+                    });
                 });
         }
     }, [productId]);
@@ -60,6 +66,7 @@ const ProductCreateForm = () => {
 
     const handleFileChange = (file) => {
         setImage(file);
+        setPreview(URL.createObjectURL(file));
     };
 
     const handleSubmit = async (e) => {
@@ -74,58 +81,77 @@ const ProductCreateForm = () => {
         data.append('categoria_id_categoria', formData.categoria_id_categoria);
         data.append('precio_producto', formData.precio_producto);
 
-        if (image) {
+        if (image instanceof File) {
             data.append('image_url', image);
+        } else {
+            data.append('keep_image', formData.codigo_producto);
         }
 
         try {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
-                    {
-                        headers: { 'Content-Type': 'multipart/form-data' },
-                    }
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
                 response = await axios.post(
-                    'https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/addProduct.php',
                     data,
-                    {
-                        headers: { 'Content-Type': 'multipart/form-data' },
-                    }
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             }
 
             if (response.data.success) {
-                alert(productId ? "Producto actualizado exitosamente" : "Producto creado exitosamente");
+                await Alert({
+                    Title: "Perfecto",
+                    Detail: productId ? "Producto actualizado exitosamente" : "Producto creado exitosamente",
+                    icon: "success",
+                    Confirm: "Ok"
+                });
                 navigate('/products');
             } else {
-                alert("Error al " + (productId ? "actualizar" : "crear") + " el producto: " + response.data.message);
+                await Alert({
+                    Title: "Error",
+                    Detail: response.data.message,
+                    icon: "error",
+                    Confirm: "Aceptar"
+                });
             }
         } catch (error) {
-            console.error("Hubo un error al " + (productId ? "actualizar" : "crear") + " el producto:", error);
-            alert("No se pudo " + (productId ? "actualizar" : "crear") + " el producto. Intenta nuevamente.");
+            console.error("Error:", error);
+            await Alert({
+                Title: "Error",
+                Detail: "No se pudo completar la acción.",
+                icon: "error",
+                Confirm: "Aceptar"
+            });
         }
     };
 
-    const handleCancel = () => {
-        navigate('/products');
+    const handleCancel = async () => {
+        const result = await Alert({
+            Title: "¿Seguro que querés cancelar?",
+            Detail: "Los cambios no se guardarán.",
+            icon: "warning",
+            Confirm: "Sí, salir",
+            Cancel: "No, volver",
+        });
+
+        if (result?.isConfirmed) {
+            navigate('/products');
+        }
     };
 
     return (
         <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
-            <ProductImage onImageUpload={handleFileChange} imageUrl={image} />
+            <ProductImage onImageUpload={handleFileChange} imageUrl={preview} />
+
             <div className="box">
                 <form onSubmit={handleSubmit}>
-                    <input
-                        type="hidden"
-                        name="codigo_producto"
-                        value={formData.codigo_producto}
-                    />
+                    <input type="hidden" name="codigo_producto" value={formData.codigo_producto} />
 
-                    {/* CATEGORÍA */}
                     <div className="field">
                         <label className="label">Categoría</label>
                         <div className="control">
@@ -156,7 +182,6 @@ const ProductCreateForm = () => {
                                 name="nombre_producto"
                                 value={formData.nombre_producto}
                                 onChange={handleChange}
-                                placeholder="Producto1"
                                 required
                             />
                         </div>
@@ -170,7 +195,6 @@ const ProductCreateForm = () => {
                                 name="descripcion_producto"
                                 value={formData.descripcion_producto}
                                 onChange={handleChange}
-                                placeholder="Este producto es el mejor"
                             />
                         </div>
                     </div>
@@ -184,7 +208,6 @@ const ProductCreateForm = () => {
                                 name="stock_producto"
                                 value={formData.stock_producto}
                                 onChange={handleChange}
-                                placeholder="1500"
                                 required
                             />
                         </div>
@@ -199,7 +222,6 @@ const ProductCreateForm = () => {
                                 name="precio_producto"
                                 value={formData.precio_producto}
                                 onChange={handleChange}
-                                placeholder="200"
                                 required
                             />
                         </div>
@@ -214,7 +236,6 @@ const ProductCreateForm = () => {
                                 name="punto_reposicion"
                                 value={formData.punto_reposicion}
                                 onChange={handleChange}
-                                placeholder="200"
                                 required
                             />
                         </div>

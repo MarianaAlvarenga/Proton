@@ -34,7 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -44,7 +44,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -108,8 +108,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://favourites-roof-lone-welcome.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");
@@ -144,8 +144,15 @@ const SignUp = () => {
           Confirm: "Continuar",
           Cancel: null,
           icon: "success"
-        }).then(() => navigate("/UsersAdmin"));
-      } else {
+        }).then(() => {
+          if (isEditMode || location.state) {
+            navigate("/UsersAdmin"); // 👈 alta/edición hecha por admin
+          } else {
+            navigate("/login"); // 👈 registro público
+          }
+        });
+      }
+      else {
         return Alert({
           Title: "Error",
           Detail: response.message || "Error al procesar la solicitud",

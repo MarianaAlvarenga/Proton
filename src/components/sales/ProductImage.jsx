@@ -1,18 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import DefaultImage from '../../assets/images/DefaultImage.png'; // Imagen por defecto
+import DefaultImage from '../../assets/images/DefaultImage.png';
 
 const ProductImage = ({ onImageUpload, imageUrl }) => {
     const [selectedImage, setSelectedImage] = useState(DefaultImage);
     const fileInputRef = useRef(null);
 
-    // Carga la imagen existente si llega por props
     useEffect(() => {
         if (imageUrl) {
             setSelectedImage(imageUrl);
         }
     }, [imageUrl]);
 
-    // Cambia la imagen cuando el usuario sube un archivo nuevo
     const handleFileChange = (event) => {
         const file = event.target.files ? event.target.files[0] : null;
         if (file) {
@@ -20,12 +18,9 @@ const ProductImage = ({ onImageUpload, imageUrl }) => {
             if (onImageUpload) {
                 onImageUpload(file);
             }
-        } else {
-            console.error('No se seleccionó un archivo válido');
         }
     };
 
-    // Abre el input al hacer clic en la imagen
     const handleClick = () => {
         fileInputRef.current.click();
     };
