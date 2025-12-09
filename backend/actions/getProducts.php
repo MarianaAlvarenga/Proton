@@ -49,7 +49,7 @@ if ($productId) {
     }
     $whereClause = count($whereClauses) > 0 ? "WHERE " . implode(" AND ", $whereClauses) : "";
 
-    $sql = "SELECT codigo_producto AS id, nombre_producto, precio_producto, image_url 
+    $sql = "SELECT codigo_producto AS id, nombre_producto, precio_producto, stock_producto, punto_reposicion, image_url 
             FROM producto 
             $whereClause 
             LIMIT $itemsPerPage OFFSET $offset";

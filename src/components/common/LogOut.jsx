@@ -18,7 +18,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

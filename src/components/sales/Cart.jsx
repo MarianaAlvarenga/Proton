@@ -76,6 +76,8 @@ const Cart = () => {
                     ProductPrice={product.price}
                     ProductImage={product.image}
                     ProductId={product.id}
+                    ProductStock={product.stock} // 🟢 agregado
+                    ProductReplenishment={product.replenishment_point}
                     ShowCount={true}
                     cartProducts={cartProducts}
                     setCartProducts={setCartProducts}

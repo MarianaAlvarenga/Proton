@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

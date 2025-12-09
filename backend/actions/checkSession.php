@@ -1,16 +1,15 @@
 <?php
 require_once '../includes/session_config.php';
 
-
 header("Content-Type: application/json");
 
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['currentUserId'])) {
     echo json_encode([
         "authenticated" => true,
         "user" => [
-            "id_usuario" => $_SESSION['user_id'],
-            "nombre" => $_SESSION['user_name'],
-            "rol" => $_SESSION['user_role']
+            "id_usuario" => $_SESSION['currentUserId'],
+            "nombre" => $_SESSION['currentUserName'],
+            "rol" => $_SESSION['currentUserRole']
         ]
     ]);
 } else {

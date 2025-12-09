@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
-import Alert from "../common/Alert.jsx"; // 👈 NUEVO
+import Alert from "../common/Alert.jsx";
 
 const ProductCard = ({
   ProductName = "Producto",
   ProductPrice = "0.00",
+  ProductStock = 0,
+  ProductReplenishment = 0,
   ListMode = false,
   ProductImage = "",
   ProductId,
@@ -13,6 +15,7 @@ const ProductCard = ({
   ShowDeleteButton = false,
   ShowModifyButton = false,
   ShowCount = false,
+  isAdmin = false,
   cartProducts,
   setCartProducts = () => { },
   onCartChange = () => { },
@@ -26,7 +29,6 @@ const ProductCard = ({
     const foundProduct = savedCart.find(p => p.id === ProductId);
     const newCount = foundProduct ? foundProduct.quantity : 0;
     setProductCount(newCount);
-    console.log(`🔄 Producto ${ProductId} - cantidad cargada: ${newCount}`);
   }, [ProductId]);
 
   useEffect(() => {
@@ -34,11 +36,7 @@ const ProductCard = ({
   }, [loadProductCount]);
 
   useEffect(() => {
-    const handleCartUpdated = () => {
-      console.log(`📢 Evento recibido para producto ${ProductId}`);
-      loadProductCount();
-    };
-
+    const handleCartUpdated = () => loadProductCount();
     window.addEventListener("cartUpdated", handleCartUpdated);
     return () => window.removeEventListener("cartUpdated", handleCartUpdated);
   }, [ProductId, loadProductCount]);
@@ -53,20 +51,13 @@ const ProductCard = ({
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    if (typeof setCartProducts === "function") {
-      setCartProducts([...cart]);
-    }
-
-    if (typeof onCartChange === "function") {
-      onCartChange([...cart]);
-    }
+    if (typeof setCartProducts === "function") setCartProducts([...cart]);
+    if (typeof onCartChange === "function") onCartChange([...cart]);
 
     const foundProduct = cart.find(p => p.id === ProductId);
-    const newCount = foundProduct ? foundProduct.quantity : 0;
-    setProductCount(newCount);
+    setProductCount(foundProduct ? foundProduct.quantity : 0);
 
     window.dispatchEvent(new Event("cartUpdated"));
-    console.log("🛒 Carrito actualizado:", cart);
   };
 
   const handleAddClick = () => {
@@ -82,34 +73,16 @@ const ProductCard = ({
         price: parseFloat(ProductPrice),
         image: ProductImage,
         quantity: 1,
+        stock: ProductStock,                  // 🟢 agregado
+        replenishment_point: ProductReplenishment // 🟢 agregado
       });
     }
 
     updateCart(cart);
-
-    if (window.location.pathname !== "/Cart") {
-      navigate("/Cart");
-    }
+    if (window.location.pathname !== "/Cart") navigate("/Cart");
   };
 
-  const incrementCount = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProduct = cart.find((item) => item.id === ProductId);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({
-        id: ProductId,
-        name: ProductName,
-        price: parseFloat(ProductPrice),
-        image: ProductImage,
-        quantity: 1,
-      });
-    }
-
-    updateCart(cart);
-  };
+  const incrementCount = () => handleAddClick();
 
   const decrementCount = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -121,20 +94,13 @@ const ProductCard = ({
       } else {
         cart.splice(existingProductIndex, 1);
       }
-
       updateCart(cart);
     }
   };
 
-  const handleUpdateClick = () => {
-    navigate(`/ProductCreateForm/${ProductId}`);
-  };
+  const handleUpdateClick = () => navigate(`/ProductCreateForm/${ProductId}`);
 
-
-  // 🔥 REEMPLAZADO CON ALERT
   const handleDeleteClick = async () => {
-    
-    // 1️⃣ Modal de confirmación
     const result = await Alert({
       Title: "Eliminar producto",
       Detail: `¿Deseás eliminar "${ProductName}"?`,
@@ -149,7 +115,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://korea-scenes-slot-tattoo.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -159,7 +125,6 @@ const ProductCard = ({
 
       const resultData = await response.json();
 
-      // 2️⃣ Mostrar modal final según respuesta
       await Alert({
         Title: resultData.success ? "Éxito" : "Error",
         Detail: resultData.message,
@@ -167,14 +132,9 @@ const ProductCard = ({
         Confirm: "Aceptar",
       });
 
-      // 3️⃣ Si ok → recargar
-      if (resultData.success) {
-        window.location.reload();
-      }
+      if (resultData.success) window.location.reload();
 
     } catch (error) {
-      console.error("Error al eliminar:", error);
-
       await Alert({
         Title: "Error",
         Detail: "No se pudo conectar con el servidor.",
@@ -184,7 +144,6 @@ const ProductCard = ({
     }
   };
 
-  console.log(`🎨 RENDER Producto ${ProductId} - cantidad: ${productCount}`);
 
   return (
     <div className={`card ${ListMode ? "cardList" : ""}`}>
@@ -196,7 +155,7 @@ const ProductCard = ({
             style={{ borderRadius: "0%" }}
           />
 
-          {ShowAddButton && (
+          {ShowAddButton && ProductStock > 0 && (
             <button className="buttonImage add-button" onClick={handleAddClick}>
               <img src={require("../../assets/images/agregar.png")} alt="AddButton" />
             </button>
@@ -218,10 +177,26 @@ const ProductCard = ({
 
       <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
 
-      <div className="card-content">
-        <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
+        {isAdmin 
+  && Number(ProductStock) > 0 
+  && Number(ProductStock) < Number(ProductReplenishment) && (
+    <p style={{ color: "red", fontWeight: "bold", marginTop: "6px" }}>
+      REPOSICIÓN NECESARIA (Stock: {ProductStock})
+    </p>
+)}
 
-        {ShowCount && (
+
+      <div className="card-content">
+        {ProductStock > 0 ? (
+          <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
+        ) : (
+          <p className="product-price" style={{ color: "red", fontWeight: "bold" }}>
+            AGOTADO
+          </p>
+        )}
+
+
+        {ShowCount && ProductStock > 0 && (
           <div className="product-counter">
             <button className="counter-button" onClick={incrementCount}>+</button>
             <span className="counter-value">{productCount}</span>
