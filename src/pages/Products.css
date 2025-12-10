@@ -16,6 +16,7 @@
 
 .product-container {
   width: 100%;
+  overflow-y: visible !important; 
 }
 
 /* columnas solo layout, sin scroll, sin altura calculada */

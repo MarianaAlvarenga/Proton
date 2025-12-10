@@ -45,7 +45,7 @@ const Shifts = () => {
     if (userRole === 1 || userRole === 4 || isAgendarTurno) {
       const fetchEspecialidades = async () => {
         try {
-          const res = await axios.get('https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/getEspecialidades.php');
+          const res = await axios.get('https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/getEspecialidades.php');
           setEspecialidades(res.data || []);
         } catch (error) {
           console.error('Error obteniendo especialidades:', error);
@@ -67,7 +67,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
@@ -100,7 +100,7 @@ const Shifts = () => {
         }
 
         await axios.post(
-          'https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/save_availability.php',
+          'https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/save_availability.php',
           {
             id_peluquero: userData.id_usuario,
             disponibilidad: dates,
@@ -139,7 +139,7 @@ const Shifts = () => {
       }
 
       await axios.post(
-        'https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/save_appointment.php',
+        'https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/save_appointment.php',
         {
           id_peluquero: selectedPeluquero || userData.id_usuario,
           fecha: dates[0].fecha_disponible,

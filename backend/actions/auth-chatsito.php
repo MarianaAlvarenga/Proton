@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://von-portable-exec-istanbul.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://inc-objectives-witch-victory.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

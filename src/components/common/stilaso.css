@@ -4,71 +4,77 @@
 }
 
 .menu-container {
-    position: relative;
-    display: inline-block;
-    overflow: visible !important; /* 👈 clave para que no se corte */
-    z-index: 9999;
+  position: relative !important;  /* el botón será el “padre” del menú */
+  display: inline-block;
+    overflow: visible !important;
+  z-index: 9999;
 }
+
 
 .menu-icon {
-    cursor: pointer;
-    font-size: 21px;
-    text-decoration: none;
-    color: white;
-    background-color: #9655C5;
-    padding: 10px 15px;
-    border-radius: 4px;
-    display: inline-block;
+  cursor: pointer;
+  font-size: 21px;
+  text-decoration: none;
+  color: white;
+  background-color: #9655C5;
+  padding: 10px 15px;
+  border-radius: 4px;
+  display: inline-block;
 }
-
 
 .dropdown-menu {
-    list-style: none;
-    position: absolute;
-    top: 100%;
-    left: 0; /* 👈 quitamos el -100px que lo estaba cortando */
-    background-color: #9655C5;
-    min-width: 180px; /* un toque más grande */
-    display: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    z-index: 10000; /* 👈 aseguramos que quede arriba de todo */
-    border-radius: 4px;
-    overflow: visible !important; /* 👈 otro clave */
+  list-style: none;
+  position: absolute !important;  /* 👈 ahora depende del botón, no de la pantalla */
+  top: 100% !important;           /* justo debajo del icono */
+  right: 0 !important;
+    left: auto !important; /* cancelamos el despliegue hacia la izquierda */
+            /* alineado al borde derecho del botón */
+  background-color: #9655C5;
+  width: auto;
+  max-width: 220px;
+  min-width: 150px;
+  display: none;
+  padding: 0;
+  margin-top: 10px;               /* pequeño gap visual */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 999999 !important;
+  border-radius: 4px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
+
 
 
 .dropdown-menu li a {
-    padding: 10px 15px;
-    color: white;
-    text-decoration: none;
-    display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+  display: block;
 }
 
 .dropdown-menu li a:hover {
-    background-color: #7e3fa4;
+  background-color: #7e3fa4;
 }
 
 .dropdown-menu.show {
-    display: block;
-    animation: slideDown 0.3s ease-in-out;
+  display: block;
+  animation: slideDown 0.3s ease-in-out;
 }
 
 @keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-menu li.disabled {
-  pointer-events: none;  /* No se puede hacer clic */
-  opacity: 0.5;          /* Se ve atenuado */
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .navbar,
@@ -82,4 +88,3 @@
 .navbar-menu {
   overflow: visible !important;
 }
-

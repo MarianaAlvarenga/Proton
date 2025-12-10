@@ -115,7 +115,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://von-portable-exec-istanbul.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -177,13 +177,13 @@ const ProductCard = ({
 
       <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
 
-        {isAdmin 
-  && Number(ProductStock) > 0 
-  && Number(ProductStock) < Number(ProductReplenishment) && (
-    <p style={{ color: "red", fontWeight: "bold", marginTop: "6px" }}>
-      REPOSICIÓN NECESARIA (Stock: {ProductStock})
-    </p>
-)}
+      {isAdmin
+        && Number(ProductStock) > 0
+        && Number(ProductStock) < Number(ProductReplenishment) && (
+          <p style={{ color: "red", fontWeight: "bold", marginTop: "6px" }}>
+            REPOSICIÓN NECESARIA (Stock: {ProductStock})
+          </p>
+        )}
 
 
       <div className="card-content">
