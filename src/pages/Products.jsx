@@ -18,7 +18,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const backendBase = "https://inc-objectives-witch-victory.trycloudflare.com/backend";
+  const backendBase = "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend";
 
   useEffect(() => {
     const checkSession = async () => {
@@ -44,42 +44,42 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const category = params.get("category");
-  setSelectedCategory(category || "");
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    setSelectedCategory(category || "");
 
-  // ➤ 1) detecto si el modo llega por navegación
-  const purchaseState = location.state?.purchaseMode;
-  // ➤ 2) detecto si ya estaba guardado
-  const storedMode = localStorage.getItem("purchaseMode");
+    // ➤ 1) detecto si el modo llega por navegación
+    const purchaseState = location.state?.purchaseMode;
+    // ➤ 2) detecto si ya estaba guardado
+    const storedMode = localStorage.getItem("purchaseMode");
 
-  let mode = false;
+    let mode = false;
 
-  // ➤ si la ruta trae modo explícitamente, lo guardo
-  if (purchaseState !== undefined) {
-    localStorage.setItem("purchaseMode", purchaseState);
-    mode = purchaseState;
-  }
-  // ➤ si no trae nada pero ya tenía guardado, lo uso
-  else if (storedMode !== null) {
-    mode = storedMode === "true";
-  }
+    // ➤ si la ruta trae modo explícitamente, lo guardo
+    if (purchaseState !== undefined) {
+      localStorage.setItem("purchaseMode", purchaseState);
+      mode = purchaseState;
+    }
+    // ➤ si no trae nada pero ya tenía guardado, lo uso
+    else if (storedMode !== null) {
+      mode = storedMode === "true";
+    }
 
-  // ➤ aplicar lógica final
-  if (mode) {
-    setIsAdmin(false);
-  } else {
-    const role = parseInt(localStorage.getItem("userRole"), 10);
-    setIsAdmin(role === 4);
-  }
+    // ➤ aplicar lógica final
+    if (mode) {
+      setIsAdmin(false);
+    } else {
+      const role = parseInt(localStorage.getItem("userRole"), 10);
+      setIsAdmin(role === 4);
+    }
 
-  // ➤ si todavía no chequeó sesión, mantené permisos reales
-  if (!sessionChecked) {
-    const userRole = parseInt(localStorage.getItem("userRole"), 10);
-    if (!mode) setIsAdmin(userRole === 4); // sólo si NO está en modo compra
-  }
+    // ➤ si todavía no chequeó sesión, mantené permisos reales
+    if (!sessionChecked) {
+      const userRole = parseInt(localStorage.getItem("userRole"), 10);
+      if (!mode) setIsAdmin(userRole === 4); // sólo si NO está en modo compra
+    }
 
-}, [location.search, location.state, sessionChecked]);
+  }, [location.search, location.state, sessionChecked]);
 
 
   useEffect(() => {

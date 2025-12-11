@@ -37,7 +37,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/getRoles.php");
+        const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getRoles.php");
         const data = await response.json();
         if (data.error) {
           console.error(data.message);
@@ -98,8 +98,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,

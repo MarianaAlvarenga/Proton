@@ -34,7 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -44,7 +44,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -108,8 +108,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");

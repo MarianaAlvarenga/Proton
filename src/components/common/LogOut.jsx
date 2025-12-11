@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as PowerIcon } from "../../assets/images/boton-de-encendido-apagado.svg";
 import Alert from "./Alert.jsx";
+import Swal from "sweetalert2";
+
 
 const LogOut = () => {
   const navigate = useNavigate();
@@ -13,12 +15,13 @@ const LogOut = () => {
       Detail: "¿Estás seguro de que quieres continuar?",
       Confirm: "Sí",
       Cancel: "No",
+      OnCancel: () => {Swal.close();}
     });
 
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

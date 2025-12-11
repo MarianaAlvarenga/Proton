@@ -115,7 +115,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://inc-objectives-witch-victory.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -198,9 +198,9 @@ const ProductCard = ({
 
         {ShowCount && ProductStock > 0 && (
           <div className="product-counter">
-            <button className="counter-button" onClick={incrementCount}>+</button>
-            <span className="counter-value">{productCount}</span>
             <button className="counter-button" onClick={decrementCount}>-</button>
+            <span className="counter-value">{productCount}</span>
+            <button className="counter-button" onClick={incrementCount}>+</button>
           </div>
         )}
       </div>
