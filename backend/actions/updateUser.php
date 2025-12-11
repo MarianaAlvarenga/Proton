@@ -9,7 +9,8 @@ if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
 }
 
-$data = json_decode(file_get_contents("php://input"), true);
+// 🔥 FORM DATA — NO JSON
+$data = $_POST;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         isset($data['telefono']) &&
         isset($data['rol']) &&
         isset($data['id_usuario'])
+        // 🔥 Eliminé especialidades porque NO siempre aplica y NO viene en FormData
     ) {
         $id = intval($data['id_usuario']);
         $nombre = $conn->real_escape_string($data['nombre']);
@@ -27,12 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $telefono = $conn->real_escape_string($data['telefono']);
         $rol = intval($data['rol']);
 
+        // 🔥 Inicializamos esta variable SIEMPRE
         $contrasenia = null;
-        if (isset($data['contrasenia']) && !empty($data['contrasenia'])) {
+
+        // 🔥 Solo actualizar si viene una nueva contraseña
+        if (isset($data['contrasenia']) && !empty(trim($data['contrasenia']))) {
             $hashedPass = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
             $contrasenia = $conn->real_escape_string($hashedPass);
         }
 
+        // 🔥 Eliminado console.log() (NO existe en PHP y rompe todo)
         if ($contrasenia !== null) {
             $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, contrasenia = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);

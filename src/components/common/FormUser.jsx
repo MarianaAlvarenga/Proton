@@ -62,58 +62,58 @@ const FormUser = ({
             />
 
             {/* Especialidades solo si existe el campo en el usuario */}
-            {Array.isArray(usuarioEdit?.especialidades) && (
-                <div className="field mt-3">
-                    <label className="label">Especialidades:</label>
+            {usuarioEdit?.rol === 3 && (
+                    <div className="field mt-3">
+                        <label className="label">Especialidades:</label>
 
-                    {editandoUsuario ? (
-                        <div className="control">
-                            {especialidades.map((e) => {
-                                const espId = Number(e.id_servicio);
-                                const actuales = usuarioEdit.especialidades || [];
-                                const isChecked = actuales.includes(espId);
+                        {editandoUsuario ? (
+                            <div className="control">
+                                {especialidades.map((e) => {
+                                    const espId = Number(e.id_servicio);
+                                    const actuales = usuarioEdit.especialidades || [];
+                                    const isChecked = actuales.includes(espId);
 
-                                return (
-                                    <label key={espId} className="checkbox mr-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            onChange={(ev) => {
-                                                setUsuarioEdit(prev => {
-                                                    const actuales = prev.especialidades || [];
-                                                    if (ev.target.checked) {
-                                                        return {
-                                                            ...prev,
-                                                            especialidades: [...actuales, espId],
-                                                        };
-                                                    } else {
-                                                        return {
-                                                            ...prev,
-                                                            especialidades: actuales.filter(id => id !== espId),
-                                                        };
-                                                    }
-                                                });
-                                            }}
-                                        />
-                                        {e.nombre}
-                                    </label>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <ul>
-                            {usuarioEdit.especialidades.length > 0 ? (
-                                usuarioEdit.especialidades.map(id => {
-                                    const esp = especialidades.find(e => Number(e.id_servicio) === Number(id));
-                                    return <li key={id}>{esp?.nombre || "Especialidad"}</li>;
-                                })
-                            ) : (
-                                <p>No tiene especialidades registradas</p>
-                            )}
-                        </ul>
-                    )}
-                </div>
-            )}
+                                    return (
+                                        <label key={espId} className="checkbox mr-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={isChecked}
+                                                onChange={(ev) => {
+                                                    setUsuarioEdit(prev => {
+                                                        const actuales = prev.especialidades || [];
+                                                        if (ev.target.checked) {
+                                                            return {
+                                                                ...prev,
+                                                                especialidades: [...actuales, espId],
+                                                            };
+                                                        } else {
+                                                            return {
+                                                                ...prev,
+                                                                especialidades: actuales.filter(id => id !== espId),
+                                                            };
+                                                        }
+                                                    });
+                                                }}
+                                            />
+                                            {e.nombre}
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <ul>
+                                {usuarioEdit.especialidades.length > 0 ? (
+                                    usuarioEdit.especialidades.map(id => {
+                                        const esp = especialidades.find(e => Number(e.id_servicio) === Number(id));
+                                        return <li key={id}>{esp?.nombre || "Especialidad"}</li>;
+                                    })
+                                ) : (
+                                    <p>No tiene especialidades registradas</p>
+                                )}
+                            </ul>
+                        )}
+                    </div>
+                )}
 
             {/* Fecha de nacimiento */}
             <label className="label" htmlFor="born">Fecha de nacimiento:</label>
@@ -168,7 +168,7 @@ const FormUser = ({
                 <p className="control has-icons-left">
                     <input
                         className="input"
-                        type="text"
+                        type="password"   // ← SOLO ESTO CAMBIÉ
                         id="pass"
                         value={contrasenia}
                         readOnly={!editandoUsuario}
@@ -185,7 +185,15 @@ const FormUser = ({
             {editandoUsuario && (
                 <div className="field is-grouped is-grouped-right">
                     <p className="control">
-                        <button className="button is-primary is-link" onClick={handleActualizarUsuario}>
+                        <button
+                            className="button is-primary is-link"
+                            onClick={() =>
+                                handleActualizarUsuario({
+                                    ...usuarioEdit,
+                                    contrasenia: contrasenia || null,
+                                })
+                            }
+                        >
                             Actualizar
                         </button>
                     </p>
