@@ -1,8 +1,7 @@
 <?php
+require_once '../includes/session_config.php';
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: http://localhost:3000"); // Permitir solicitudes desde el frontend
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS"); // Métodos permitidos
-header("Access-Control-Allow-Headers: Content-Type"); // Cabeceras permitidas
+
 
 $uploadDir = "../uploads/";
 if (!is_dir($uploadDir)) {
@@ -15,7 +14,9 @@ if ($_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
     $filePath = $uploadDir . $name;
 
     if (move_uploaded_file($tmpName, $filePath)) {
-        echo json_encode(["success" => true, "url" => $filePath]);
+        $publicURL = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . "/backend/uploads/" . $name;
+echo json_encode(["success" => true, "url" => $publicURL]);
+
     } else {
         echo json_encode(["success" => false, "message" => "No se pudo guardar la imagen."]);
     }

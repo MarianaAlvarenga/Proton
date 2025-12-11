@@ -37,7 +37,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
+        const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getRoles.php");
         const data = await response.json();
         if (data.error) {
           console.error(data.message);
@@ -98,8 +98,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
-      : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
+      ? "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,
@@ -143,7 +143,7 @@ const SignUp = () => {
 
   return (
     <>
-      <NavBar showHomeButton={false} showProfileButton={false}/>
+      <NavBar showHomeButton={false} showProfileButton={false} />
       <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
       <div className="container">
         <div
@@ -152,7 +152,7 @@ const SignUp = () => {
         >
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
-              
+
               {!showComboBox && isEditMode && (
                 <p>{getRoleName(formData.rol)}</p>
               )}

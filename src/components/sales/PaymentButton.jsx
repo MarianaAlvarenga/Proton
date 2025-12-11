@@ -1,42 +1,53 @@
-// PaymentButton.jsx
 import React from "react";
 import axios from "axios";
 
-const PaymentButton = ({ product }) => {
+const PaymentButton = ({ cart, userEmail, isRegistered }) => {
   const handlePayment = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/Proton/backend/actions/create_preference.php",
+      // 👇 solo se exige email si el usuario es registrado
+      if (isRegistered && !userEmail) {
+        alert("Debe ingresar un email válido para continuar.");
+        return;
+      }
+
+      await axios.post(
+        "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/save_cart.php",
+        { cart, userEmail: isRegistered ? userEmail : null },
         {
-          items: [
-            {
-              title: "Compra en Proton",
-              quantity: 1,
-              unit_price: Number(product.price || 0),
-              currency_id: "ARS"
-            }
-          ],
-          payer: {
-            name: "Cliente de prueba",
-            email: "test_user@example.com"
-          }
-        },
-        {
+          withCredentials: true,
           headers: { "Content-Type": "application/json" }
         }
       );
 
-      console.log("Respuesta del backend:", response.data);
+      const mpItems = cart.map(item => ({
+        title: item.name,
+        quantity: item.quantity,
+        unit_price: Number(item.price),
+        currency_id: "ARS",
+      }));
+
+      const response = await axios.post(
+        "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/create_preference.php",
+        {
+          items: mpItems,
+          payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
+        },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+          maxRedirects: 0,
+        }
+      );
 
       if (response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        console.error("No se recibió 'init_point':", response.data);
-        alert("Hubo un problema al iniciar el pago. Intenta nuevamente.");
+        alert("Hubo un problema al iniciar el pago.");
       }
+
     } catch (error) {
-      console.error("Error al generar preferencia:", error);
-      alert("Error al conectar con el servidor de pagos.");
+      console.error("Error al procesar la compra:", error);
+      alert("Error al conectar con el servidor.");
     }
   };
 
@@ -48,8 +59,8 @@ const PaymentButton = ({ product }) => {
         color: "white",
         transition: "transform 0.15s ease",
       }}
-      onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
-      onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+      onMouseEnter={e => (e.target.style.transform = "scale(1.05)")}
+      onMouseLeave={e => (e.target.style.transform = "scale(1)")}
       onClick={handlePayment}
     >
       Confirmar compra

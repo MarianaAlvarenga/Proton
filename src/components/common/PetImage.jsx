@@ -44,6 +44,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
         }
     };
 
+
     useEffect(() => {
         // Cada vez que cambia petId o la mascotaEdit.img_url, refrescar preview
         fetchPetImage();
@@ -81,9 +82,10 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
         formData.append("image", file);
         formData.append("petId", petId.toString());
 
+
         try {
             const response = await fetch(
-                "http://localhost:8080/Proton/backend/actions/upload_pet_image.php",
+                "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/upload_pet_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -91,8 +93,10 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                 }
             );
 
+
             const responseText = await response.text();
             console.log("Respuesta completa del servidor:", responseText); // Debug
+
 
             if (!response.ok) {
                 let errorData = {};
@@ -102,17 +106,22 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                     console.error("No se pudo parsear la respuesta de error:", e);
                 }
 
+
                 throw new Error(
+                    errorData.message ||
                     errorData.message ||
                     `Error del servidor (${response.status}): ${responseText || 'Sin detalles'}`
                 );
             }
 
+
             const data = JSON.parse(responseText);
+
 
             if (!data.success) {
                 throw new Error(data.message || "Error al procesar la imagen");
             }
+
 
             setSelectedImage(
                 `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
@@ -127,6 +136,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                     type: file.type
                 }
             });
+
 
             alert(`Error al subir la imagen:\n${error.message}\n\n` +
                 `Detalles técnicos:\n` +
@@ -161,7 +171,11 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                     />
                 </figure>
                 <input
+                <input
                     type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
                     ref={fileInputRef}
                     style={{ display: "none" }}
                     onChange={handleFileChange}

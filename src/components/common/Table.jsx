@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './custom-bulma.css';
 
-const Table = ({ searchQuery }) => {
+const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,7 +10,7 @@ const Table = ({ searchQuery }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/Proton/backend/actions/getUsers.php");
+        const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }
@@ -29,15 +29,16 @@ const Table = ({ searchQuery }) => {
   if (loading) return <p>Cargando usuarios...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Filtrado de usuarios según el texto de búsqueda
-  const filteredUsers = users.filter((user) => 
+  const filteredUsers = users.filter((user) =>
     user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.apellido.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.rol.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleCheckboxChange = (id) => {
-    setSelectedCheckbox(id === selectedCheckbox ? null : id);
+    const newValue = id === selectedCheckbox ? null : id;
+    setSelectedCheckbox(newValue);
+    onSelectUser(newValue); // 👈 ahora notifico arriba
   };
 
   return (
@@ -59,10 +60,10 @@ const Table = ({ searchQuery }) => {
             <td>{user.apellido}</td>
             <td>{user.rol}</td>
             <td>
-              <input 
-                type="checkbox" 
-                name="uniqueCheckbox" 
-                id={`checkbox-${user.id_usuario}`} 
+              <input
+                type="checkbox"
+                name="uniqueCheckbox"
+                id={`checkbox-${user.id_usuario}`}
                 checked={selectedCheckbox === user.id_usuario}
                 onChange={() => handleCheckboxChange(user.id_usuario)}
               />

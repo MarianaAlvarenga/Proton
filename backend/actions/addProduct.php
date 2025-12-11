@@ -1,4 +1,6 @@
 <?php
+// Configuración de cabeceras
+require_once '../includes/session_config.php';
 // Parámetros de conexión a la base de datos
 require_once '../includes/db.php';
 
@@ -9,15 +11,6 @@ try {
     die("Error en la conexión: " . $e->getMessage());
 }
 
-// Configuración de cabeceras
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-// Responder a solicitudes OPTIONS
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit;
-}
 
 // Verifica el método de la solicitud
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

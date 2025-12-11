@@ -1,0 +1,38 @@
+{
+  "files": {
+    "main.css": "/static/css/main.cf9af7f2.css",
+    "main.js": "/static/js/main.81e0848f.js",
+    "static/js/206.17fd4b88.chunk.js": "/static/js/206.17fd4b88.chunk.js",
+    "static/media/landing-dog.png": "/static/media/landing-dog.2d445875c8caab94b28a.png",
+    "static/media/home.png": "/static/media/home.70ec49e795d4dc5e05ca.png",
+    "static/media/BANNER3.jpg": "/static/media/BANNER3.fdf6a2456503bd7d12ae.jpg",
+    "static/media/BANNER1.jpg": "/static/media/BANNER1.7fa4b61df2511da5f1a4.jpg",
+    "static/media/BANNER2.jpg": "/static/media/BANNER2.20c3b72b6e239b4fa32a.jpg",
+    "static/media/proti3.jpeg": "/static/media/proti3.da48f973af0a58b0a9d6.jpeg",
+    "static/media/proti6.jpeg": "/static/media/proti6.366516d9c150fd739e3b.jpeg",
+    "static/media/instagram.png": "/static/media/instagram.e719d8b29f452a16302d.png",
+    "static/media/protiviolet.png": "/static/media/protiviolet.4fc850ddf1e1fb5a5e5f.png",
+    "static/media/protiblanco.png": "/static/media/protiblanco.17a3ef746d3beed4da02.png",
+    "static/media/proti4.jpeg": "/static/media/proti4.2c67a2f8e5b233d38542.jpeg",
+    "static/media/proti1.jpeg": "/static/media/proti1.82016279e556ab75bd5e.jpeg",
+    "static/media/proti5.jpeg": "/static/media/proti5.006f6431d599b9395cde.jpeg",
+    "static/media/proti2.jpeg": "/static/media/proti2.aff4c259d80836cd19a8.jpeg",
+    "static/media/cromo.png": "/static/media/cromo.16bea017457f11e1ee6d.png",
+    "static/media/usuarioBlanco.png": "/static/media/usuarioBlanco.143aafa99a16917cc816.png",
+    "static/media/DefaultImage.png": "/static/media/DefaultImage.d5d185fed3e0e0bf8f02.png",
+    "static/media/perro.png": "/static/media/perro.c7dda710ec506fbfe242.png",
+    "static/media/usuario.png": "/static/media/usuario.c9f8b878b06f7bcffeb4.png",
+    "static/media/facebook.png": "/static/media/facebook.a5def58db1e9c1b38269.png",
+    "static/media/proti.jpeg": "/static/media/proti.b2d7239b7d54a5017dbe.jpeg",
+    "static/media/usuarios.png": "/static/media/usuarios.e5cb3c5eb890b0f37932.png",
+    "static/media/agenda.png": "/static/media/agenda.7236898f2e1c670046a9.png",
+    "static/media/power_on_off_log_out_exit_icon_141949.svg": "/static/media/power_on_off_log_out_exit_icon_141949.5d6c3a6c6d45e251f358.svg",
+    "static/media/boton-de-encendido-apagado.svg": "/static/media/boton-de-encendido-apagado.c7cfe6d4f61644502df249c731f84024.svg",
+    "static/media/user-3296.svg": "/static/media/user-3296.9fe2c137376c5c5bc59b.svg",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.cf9af7f2.css",
+    "static/js/main.81e0848f.js"
+  ]
+}

@@ -7,44 +7,94 @@ const SuccessPage = () => {
   const [alertActive, setAlertActive] = useState(false);
 
   useEffect(() => {
-    // Evita múltiples ejecuciones
     if (alertActive) return;
     setAlertActive(true);
 
-    const showAlert = async () => {
+    // ================================
+    // 🧹 LIMPIAR CARRITO SI ok=1
+    // ================================
+    const params = new URLSearchParams(window.location.search);
+    const ok = params.get("ok");
+
+    if (ok === "1") {
+      console.log("SuccessPage: compra OK → limpiando carrito.");
+
+      // → localStorage
+      localStorage.removeItem("cart");
+      localStorage.removeItem("total");
+
+      // → cookies
+      document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "total=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      // → si tenés context, descomentá esto:
+      // setCart([]);
+      // setTotal(0);
+    }
+
+    // ================================
+    // ⚠️ CONTROL DE USUARIO
+    // ================================
+    const stored = localStorage.getItem("user");
+    if (!stored) {
+      console.warn("SuccessPage: no hay 'user' en localStorage. Redirigiendo a /login.");
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    let user = null;
+    try {
+      user = JSON.parse(stored);
+    } catch (err) {
+      console.error("SuccessPage: error parseando localStorage user:", err);
+      localStorage.removeItem("user");
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    console.log("USER EN SUCCESSPAGE:", user);
+    const rolNumber = Number(user.rol);
+
+    // ================================
+    // 🟢 MOSTRAR ALERTA
+    // ================================
+    const showSuccessModal = async () => {
       const result = await Alert({
         Title: "¡Pago aprobado!",
         Detail: "Tu compra fue procesada con éxito 🎉",
         icon: "success",
         Confirm: "Volver al inicio",
         Cancel: "Ver comprobante",
+        OnCancel: () => {
+          window.open("https://www.mercadopago.com.ar", "_blank");
+          return false;
+        },
       });
 
       if (result.isConfirmed) {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) return navigate("/login");
-
-        switch (user.role) {
+        switch (rolNumber) {
           case 1:
           case 2:
+            navigate("/Products", { replace: true });
+            break;
+
           case 4:
-            navigate("/Products");
+            navigate("/MenuAdmin", { replace: true });
             break;
+
           default:
-            navigate("/");
-            break;
+            console.warn("SuccessPage: rol desconocido → landing.");
+            navigate("/", { replace: true });
         }
       } else {
-        // Abre el comprobante pero mantiene la alerta visible
-        window.open("https://www.mercadopago.com.ar", "_blank");
-        setAlertActive(false); // reabre la alerta automáticamente
+        console.log("Usuario eligió ver comprobante.");
       }
     };
 
-    showAlert();
+    showSuccessModal();
   }, [navigate, alertActive]);
 
-  return null; // no se muestra nada más, solo el Alert
+  return null;
 };
 
 export default SuccessPage;

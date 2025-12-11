@@ -1,10 +1,6 @@
 <?php
-// Permitir solicitudes desde cualquier origen (en producción, debes restringir esto a tus dominios específicos)
-header("Access-Control-Allow-Origin: *");
-// Permitir ciertos métodos (GET, POST, PUT, DELETE)
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-// Permitir ciertos encabezados
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+require_once '../includes/session_config.php';
+
 
 // El resto de tu código PHP...
 

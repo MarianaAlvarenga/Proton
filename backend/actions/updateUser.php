@@ -1,6 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once '../includes/session_config.php';
+
 header("Content-Type: application/json");
 
 require_once '../includes/db.php';

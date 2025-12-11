@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 import UserImage from "./UserImage";
 import Label from "./Label";
-import LargeButton from "./LargeButton";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
+import Alert from "./Alert";
 import "./SignUp.css";
 
 const SignUp = () => {
@@ -20,12 +20,10 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
-    especialidad: [], // ahora siempre es array de IDs
+    especialidad: [],
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [showComboBox, setShowComboBox] = useState(false);
   const [roles, setRoles] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
@@ -36,7 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("http://localhost:8080/Proton/backend/actions/getRoles.php");
+        const res = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -46,7 +44,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -74,7 +72,6 @@ const SignUp = () => {
         });
         if (userData.img_url) setImagenPreview(userData.img_url);
         setIsEditMode(isEditMode || false);
-        setShowComboBox(showComboBox || false);
       }
     }
   }, [location]);
@@ -86,90 +83,93 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
 
     if (!isEditMode && formData.contrasenia !== formData.confirmarContrasenia) {
-      setErrorMessage("Las contraseñas no coinciden");
-      return;
+      return Alert({
+        Title: "Error",
+        Detail: "Las contraseñas no coinciden",
+        Confirm: "Entendido",
+        Cancel: null,
+        icon: "error"
+      });
     }
 
     const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
     const isPeluquero = roleObj && roleObj.rol.toLowerCase().includes("peluquero");
 
     if (isPeluquero && formData.especialidad.length === 0) {
-      setErrorMessage("Los peluqueros deben seleccionar al menos una especialidad");
-      return;
+      return Alert({
+        Title: "Atención",
+        Detail: "Los peluqueros deben seleccionar al menos una especialidad",
+        Confirm: "Entendido",
+        Cancel: null,
+        icon: "warning"
+      });
     }
 
     const endpoint = isEditMode
-      ? "http://localhost:8080/Proton/backend/actions/updateUser.php"
-      : "http://localhost:8080/Proton/backend/actions/auth-chatsito.php";
+      ? "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/auth-chatsito.php";
 
-    const userData = {
-      ...formData,
-      action: isEditMode ? "update" : "register",
-      id_usuario: isEditMode ? location.state.userData.id_usuario : undefined,
-      especialidad: formData.especialidad.map(id => Number(id)), // enviamos IDs numéricos
-    };
-
-    // 👇 agregado el console.log
-    console.log("Datos enviados al backend:", userData);
+    const fd = new FormData();
+    fd.append("action", isEditMode ? "update" : "register");
+    fd.append("nombre", formData.nombre);
+    fd.append("apellido", formData.apellido);
+    fd.append("email", formData.email);
+    fd.append("telefono", formData.telefono);
+    fd.append("rol", formData.rol);
+    fd.append("especialidad", JSON.stringify(formData.especialidad));
+    if (!isEditMode) {
+      fd.append("contrasenia", formData.contrasenia);
+    }
+    if (isEditMode && location.state.userData.id_usuario) {
+      fd.append("id_usuario", location.state.userData.id_usuario);
+    }
+    if (tempImageFile) {
+      fd.append("img", tempImageFile);
+    }
 
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
+        body: fd
       });
 
-      const responseText = await res.text();
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("Respuesta no JSON del servidor:", responseText);
-        setErrorMessage("Error inesperado del servidor. Verifica la consola para más detalles.");
-        return;
-      }
+      const response = await res.json();
 
-      if (result.success) {
-        if (!isEditMode && tempImageFile && result.id_usuario) {
-          try {
-            const formDataImg = new FormData();
-            formDataImg.append("image", tempImageFile);
-            formDataImg.append("userId", String(result.id_usuario));
-
-            const imgRes = await fetch(
-              "http://localhost:8080/Proton/backend/actions/upload_user_image.php",
-              { method: "POST", body: formDataImg, credentials: "include" }
-            );
-
-            const imgResult = await imgRes.json();
-            if (!imgResult.success) {
-              setSuccessMessage("Usuario registrado correctamente (pero la imagen no se pudo subir)");
-            } else {
-              setSuccessMessage("Usuario registrado exitosamente con imagen");
-            }
-          } catch (err) {
-            setSuccessMessage("Usuario registrado correctamente (error subiendo imagen)");
+      if (response.success) {
+        return Alert({
+          Title: "Éxito",
+          Detail: isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente",
+          Confirm: "Continuar",
+          Cancel: null,
+          icon: "success"
+        }).then(() => {
+          if (isEditMode || location.state) {
+            navigate("/UsersAdmin"); // 👈 alta/edición hecha por admin
+          } else {
+            navigate("/login"); // 👈 registro público
           }
-        } else {
-          setSuccessMessage(isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente");
-        }
-        setTimeout(() => navigate("/UsersAdmin"), 2000);
-      } else {
-        setErrorMessage(result.message || "Error al procesar la solicitud");
+        });
+      }
+      else {
+        return Alert({
+          Title: "Error",
+          Detail: response.message || "Error al procesar la solicitud",
+          Confirm: "Entendido",
+          Cancel: null,
+          icon: "error"
+        });
       }
     } catch (error) {
-      console.error("Error de conexión:", error);
-      setErrorMessage("Error de conexión con el servidor: " + error.message);
+      return Alert({
+        Title: "Error de conexión",
+        Detail: "No se pudo conectar con el servidor",
+        Confirm: "Entendido",
+        Cancel: null,
+        icon: "error"
+      });
     }
-  };
-
-  const getRoleName = (roleId) => {
-    const role = roles.find((r) => r.id === roleId);
-    return role ? role.rol : "Rol desconocido";
   };
 
   const mostrarEspecialidad = () => {
@@ -185,7 +185,6 @@ const SignUp = () => {
         <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
-              {!showComboBox && isEditMode && <p>{getRoleName(formData.rol)}</p>}
 
               {isEditMode && imagenPreview ? (
                 <img src={imagenPreview} alt="Foto de perfil" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", margin: "0 auto 20px", display: "block" }} />
@@ -228,9 +227,29 @@ const SignUp = () => {
                     </>
                   )}
 
-                  {errorMessage && <p className="has-text-danger">{errorMessage}</p>}
-                  {successMessage && <p className="has-text-success">{successMessage}</p>}
-                  <LargeButton textButton={isEditMode ? "Actualizar" : "Registrarse"} buttonType="submit" className="is-fullwidth" />
+                  {/* 🔥🔥 SOLO MODIFICACIÓN DE BOTONES 🔥🔥 */}
+                  <div className="is-flex" style={{ gap: "10px", marginTop: "20px" }}>
+                    <button
+                      type="submit"
+                      className="button is-primary is-fullwidth has-text-white"
+                      style={{ flex: 1 }}
+                    >
+                      {isEditMode ? "Actualizar" : "Registrarse"}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="button is-primary is-fullwidth has-text-white"
+                      style={{ flex: 1 }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(-1);
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                  {/* 🔥🔥 FIN BOTONES 🔥🔥 */}
                 </section>
               </form>
             </div>

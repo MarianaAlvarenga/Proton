@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 const UserTypeSelector = ({ onlyRegistered = false, onUserTypeChange }) => {
-  const [isRegistered, setIsRegistered] = useState(onlyRegistered);
+  const [type, setType] = useState(onlyRegistered ? "registered" : "guest");
   const [email, setEmail] = useState("");
 
-  // Actualizar el estado del componente padre cuando cambie isRegistered o email
   useEffect(() => {
-    onUserTypeChange({ isRegistered, email });
-  }, [isRegistered, email]); // Solo se ejecuta cuando isRegistered o email cambian
+    onUserTypeChange({
+      isRegistered: type === "registered",
+      email: type === "registered" ? email : ""
+    });
+  }, [type, email]);
 
   return (
     <div style={{
@@ -23,8 +25,7 @@ const UserTypeSelector = ({ onlyRegistered = false, onUserTypeChange }) => {
       alignItems: "center",
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
     }}>
-      
-      {/* Mostrar solo si no estamos en modo "onlyRegistered" */}
+
       {!onlyRegistered && (
         <label style={{
           display: "flex",
@@ -34,9 +35,10 @@ const UserTypeSelector = ({ onlyRegistered = false, onUserTypeChange }) => {
           cursor: "pointer"
         }}>
           <input
-            type="checkbox"
-            checked={!isRegistered}
-            onChange={() => setIsRegistered(false)}
+            type="radio"
+            name="userType"
+            checked={type === "guest"}
+            onChange={() => setType("guest")}
           />
           Usuario no registrado
         </label>
@@ -50,15 +52,15 @@ const UserTypeSelector = ({ onlyRegistered = false, onUserTypeChange }) => {
         cursor: "pointer"
       }}>
         <input
-          type="checkbox"
-          checked={isRegistered}
-          onChange={() => setIsRegistered(true)}
+          type="radio"
+          name="userType"
+          checked={type === "registered"}
+          onChange={() => setType("registered")}
         />
         Usuario registrado
       </label>
 
-      {/* Mostrar el campo de email si el usuario es registrado */}
-      {isRegistered && (
+      {type === "registered" && (
         <input
           type="text"
           placeholder="E-mail"

@@ -45,7 +45,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:8080/Proton/backend/actions/getUserById.php",
+                    "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -113,7 +113,7 @@ const ProfileUser = () => {
     useEffect(() => {
         const fetchEspecialidades = async () => {
                 try {
-                    const resEsp = await fetch("http://localhost:8080/Proton/backend/actions/getEspecialidades.php");
+                    const resEsp = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getEspecialidades.php");
                     if (resEsp.ok) {
                         const data = await resEsp.json();
                         setEspecialidades(data);

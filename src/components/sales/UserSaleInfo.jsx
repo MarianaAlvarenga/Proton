@@ -5,7 +5,7 @@ import SubNavBar from "../common/SubNavBar";
 import CancelButton from "../common/CancelButton";
 import OkButton from "../common/OkButton";
 import UserTypeSelector from "../common/UserTypeSelector";
-import PaymentButton from "./PaymentButton"; // 👈 importado
+import PaymentButton from "./PaymentButton";
 import "./UserSaleInfo.css";
 
 const UserSaleInfo = () => {
@@ -21,37 +21,22 @@ const UserSaleInfo = () => {
     setCartProducts(storedCart);
 
     const storedUser = localStorage.getItem("userRole");
-    console.log("Valor de localStorage (userRole):", storedUser); // Depuración
-
-    
     if (storedUser) {
-      setUserRole(Number(storedUser)); // Convierte a número
+      setUserRole(Number(storedUser));
     }
     
     setLoading(false);
   }, []);
   
   const NameUser = localStorage.getItem("userName");
-  useEffect(() => {
-    console.log("userRole actualizado:", userRole);
-  }, [userRole]); // Este useEffect se ejecutará cada vez que userRole cambie
 
   const clearCart = () => {
     setCartProducts([]);
     localStorage.removeItem("cart");
   };
 
-  // Función para actualizar el estado de userInfo
   const handleUserInfoChange = (newUserInfo) => {
-    setUserInfo((prevUserInfo) => {
-      if (
-        prevUserInfo.isRegistered !== newUserInfo.isRegistered ||
-        prevUserInfo.email !== newUserInfo.email
-      ) {
-        return newUserInfo;
-      }
-      return prevUserInfo;
-    });
+    setUserInfo(newUserInfo);
   };
 
   return (
@@ -97,10 +82,13 @@ const UserSaleInfo = () => {
           <CancelButton NameButton="Cancelar" clearCart={clearCart} />
         </div>
         <div className="half-button">
-          <PaymentButton product={{ price: parseFloat(total) }} />
+          <PaymentButton 
+            cart={cartProducts} 
+            userEmail={userInfo.email}
+            isRegistered={userInfo.isRegistered} // 👈 agregado
+          />
         </div>
       </div>
-
     </div>
   );
 };

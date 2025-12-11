@@ -88,120 +88,13 @@
 [25-Sep-2025 02:04:43 Europe/Berlin] Imagen subida exitosamente para usuario 80: img_68d4871b1fb67.png
 [10-Nov-2025 21:47:33 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_69124f65af771.jpg
 [10-Nov-2025 22:47:23 Europe/Berlin] Imagen subida exitosamente para usuario 84: img_69125d6b02e66.png
-[06-Dec-2025 17:52:53 Europe/Berlin] Inicio subida imagen para petId: 6
-[06-Dec-2025 17:52:53 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => images.png
-    [full_path] => images.png
-    [type] => image/png
-    [tmp_name] => C:\xampp\tmp\php43FD.tmp
-    [error] => 0
-    [size] => 12160
-)
-
-[06-Dec-2025 17:52:53 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_69345f6573f393.41209960.png
-[06-Dec-2025 17:52:53 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 6
-[06-Dec-2025 19:43:22 Europe/Berlin] Inicio subida imagen para petId: 1
-[06-Dec-2025 19:43:22 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => perri.jpg
-    [full_path] => perri.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\php6DB3.tmp
-    [error] => 0
-    [size] => 20358
-)
-
-[06-Dec-2025 19:43:22 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6934794af10399.88701757.jpg
-[06-Dec-2025 19:43:23 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 1
-[06-Dec-2025 20:04:17 Europe/Berlin] Inicio subida imagen para petId: 1
-[06-Dec-2025 20:04:17 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => images.png
-    [full_path] => images.png
-    [type] => image/png
-    [tmp_name] => C:\xampp\tmp\php92F3.tmp
-    [error] => 0
-    [size] => 12160
-)
-
-[06-Dec-2025 20:04:17 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_69347e31a8cd27.67164126.png
-[06-Dec-2025 20:04:17 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 1
-[06-Dec-2025 20:05:05 Europe/Berlin] Inicio subida imagen para petId: 7
-[06-Dec-2025 20:05:05 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => perri.jpg
-    [full_path] => perri.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\php4D0C.tmp
-    [error] => 0
-    [size] => 20358
-)
-
-[06-Dec-2025 20:05:05 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_69347e615203f4.73853626.jpg
-[06-Dec-2025 20:05:05 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 7
-[08-Dec-2025 18:06:09 Europe/Berlin] Inicio subida imagen para petId: 8
-[08-Dec-2025 18:06:09 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => perri.jpg
-    [full_path] => perri.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\php276C.tmp
-    [error] => 0
-    [size] => 20358
-)
-
-[08-Dec-2025 18:06:09 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_693705810ffb64.87718680.jpg
-[08-Dec-2025 18:06:09 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 8
-[11-Dec-2025 02:04:03 Europe/Berlin] Inicio subida imagen para petId: 2
-[11-Dec-2025 02:04:03 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => perri.jpg
-    [full_path] => perri.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\phpE732.tmp
-    [error] => 0
-    [size] => 20358
-)
-
-[11-Dec-2025 02:04:03 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_693a1883797b76.73597091.jpg
-[11-Dec-2025 02:04:03 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 2
-[11-Dec-2025 02:19:41 Europe/Berlin] Inicio subida imagen para petId: 5
-[11-Dec-2025 02:19:41 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => 20210613_161702.jpg
-    [full_path] => 20210613_161702.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\php37CF.tmp
-    [error] => 0
-    [size] => 1434817
-)
-
-[11-Dec-2025 02:19:41 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_693a1c2d310082.94356508.jpg
-[11-Dec-2025 02:19:41 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 5
-[11-Dec-2025 02:20:41 Europe/Berlin] Inicio subida imagen para petId: 9
-[11-Dec-2025 02:20:41 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => perri.jpg
-    [full_path] => perri.jpg
-    [type] => image/jpeg
-    [tmp_name] => C:\xampp\tmp\php227E.tmp
-    [error] => 0
-    [size] => 20358
-)
-
-[11-Dec-2025 02:20:41 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_693a1c6952ae65.75033258.jpg
-[11-Dec-2025 02:20:41 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 9
-[11-Dec-2025 03:03:59 Europe/Berlin] Inicio subida imagen para petId: 10
-[11-Dec-2025 03:03:59 Europe/Berlin] Archivo recibido: Array
-(
-    [name] => images.png
-    [full_path] => images.png
-    [type] => image/png
-    [tmp_name] => C:\xampp\tmp\phpC70F.tmp
-    [error] => 0
-    [size] => 12160
-)
-
-[11-Dec-2025 03:03:59 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_693a268f460774.57366682.png
-[11-Dec-2025 03:03:59 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 10
+[23-Nov-2025 14:29:17 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86
+[03-Dec-2025 00:43:55 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86
+[03-Dec-2025 00:45:05 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:86
+[03-Dec-2025 00:46:27 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:83
+[03-Dec-2025 00:46:38 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_692f7a5e6749f.jpg
+[03-Dec-2025 00:47:49 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_692f7aa555c8b.jpg
+[03-Dec-2025 17:04:52 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_69305fa4174fe.png
+[03-Dec-2025 17:10:23 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:83
+[07-Dec-2025 02:00:49 Europe/Berlin] Imagen subida exitosamente para usuario 88: img_6934d1c1b09cb.png
+[10-Dec-2025 02:50:26 Europe/Berlin] Imagen subida exitosamente para usuario 39: img_6938d1e22af2e.png

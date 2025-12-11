@@ -1,75 +1,63 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
+import Alert from "../common/Alert.jsx";
 
 const ProductCard = ({
   ProductName = "Producto",
   ProductPrice = "0.00",
-  ListMode = false, 
+  ProductStock = 0,
+  ProductReplenishment = 0,
+  ListMode = false,
   ProductImage = "",
   ProductId,
   ShowAddButton = false,
   ShowDeleteButton = false,
   ShowModifyButton = false,
   ShowCount = false,
+  isAdmin = false,
   cartProducts,
-  setCartProducts = () => {},
-  onCartChange = () => {},
+  setCartProducts = () => { },
+  onCartChange = () => { },
 }) => {
 
   const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
 
-  // 🔹 Función para cargar la cantidad - useCallback para evitar recreación
   const loadProductCount = useCallback(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const foundProduct = savedCart.find(p => p.id === ProductId);
     const newCount = foundProduct ? foundProduct.quantity : 0;
     setProductCount(newCount);
-    console.log(`🔄 Producto ${ProductId} - cantidad cargada: ${newCount}`);
   }, [ProductId]);
 
-  // 🔹 Carga inicial al montar
   useEffect(() => {
     loadProductCount();
   }, [loadProductCount]);
 
-  // 🔹 Escuchar cambios globales del carrito
   useEffect(() => {
-    const handleCartUpdated = () => {
-      console.log(`📢 Evento recibido para producto ${ProductId}`);
-      loadProductCount();
-    };
-
+    const handleCartUpdated = () => loadProductCount();
     window.addEventListener("cartUpdated", handleCartUpdated);
     return () => window.removeEventListener("cartUpdated", handleCartUpdated);
   }, [ProductId, loadProductCount]);
 
-  // 🔹 También escuchar cambios de cartProducts si viene del padre
   useEffect(() => {
     if (cartProducts && cartProducts.length >= 0) {
       loadProductCount();
     }
   }, [cartProducts, loadProductCount]);
 
+
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
-    
-    if (typeof setCartProducts === "function") {
-      setCartProducts([...cart]);
-    }
-    
-    if (typeof onCartChange === "function") {
-      onCartChange([...cart]);
-    }
 
-    // 🔹 FORZAR actualización inmediata
+    if (typeof setCartProducts === "function") setCartProducts([...cart]);
+    if (typeof onCartChange === "function") onCartChange([...cart]);
+
     const foundProduct = cart.find(p => p.id === ProductId);
-    const newCount = foundProduct ? foundProduct.quantity : 0;
-    setProductCount(newCount);
-    
+    setProductCount(foundProduct ? foundProduct.quantity : 0);
+
     window.dispatchEvent(new Event("cartUpdated"));
-    console.log("🛒 Carrito actualizado:", cart);
   };
 
   const handleAddClick = () => {
@@ -85,34 +73,16 @@ const ProductCard = ({
         price: parseFloat(ProductPrice),
         image: ProductImage,
         quantity: 1,
+        stock: ProductStock,                  // 🟢 agregado
+        replenishment_point: ProductReplenishment // 🟢 agregado
       });
     }
 
     updateCart(cart);
-    
-    if (window.location.pathname !== "/Cart") {
-      navigate("/Cart");
-    }
+    if (window.location.pathname !== "/Cart") navigate("/Cart");
   };
 
-  const incrementCount = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingProduct = cart.find((item) => item.id === ProductId);
-
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      cart.push({
-        id: ProductId,
-        name: ProductName,
-        price: parseFloat(ProductPrice),
-        image: ProductImage,
-        quantity: 1,
-      });
-    }
-
-    updateCart(cart);
-  };
+  const incrementCount = () => handleAddClick();
 
   const decrementCount = () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -124,27 +94,28 @@ const ProductCard = ({
       } else {
         cart.splice(existingProductIndex, 1);
       }
-
       updateCart(cart);
     }
   };
 
-  const handleUpdateClick = () => {
-    navigate(`/ProductCreateForm/${ProductId}`);
-  };
+  const handleUpdateClick = () => navigate(`/ProductCreateForm/${ProductId}`);
 
   const handleDeleteClick = async () => {
-    const confirmDelete = window.confirm(
-      `¿Estás seguro de que deseas eliminar el producto "${ProductName}"?`
-    );
-    if (!confirmDelete) return;
+    const result = await Alert({
+      Title: "Eliminar producto",
+      Detail: `¿Deseás eliminar "${ProductName}"?`,
+      icon: "warning",
+      Confirm: "Sí, eliminar",
+      Cancel: "Cancelar",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
-      console.log("Código del producto a eliminar:", ProductId);
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "http://localhost:8080/Proton/backend/actions/deleteProduct.php",
+        "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -152,22 +123,27 @@ const ProductCard = ({
         }
       );
 
-      const result = await response.json();
+      const resultData = await response.json();
 
-      if (result.success) {
-        alert(result.message);
-        window.location.reload();
-      } else {
-        alert(result.message);
-      }
+      await Alert({
+        Title: resultData.success ? "Éxito" : "Error",
+        Detail: resultData.message,
+        icon: resultData.success ? "success" : "error",
+        Confirm: "Aceptar",
+      });
+
+      if (resultData.success) window.location.reload();
+
     } catch (error) {
-      console.error("Error al eliminar el producto:", error);
-      alert("Error al eliminar el producto.");
+      await Alert({
+        Title: "Error",
+        Detail: "No se pudo conectar con el servidor.",
+        icon: "error",
+        Confirm: "Aceptar",
+      });
     }
   };
 
-  // 🔹 Agregar console.log en el render para debug
-  console.log(`🎨 RENDER Producto ${ProductId} - cantidad: ${productCount}`);
 
   return (
     <div className={`card ${ListMode ? "cardList" : ""}`}>
@@ -178,16 +154,19 @@ const ProductCard = ({
             alt="Product"
             style={{ borderRadius: "0%" }}
           />
-          {ShowAddButton && (
+
+          {ShowAddButton && ProductStock > 0 && (
             <button className="buttonImage add-button" onClick={handleAddClick}>
               <img src={require("../../assets/images/agregar.png")} alt="AddButton" />
             </button>
           )}
+
           {ShowDeleteButton && (
             <button className="buttonImage delete-button" onClick={handleDeleteClick}>
               <img src={require("../../assets/images/delete.png")} alt="DeleteButton" />
             </button>
           )}
+
           {ShowModifyButton && (
             <button className="buttonImage modify-button" onClick={handleUpdateClick}>
               <img src={require("../../assets/images/modify.png")} alt="ModifyButton" />
@@ -195,10 +174,29 @@ const ProductCard = ({
           )}
         </figure>
       </div>
+
       <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
+
+      {isAdmin
+        && Number(ProductStock) > 0
+        && Number(ProductStock) < Number(ProductReplenishment) && (
+          <p style={{ color: "red", fontWeight: "bold", marginTop: "6px" }}>
+            REPOSICIÓN NECESARIA (Stock: {ProductStock})
+          </p>
+        )}
+
+
       <div className="card-content">
-        <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
-        {ShowCount && (
+        {ProductStock > 0 ? (
+          <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
+        ) : (
+          <p className="product-price" style={{ color: "red", fontWeight: "bold" }}>
+            AGOTADO
+          </p>
+        )}
+
+
+        {ShowCount && ProductStock > 0 && (
           <div className="product-counter">
             <button className="counter-button" onClick={decrementCount}>-</button>
             <span className="counter-value">{productCount}</span>

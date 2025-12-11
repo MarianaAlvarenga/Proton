@@ -1,10 +1,7 @@
 <?php
+require_once '../includes/session_config.php';
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit();
 
 require_once '../includes/db.php';
 

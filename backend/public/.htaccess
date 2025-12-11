@@ -1,0 +1,10 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /Proton/public/
+
+# Si el archivo o directorio existe, lo sirve normalmente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Si no existe, redirige todo al index.html
+RewriteRule ^ index.html [L]
