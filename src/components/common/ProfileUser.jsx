@@ -83,7 +83,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/getPetsByClientId.php?userId=${id_usuario}`,
+                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`,
                     {
                         method: "GET",
                         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
@@ -204,7 +204,7 @@ const ProfileUser = () => {
         });
 
         try {
-            const response = await fetch("http://localhost:8080/Proton/backend/actions/updateUser.php", {
+            const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php", {
                 method: "POST",
                 body: formData,
             });
@@ -234,7 +234,7 @@ const ProfileUser = () => {
             // actualizar existente (flujo previo)
             try {
                 const response = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/updatePet.php`,
+                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updatePet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -263,7 +263,7 @@ const ProfileUser = () => {
                 // Asegurarse de que tenga el id del usuario
                 const payload = { ...mascotaEdit, id_usuario: mascotaEdit.id_usuario || userData?.id_usuario };
                 const response = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/addPet.php`,
+                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/addPet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -299,7 +299,7 @@ const ProfileUser = () => {
                             uploadForm.append("petId", String(json.id_mascota));
 
                             const uploadResp = await fetch(
-                                "http://localhost:8080/Proton/backend/actions/upload_pet_image.php",
+                                "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/upload_pet_image.php",
                                 {
                                     method: "POST",
                                     body: uploadForm,

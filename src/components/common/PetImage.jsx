@@ -16,7 +16,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
             // Si hay petId, pedir imagen desde backend
             if (petId) {
                 const response = await fetch(
-                    `http://localhost:8080/Proton/backend/actions/get_pet_image.php?petId=${petId}`,
+                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
                     { credentials: "include" }
                 );
 
@@ -27,7 +27,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                 const data = await response.json();
                 setSelectedImage(
                     data.img_url
-                        ? `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
+                        ? `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                         : DefaultPetImage
                 );
             } else {
@@ -171,11 +171,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                     />
                 </figure>
                 <input
-                <input
                     type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
                     ref={fileInputRef}
                     style={{ display: "none" }}
                     onChange={handleFileChange}
