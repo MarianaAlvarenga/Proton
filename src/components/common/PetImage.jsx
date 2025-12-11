@@ -8,7 +8,7 @@ const PetImage = ({ petId }) => {
     const fetchPetImage = async () => {
         try {
             const response = await fetch(
-                `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
+                `https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
                 { credentials: "include" }
             );
 
@@ -54,7 +54,7 @@ const PetImage = ({ petId }) => {
 
         try {
             const response = await fetch(
-                "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/upload_pet_image.php",
+                "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/upload_pet_image.php",
                 {
                     method: "POST",
                     body: formData,

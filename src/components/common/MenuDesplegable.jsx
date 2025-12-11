@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);
