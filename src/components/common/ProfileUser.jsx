@@ -113,7 +113,7 @@ const ProfileUser = () => {
     useEffect(() => {
         const fetchEspecialidades = async () => {
                 try {
-                    const resEsp = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getEspecialidades.php");
+                    const resEsp = await fetch("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/getEspecialidades.php");
                     if (resEsp.ok) {
                         const data = await resEsp.json();
                         setEspecialidades(data);

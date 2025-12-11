@@ -15,13 +15,13 @@ const LogOut = () => {
       Detail: "¿Estás seguro de que quieres continuar?",
       Confirm: "Sí",
       Cancel: "No",
-      OnCancel: () => {Swal.close();}
+      OnCancel: () => { Swal.close(); }
     });
 
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

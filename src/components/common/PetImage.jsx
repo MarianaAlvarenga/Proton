@@ -85,7 +85,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
 
         try {
             const response = await fetch(
-                "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/upload_pet_image.php",
+                "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/upload_pet_image.php",
                 {
                     method: "POST",
                     body: formData,

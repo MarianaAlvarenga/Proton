@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 
 require_once '../includes/db.php';
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
+
 if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
 }
@@ -13,6 +14,8 @@ if ($conn->connect_error) {
 $data = $_POST;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // 📌 AHORA SE LEE DE $_POST (porque usás FormData en React)
     if (
         isset($data['nombre']) &&
         isset($data['apellido']) &&
@@ -22,12 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         isset($data['id_usuario'])
         // 🔥 Eliminé especialidades porque NO siempre aplica y NO viene en FormData
     ) {
-        $id = intval($data['id_usuario']);
-        $nombre = $conn->real_escape_string($data['nombre']);
-        $apellido = $conn->real_escape_string($data['apellido']);
-        $email = $conn->real_escape_string($data['email']);
-        $telefono = $conn->real_escape_string($data['telefono']);
-        $rol = intval($data['rol']);
+
+        $id = intval($_POST['id_usuario']);
+        $nombre = $conn->real_escape_string($_POST['nombre']);
+        $apellido = $conn->real_escape_string($_POST['apellido']);
+        $email = $conn->real_escape_string($_POST['email']);
+        $telefono = $conn->real_escape_string($_POST['telefono']);
+        $rol = intval($_POST['rol']);
 
         // 🔥 Inicializamos esta variable SIEMPRE
         $contrasenia = null;
@@ -50,15 +54,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($stmt->execute()) {
-            // 🔹 Actualizar especialidades peluquero
-            if ($rol === 3 && isset($data['especialidad'])) {
+
+            // 🔹 Manejo de especialidades si es peluquero
+            if ($rol === 3 && isset($_POST['especialidad'])) {
+
+                // La especialidad llega como JSON desde React
+                $especialidades = json_decode($_POST['especialidad'], true);
+
+                if (!is_array($especialidades)) {
+                    $especialidades = [];
+                }
+
+                // borrar las anteriores
                 $conn->query("DELETE FROM peluquero_ofrece_servicio WHERE peluquero_id_usuario = $id");
 
-                $especialidades = is_array($data['especialidad']) ? $data['especialidad'] : [$data['especialidad']];
+                // insertar las nuevas
                 foreach ($especialidades as $esp) {
                     $espId = intval($esp);
-                    if ($espId <= 0) continue;
-                    $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($id, $espId)");
+                    if ($espId > 0) {
+                        $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($id, $espId)");
+                    }
                 }
             }
 
@@ -68,9 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $stmt->close();
+
     } else {
         echo json_encode(["success" => false, "message" => "Datos incompletos para actualizar el usuario"]);
     }
+
 } else {
     echo json_encode(["success" => false, "message" => "Método no permitido"]);
 }
