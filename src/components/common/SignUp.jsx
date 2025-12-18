@@ -20,7 +20,7 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
-    especialidad: [],
+    especialidad: [], // ⭐ array real
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -34,7 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://charter-driver-acid-smile.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -44,7 +44,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://charter-driver-acid-smile.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -68,8 +68,11 @@ const SignUp = () => {
           contrasenia: "",
           confirmarContrasenia: "",
           rol: userData.rol || 1,
-          especialidad: userData.especialidad ? [].concat(userData.especialidad.map(id => Number(id))) : [],
+          especialidad: userData.especialidad
+            ? [].concat(userData.especialidad.map((id) => Number(id)))
+            : [],
         });
+
         if (userData.img_url) setImagenPreview(userData.img_url);
         setIsEditMode(isEditMode || false);
       }
@@ -81,6 +84,19 @@ const SignUp = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleEspecialidadChange = (id) => {
+    // ⭐ permite múltiples selecciones
+    setFormData((prev) => {
+      const exists = prev.especialidad.includes(id);
+      return {
+        ...prev,
+        especialidad: exists
+          ? prev.especialidad.filter((x) => x !== id)
+          : [...prev.especialidad, id],
+      };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -90,11 +106,11 @@ const SignUp = () => {
         Detail: "Las contraseñas no coinciden",
         Confirm: "Entendido",
         Cancel: null,
-        icon: "error"
+        icon: "error",
       });
     }
 
-    const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
+    const roleObj = roles.find((r) => r.id === parseInt(formData.rol, 10));
     const isPeluquero = roleObj && roleObj.rol.toLowerCase().includes("peluquero");
 
     if (isPeluquero && formData.especialidad.length === 0) {
@@ -103,13 +119,13 @@ const SignUp = () => {
         Detail: "Los peluqueros deben seleccionar al menos una especialidad",
         Confirm: "Entendido",
         Cancel: null,
-        icon: "warning"
+        icon: "warning",
       });
     }
 
     const endpoint = isEditMode
-      ? "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://charter-driver-acid-smile.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://charter-driver-acid-smile.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");
@@ -119,6 +135,7 @@ const SignUp = () => {
     fd.append("telefono", formData.telefono);
     fd.append("rol", formData.rol);
     fd.append("especialidad", JSON.stringify(formData.especialidad));
+
     if (!isEditMode) {
       fd.append("contrasenia", formData.contrasenia);
     }
@@ -132,7 +149,7 @@ const SignUp = () => {
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        body: fd
+        body: fd,
       });
 
       const response = await res.json();
@@ -143,22 +160,21 @@ const SignUp = () => {
           Detail: isEditMode ? "Usuario actualizado correctamente" : "Usuario registrado exitosamente",
           Confirm: "Continuar",
           Cancel: null,
-          icon: "success"
+          icon: "success",
         }).then(() => {
           if (isEditMode || location.state) {
-            navigate("/UsersAdmin"); // 👈 alta/edición hecha por admin
+            navigate("/UsersAdmin");
           } else {
-            navigate("/login"); // 👈 registro público
+            navigate("/login");
           }
         });
-      }
-      else {
+      } else {
         return Alert({
           Title: "Error",
           Detail: response.message || "Error al procesar la solicitud",
           Confirm: "Entendido",
           Cancel: null,
-          icon: "error"
+          icon: "error",
         });
       }
     } catch (error) {
@@ -167,13 +183,13 @@ const SignUp = () => {
         Detail: "No se pudo conectar con el servidor",
         Confirm: "Entendido",
         Cancel: null,
-        icon: "error"
+        icon: "error",
       });
     }
   };
 
   const mostrarEspecialidad = () => {
-    const roleObj = roles.find(r => r.id === parseInt(formData.rol, 10));
+    const roleObj = roles.find((r) => r.id === parseInt(formData.rol, 10));
     return roleObj && roleObj.rol.toLowerCase().includes("peluquero");
   };
 
@@ -181,16 +197,32 @@ const SignUp = () => {
     <>
       <NavBar showHomeButton={false} showProfileButton={false} />
       <SubNavBar showBack currentPage={isEditMode ? "Editar Usuario" : "Registrar Usuario"} />
+
       <div className="container">
         <div className="columns is-centered is-vcentered" style={{ minHeight: "100vh", padding: "10px" }}>
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
 
               {isEditMode && imagenPreview ? (
-                <img src={imagenPreview} alt="Foto de perfil" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "50%", margin: "0 auto 20px", display: "block" }} />
+                <img
+                  src={imagenPreview}
+                  alt="Foto de perfil"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                    margin: "0 auto 20px",
+                    display: "block",
+                  }}
+                />
               ) : (
                 <UserImage
-                  userId={isEditMode && location.state?.userData?.id_usuario ? location.state.userData.id_usuario : null}
+                  userId={
+                    isEditMode && location.state?.userData?.id_usuario
+                      ? location.state.userData.id_usuario
+                      : null
+                  }
                   onTempImageSelected={(file) => setTempImageFile(file)}
                   style={{ margin: "0 auto 20px", display: "block" }}
                 />
@@ -200,19 +232,31 @@ const SignUp = () => {
                 {showComboBox && !isEditMode && (
                   <ComboBox
                     value={formData.rol}
-                    onChange={(value) => setFormData({ ...formData, rol: Number(value), especialidad: [] })}
+                    onChange={(value) =>
+                      setFormData({ ...formData, rol: Number(value), especialidad: [] })
+                    }
                     options={roles.map((r) => ({ value: r.id, label: r.rol }))}
                     placeholder="Seleccione un rol"
                   />
                 )}
 
+                {/* ⭐ CHECKBOXES DE ESPECIALIDADES */}
                 {mostrarEspecialidad() && (
-                  <ComboBox
-                    value={formData.especialidad}
-                    onChange={(value) => setFormData({ ...formData, especialidad: [Number(value)] })}
-                    options={especialidades.map((e) => ({ value: e.id_servicio, label: e.nombre }))}
-                    placeholder="Seleccione una especialidad"
-                  />
+                  <div style={{ margin: "15px 0" }}>
+                    <label className="label">Especialidades</label>
+                    {especialidades.map((e) => (
+                      <div key={e.id_servicio} className="field">
+                        <label className="checkbox">
+                          <input
+                            type="checkbox"
+                            checked={formData.especialidad.includes(e.id_servicio)}
+                            onChange={() => handleEspecialidadChange(e.id_servicio)}
+                          />
+                          &nbsp;{e.nombre}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 )}
 
                 <section className="is-flex is-flex-direction-column">
@@ -220,6 +264,7 @@ const SignUp = () => {
                   <Label labelContent="Ingrese su apellido" inputName="apellido" inputValue={formData.apellido} handleChange={handleChange} />
                   <Label labelContent="Ingrese su email" inputName="email" inputValue={formData.email} handleChange={handleChange} autoComplete="off" />
                   <Label labelContent="Número de teléfono" inputName="telefono" inputValue={formData.telefono} handleChange={handleChange} type="tel" />
+
                   {!isEditMode && (
                     <>
                       <Label labelContent="Contraseña" inputName="contrasenia" inputValue={formData.contrasenia} handleChange={handleChange} type="password" autoComplete="new-password" />
@@ -227,13 +272,8 @@ const SignUp = () => {
                     </>
                   )}
 
-                  {/* 🔥🔥 SOLO MODIFICACIÓN DE BOTONES 🔥🔥 */}
                   <div className="is-flex" style={{ gap: "10px", marginTop: "20px" }}>
-                    <button
-                      type="submit"
-                      className="button is-primary is-fullwidth has-text-white"
-                      style={{ flex: 1 }}
-                    >
+                    <button type="submit" className="button is-primary is-fullwidth has-text-white" style={{ flex: 1 }}>
                       {isEditMode ? "Actualizar" : "Registrarse"}
                     </button>
 
@@ -241,15 +281,11 @@ const SignUp = () => {
                       type="button"
                       className="button is-primary is-fullwidth has-text-white"
                       style={{ flex: 1 }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(-1);
-                      }}
+                      onClick={() => navigate(-1)}
                     >
                       Cancelar
                     </button>
                   </div>
-                  {/* 🔥🔥 FIN BOTONES 🔥🔥 */}
                 </section>
               </form>
             </div>

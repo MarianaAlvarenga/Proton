@@ -8,7 +8,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://charter-driver-acid-smile.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -75,7 +75,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
         try {
             const response = await fetch(
-                "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://charter-driver-acid-smile.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
