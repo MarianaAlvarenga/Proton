@@ -196,7 +196,7 @@ const Login = () => {
           </button>
           <button className="button">
             <span className="icon">
-              <image src="../assets/images/cromo.png"></image>
+              <img src="../assets/images/cromo.png"></img>
             </span>
           </button>
         </div>

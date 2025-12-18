@@ -10,16 +10,20 @@ if ($conn->connect_error) {
     die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
 }
 
+// 🔥 FORM DATA — NO JSON
+$data = $_POST;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 📌 AHORA SE LEE DE $_POST (porque usás FormData en React)
     if (
-        isset($_POST['nombre']) &&
-        isset($_POST['apellido']) &&
-        isset($_POST['email']) &&
-        isset($_POST['telefono']) &&
-        isset($_POST['rol']) &&
-        isset($_POST['id_usuario'])
+        isset($data['nombre']) &&
+        isset($data['apellido']) &&
+        isset($data['email']) &&
+        isset($data['telefono']) &&
+        isset($data['rol']) &&
+        isset($data['id_usuario'])
+        // 🔥 Eliminé especialidades porque NO siempre aplica y NO viene en FormData
     ) {
 
         $id = intval($_POST['id_usuario']);
@@ -29,14 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $telefono = $conn->real_escape_string($_POST['telefono']);
         $rol = intval($_POST['rol']);
 
-        // 🔹 Contraseña opcional
+        // 🔥 Inicializamos esta variable SIEMPRE
         $contrasenia = null;
-        if (isset($_POST['contrasenia']) && !empty(trim($_POST['contrasenia']))) {
-            $hashedPass = password_hash($_POST['contrasenia'], PASSWORD_BCRYPT);
+
+        // 🔥 Solo actualizar si viene una nueva contraseña
+        if (isset($data['contrasenia']) && !empty(trim($data['contrasenia']))) {
+            $hashedPass = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
             $contrasenia = $conn->real_escape_string($hashedPass);
         }
 
-        // 🔹 Query dinámica (con o sin contraseña)
+        // 🔥 Eliminado console.log() (NO existe en PHP y rompe todo)
         if ($contrasenia !== null) {
             $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, contrasenia = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);

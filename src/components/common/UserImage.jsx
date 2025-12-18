@@ -17,11 +17,14 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             }
 
             const data = await response.json();
+
+            // 🔥 CAMBIO ÚNICO: completar ruta correctamente
             setSelectedImage(
                 data.img_url
                     ? `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
                     : DefaultUserImage
             );
+
         } catch (error) {
             console.error("Error al obtener imagen:", error);
             setSelectedImage(DefaultUserImage);
@@ -32,7 +35,6 @@ const UserImage = ({ userId, onTempImageSelected }) => {
         if (userId) {
             fetchUserImage();
         } else {
-            // En registro (sin userId) mostramos placeholder
             setSelectedImage(DefaultUserImage);
         }
     }, [userId]);
@@ -41,37 +43,33 @@ const UserImage = ({ userId, onTempImageSelected }) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // Validación de tamaño
-        if (file.size > 2 * 1024 * 1024) {
-            alert("La imagen no debe exceder 2MB");
-            return;
-        }
+    if (file.size > 2 * 1024 * 1024) {
+        alert("La imagen no debe exceder 2MB");
+        return;
+    }
 
-        // CASO REGISTRO (sin userId)
-        if (!userId) {
-            try {
-                // Crear preview local
-                const imageUrl = URL.createObjectURL(file);
-                setSelectedImage(imageUrl);
-
-                // Notificar al padre
-                if (typeof onTempImageSelected === "function") {
-                    onTempImageSelected(file);
-                }
-
-            } catch (error) {
-                console.error("Error procesando imagen:", error);
-                alert("Error al procesar la imagen seleccionada");
-            } finally {
-                if (fileInputRef.current) fileInputRef.current.value = "";
+    if (!userId) {
+        try {
+            const imageUrl = URL.createObjectURL(file);
+            setSelectedImage(imageUrl);
+            
+            if (typeof onTempImageSelected === "function") {
+                onTempImageSelected(file);
             }
-            return;
+            
+        } catch (error) {
+            console.error("Error procesando imagen:", error);
+            alert("Error al procesar la imagen seleccionada");
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = "";
         }
+        return;
+    }
 
-        // CASO 2: EDICIÓN (con userId): subir al servidor
         const formData = new FormData();
         formData.append("image", file);
         formData.append("userId", userId.toString());
+
 
         try {
             const response = await fetch(
@@ -88,9 +86,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
                 let errorData = {};
                 try {
                     errorData = JSON.parse(responseText);
-                } catch (e) {
-                    // respuesta no JSON
-                }
+                } catch (e) {}
 
                 throw new Error(
                     errorData.message ||
@@ -103,10 +99,15 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             if (!data.success) {
                 throw new Error(data.message || "Error al procesar la imagen");
             }
+    
+            let fileName = data.img_url;
 
-            setSelectedImage(
-                `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
-            );
+            if (fileName.includes("?")) {
+                setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${fileName}`);
+            } else {
+                setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${fileName}?t=${Date.now()}`);
+            }
+
             alert("¡Imagen actualizada correctamente!");
 
         } catch (error) {
@@ -122,6 +123,18 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const handleClick = () => {
         fileInputRef.current?.click();
     };
+
+    useEffect(() => {
+        console.log("USER ID QUE LLEGA A UserImage:", userId);
+
+        if (userId) {
+            console.log("Tengo userId chavooon");
+            fetchUserImage();
+        } else {
+            console.log("No tengo userId chavooon");
+            setSelectedImage(DefaultUserImage);
+        }
+    }, [userId]);
 
     return (
         <div>
