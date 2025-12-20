@@ -23,13 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         isset($data['telefono']) &&
         isset($data['rol']) &&
         isset($data['id_usuario'])
-        // 🔥 Eliminé especialidades porque NO siempre aplica y NO viene en FormData
     ) {
 
         $id = intval($_POST['id_usuario']);
         $nombre = $conn->real_escape_string($_POST['nombre']);
         $apellido = $conn->real_escape_string($_POST['apellido']);
         $email = $conn->real_escape_string($_POST['email']);
+        $fecha_nacimiento = $conn->real_escape_string($_POST['fecha_nacimiento']);
         $telefono = $conn->real_escape_string($_POST['telefono']);
         $rol = intval($_POST['rol']);
 
@@ -44,13 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 🔥 Eliminado console.log() (NO existe en PHP y rompe todo)
         if ($contrasenia !== null) {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, contrasenia = ? WHERE id_usuario = ?";
+            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ?, contrasenia = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $contrasenia, $id);
+            $stmt->bind_param("ssssissi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $contrasenia, $id);
         } else {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ? WHERE id_usuario = ?";
+            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ? WHERE id_usuario = ?";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssii", $nombre, $apellido, $email, $telefono, $rol, $id);
+            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $id);
         }
 
         if ($stmt->execute()) {
