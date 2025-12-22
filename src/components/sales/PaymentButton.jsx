@@ -27,7 +27,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }));
 
       const response = await axios.post(
-        "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/create_preference.php",
+        "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },

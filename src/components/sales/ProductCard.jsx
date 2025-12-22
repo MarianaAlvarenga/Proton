@@ -47,7 +47,6 @@ const ProductCard = ({
     }
   }, [cartProducts, loadProductCount]);
 
-
   const updateCart = (cart) => {
     localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -60,21 +59,44 @@ const ProductCard = ({
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
-  const handleAddClick = () => {
+  const handleAddClick = async () => {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingProductIndex = cart.findIndex((item) => item.id === ProductId);
 
     if (existingProductIndex !== -1) {
+      const currentQty = cart[existingProductIndex].quantity;
+      const stock = cart[existingProductIndex].stock ?? ProductStock;
+
+      if (currentQty >= stock) {
+        await Alert({
+          Title: "Cantidad no disponible",
+          Detail: "No hay stock suficiente para agregar más unidades de este producto.",
+          icon: "warning",
+          Confirm: "Aceptar",
+        });
+        return;
+      }
+
       cart[existingProductIndex].quantity += 1;
     } else {
+      if (ProductStock <= 0) {
+        await Alert({
+          Title: "Producto sin stock",
+          Detail: "Este producto no tiene stock disponible.",
+          icon: "warning",
+          Confirm: "Aceptar",
+        });
+        return;
+      }
+
       cart.push({
         id: ProductId,
         name: ProductName,
         price: parseFloat(ProductPrice),
         image: ProductImage,
         quantity: 1,
-        stock: ProductStock,                  // 🟢 agregado
-        replenishment_point: ProductReplenishment // 🟢 agregado
+        stock: ProductStock,
+        replenishment_point: ProductReplenishment
       });
     }
 
@@ -144,7 +166,6 @@ const ProductCard = ({
     }
   };
 
-
   return (
     <div className={`card ${ListMode ? "cardList" : ""}`}>
       <div className="card-image" style={{ borderRadius: "0%" }}>
@@ -185,7 +206,6 @@ const ProductCard = ({
           </p>
         )}
 
-
       <div className="card-content">
         {ProductStock > 0 ? (
           <p className="product-price" style={{ color: "gray" }}>${ProductPrice}</p>
@@ -194,7 +214,6 @@ const ProductCard = ({
             AGOTADO
           </p>
         )}
-
 
         {ShowCount && ProductStock > 0 && (
           <div className="product-counter">

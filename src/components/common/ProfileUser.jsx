@@ -100,7 +100,7 @@ const ProfileUser = () => {
             } catch (error) {
                 console.error("Error al cargar mascotas:", error);
             }
-    
+
         };
 
         fetchMascotas();
@@ -121,9 +121,9 @@ const ProfileUser = () => {
                         console.warn("No se pudieron obtener especialidades:", resEsp.status);
                     }
 
-                } catch (err) {
-                    console.error("Error al obtener especialidades:", err);
-                }
+            } catch (err) {
+                console.error("Error al obtener especialidades:", err);
+            }
         };
 
         fetchEspecialidades();
@@ -147,7 +147,7 @@ const ProfileUser = () => {
             ...mascotaActual,
         });
     };
-    
+
     const handleAgregarMascota = () => {
         setAddingMascota(true);
         setEditandoMascota(true);
@@ -237,8 +237,8 @@ const ProfileUser = () => {
         }
     };
 
- const handleActualizarMascota = async () => {
-        
+    const handleActualizarMascota = async () => {
+
         console.log("Mascota al guardar:", mascotaEdit);
 
         if (!mascotaEdit) return;
@@ -339,7 +339,7 @@ const ProfileUser = () => {
                             if (!uploadResp.ok) {
                                 // intentar parsear json de error
                                 let err = {};
-                                try { err = JSON.parse(uploadText); } catch(e){ /* ignore */ }
+                                try { err = JSON.parse(uploadText); } catch (e) { /* ignore */ }
                                 console.warn("Error al subir imagen tras crear mascota:", uploadText);
                             } else {
                                 const uploadJson = JSON.parse(uploadText);
@@ -382,7 +382,7 @@ const ProfileUser = () => {
 
     return (
         <>
-            <NavBar showProfileButton={false}/>
+            <NavBar showProfileButton={false} />
             <SubNavBar />
 
             <div className="container mt-5">

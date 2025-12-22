@@ -1,9 +1,4 @@
 <?php
-
-
-
-// Responder preflight
-
 require_once '../includes/session_config.php';
 
 ini_set('display_errors', 1);
