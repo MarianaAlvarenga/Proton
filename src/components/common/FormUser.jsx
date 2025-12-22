@@ -21,7 +21,7 @@ const FormUser = ({
 
             {/* Imagen + botón editar */}
             <div className="mb-4">
-                <UserImage userId={usuarioEdit?.id_usuario} imageUrl={usuarioEdit?.imagen} size={180} />
+                <UserImage userId={usuarioEdit?.id_usuario} size={180} />
 
                 <p className="control mt-3">
                     <button

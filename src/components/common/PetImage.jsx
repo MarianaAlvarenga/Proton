@@ -16,7 +16,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
             // Si hay petId, pedir imagen desde backend
             if (petId) {
                 const response = await fetch(
-                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
+                    `https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
                     { credentials: "include" }
                 );
 
@@ -27,7 +27,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                 const data = await response.json();
                 setSelectedImage(
                     data.img_url
-                        ? `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
+                        ? `https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                         : DefaultPetImage
                 );
             } else {
@@ -85,7 +85,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
 
         try {
             const response = await fetch(
-                "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/upload_pet_image.php",
+                "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/upload_pet_image.php",
                 {
                     method: "POST",
                     body: formData,

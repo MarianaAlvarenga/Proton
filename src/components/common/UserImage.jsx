@@ -8,7 +8,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -21,7 +21,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             // 🔥 CAMBIO ÚNICO: completar ruta correctamente
             setSelectedImage(
                 data.img_url
-                    ? `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
+                    ? `https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                     : DefaultUserImage
             );
 
@@ -73,7 +73,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
         try {
             const response = await fetch(
-                "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -103,9 +103,9 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             let fileName = data.img_url;
 
             if (fileName.includes("?")) {
-                setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${fileName}`);
+                setSelectedImage(`https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${fileName}`);
             } else {
-                setSelectedImage(`http://localhost:8080/Proton/backend/uploads/${fileName}?t=${Date.now()}`);
+                setSelectedImage(`https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
             }
 
             alert("¡Imagen actualizada correctamente!");

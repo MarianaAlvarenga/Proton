@@ -1,6 +1,6 @@
 export const checkAuth = async () => {
   try {
-    const response = await fetch('https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/checkSession.php', {
+    const response = await fetch('https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/checkSession.php', {
       method: 'GET',
       credentials: 'include', // MUY IMPORTANTE para que se envíe la cookie de sesión
     });

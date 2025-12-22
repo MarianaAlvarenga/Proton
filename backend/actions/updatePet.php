@@ -1,59 +1,84 @@
 <?php
 require_once '../includes/session_config.php';
-
 header("Content-Type: application/json");
-
 require_once '../includes/db.php';
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
+    echo json_encode(["success" => false, "message" => "Error de conexión"]);
+    exit;
 }
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (
-        isset($data['nombre_mascota']) &&
-        isset($data['fecha_nacimiento']) &&
-        isset($data['raza']) &&
-        isset($data['tamanio']) &&
-        isset($data['largo_pelo']) &&
-        isset($data['especie']) &&
-        isset($data['sexo']) &&
-        isset($data['color']) 
-    ) {
-        $id = intval($data['id_mascota']);
-        $nombre_mascota = $conn->real_escape_string($data['nombre_mascota']);
-        $fecha_nacimiento = $conn->real_escape_string($data['fecha_nacimiento']);
-        $raza = $conn->real_escape_string($data['raza']);
-        $peso = $conn->real_escape_string($data['peso']);
-        $tamanio = $conn->real_escape_string($data['tamanio']);
-        $largo_pelo = $conn->real_escape_string($data['largo_pelo']);
-        $especie = $conn->real_escape_string($data['especie']);
-        $sexo = $conn->real_escape_string($data['sexo']);
-        $color = $conn->real_escape_string($data['color']);
-        $detalle = $conn->real_escape_string($data['detalle']);
+// ✔️ SOLO validamos lo indispensable
+$id = intval($data['id_mascota'] ?? 0);
+$nombre_mascota = $data['nombre_mascota'] ?? '';
 
-        $query = "UPDATE mascota SET nombre_mascota = ?, fecha_nacimiento = ?, raza = ?, peso = ?, tamanio = ?, largo_pelo = ?, especie = ?,
-                 sexo = ?, color = ?, detalle = ? WHERE id_mascota = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssssssssi", $nombre_mascota, $fecha_nacimiento, $raza, $peso, $tamanio, $largo_pelo, $especie, 
-                        $sexo, $color, $detalle, $id);
-
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "Mascota actualizada correctamente"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Error al actualizar la mascota: " . $stmt->error]);
-        }
-
-        $stmt->close();
-    } else {
-        echo json_encode(["success" => false, "message" => "Datos incompletos para actualizar la mascota"]);
-    }
-} else {
-    echo json_encode(["success" => false, "message" => "Método no permitido"]);
+if ($id <= 0 || $nombre_mascota === '') {
+    echo json_encode([
+        "success" => false,
+        "message" => "ID o nombre inválido"
+    ]);
+    exit;
 }
 
+// ✔️ Campos opcionales (pueden venir vacíos)
+$fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
+$raza = $data['raza'] ?? null;
+$peso = $data['peso'] !== '' ? $data['peso'] : null;
+$tamanio = $data['tamanio'] ?? null;
+$largo_pelo = $data['largo_pelo'] ?? null;
+$especie = $data['especie'] ?? null;
+$sexo = $data['sexo'] ?? null;
+$color = $data['color'] ?? null;
+$detalle = $data['detalle'] !== '' ? $data['detalle'] : null;
+
+$query = "
+    UPDATE mascota SET
+        nombre_mascota = ?,
+        fecha_nacimiento = ?,
+        raza = ?,
+        peso = ?,
+        tamanio = ?,
+        largo_pelo = ?,
+        especie = ?,
+        sexo = ?,
+        color = ?,
+        detalle = ?
+    WHERE id_mascota = ?
+";
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param(
+    "ssssssssssi",
+    $nombre_mascota,
+    $fecha_nacimiento,
+    $raza,
+    $peso,
+    $tamanio,
+    $largo_pelo,
+    $especie,
+    $sexo,
+    $color,
+    $detalle,
+    $id
+);
+
+$stmt->execute();
+
+// 🔥 CLAVE para debug real
+if ($stmt->affected_rows >= 0) {
+    echo json_encode([
+        "success" => true,
+        "message" => "Mascota actualizada"
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => $stmt->error
+    ]);
+}
+
+$stmt->close();
 $conn->close();
-?>

@@ -1,4 +1,9 @@
 <?php
+
+
+
+// Responder preflight
+
 require_once '../includes/session_config.php';
 
 ini_set('display_errors', 1);
@@ -60,7 +65,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://herbal-cod-arise-restaurant.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

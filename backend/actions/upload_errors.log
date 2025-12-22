@@ -98,3 +98,104 @@
 [03-Dec-2025 17:10:23 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:83
 [07-Dec-2025 02:00:49 Europe/Berlin] Imagen subida exitosamente para usuario 88: img_6934d1c1b09cb.png
 [10-Dec-2025 02:50:26 Europe/Berlin] Imagen subida exitosamente para usuario 39: img_6938d1e22af2e.png
+[19-Dec-2025 01:27:38 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_69449bfa54c8c.jpg
+[19-Dec-2025 01:27:57 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_69449c0dd1e22.jpg
+[19-Dec-2025 01:41:51 Europe/Berlin] Inicio subida imagen para petId: 11
+[19-Dec-2025 01:41:51 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php340.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[19-Dec-2025 01:41:51 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_69449f4f32d6d2.33067336.jpg
+[19-Dec-2025 01:41:51 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 11
+[19-Dec-2025 02:32:50 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_6944ab4291cdc.jpeg
+[19-Dec-2025 02:33:00 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_6944ab4cc3b36.jpg
+[19-Dec-2025 02:41:40 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_6944ad5429741.jpg
+[19-Dec-2025 02:50:25 Europe/Berlin] Imagen subida exitosamente para usuario 32: img_6944af617e8f1.jpg
+[19-Dec-2025 04:55:36 Europe/Berlin] Imagen subida exitosamente para usuario 43: img_6944ccb8dd354.jpeg
+[19-Dec-2025 05:00:14 Europe/Berlin] Imagen subida exitosamente para usuario 43: img_6944cdce2ece0.jpeg
+[19-Dec-2025 05:01:22 Europe/Berlin] Inicio subida imagen para petId: 12
+[19-Dec-2025 05:01:22 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => images.png
+    [full_path] => images.png
+    [type] => image/png
+    [tmp_name] => C:\xampp\tmp\phpAE28.tmp
+    [error] => 0
+    [size] => 12160
+)
+
+[19-Dec-2025 05:01:22 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6944ce1274f9d2.28951293.png
+[19-Dec-2025 05:01:22 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 12
+[19-Dec-2025 05:02:33 Europe/Berlin] Imagen subida exitosamente para usuario 43: img_6944ce592cb4b.jpg
+[20-Dec-2025 01:32:43 Europe/Berlin] Inicio subida imagen para petId: 13
+[20-Dec-2025 01:32:43 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php899.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[20-Dec-2025 01:32:43 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6945eeab7c1b69.16443999.jpg
+[20-Dec-2025 01:32:43 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 13
+[20-Dec-2025 17:57:23 Europe/Berlin] Inicio subida imagen para petId: 14
+[20-Dec-2025 17:57:23 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => WhatsApp Image 2025-05-17 at 00.14.20.jpeg
+    [full_path] => WhatsApp Image 2025-05-17 at 00.14.20.jpeg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php89D1.tmp
+    [error] => 0
+    [size] => 313327
+)
+
+[20-Dec-2025 17:57:23 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6946d57303dd93.19917935.jpeg
+[20-Dec-2025 17:57:23 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 14
+[20-Dec-2025 17:58:36 Europe/Berlin] Inicio subida imagen para petId: 15
+[20-Dec-2025 17:58:36 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => las 3.jpg
+    [full_path] => las 3.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpA8EE.tmp
+    [error] => 0
+    [size] => 36286
+)
+
+[20-Dec-2025 17:58:36 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6946d5bc7e4cb7.21111173.jpg
+[20-Dec-2025 17:58:36 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 15
+[20-Dec-2025 18:05:36 Europe/Berlin] Inicio subida imagen para petId: 17
+[20-Dec-2025 18:05:36 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => hermosas-rosas-rojas.jpg
+    [full_path] => hermosas-rosas-rojas.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php1131.tmp
+    [error] => 0
+    [size] => 635463
+)
+
+[20-Dec-2025 18:05:36 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6946d760657b14.29623623.jpg
+[20-Dec-2025 18:05:36 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 17
+[20-Dec-2025 18:05:36 Europe/Berlin] Inicio subida imagen para petId: 16
+[20-Dec-2025 18:05:36 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => hermosas-rosas-rojas.jpg
+    [full_path] => hermosas-rosas-rojas.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php1142.tmp
+    [error] => 0
+    [size] => 635463
+)
+
+[20-Dec-2025 18:05:36 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6946d760699f35.07357668.jpg
+[20-Dec-2025 18:05:36 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 16
+[22-Dec-2025 23:09:37 Europe/Berlin] Imagen subida exitosamente para usuario 43: img_6949c1a1d69a6.jpg

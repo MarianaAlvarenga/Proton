@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import UserImage from "./UserImage.jsx";
-import PetImage from "./PetImage.jsx";
 import NavBar from "./NavBar.jsx";
 import SubNavBar from "./SubNavBar.jsx";
-import ComboBox from "./ComboBox";
 import FormUser from "./FormUser.jsx";
 import FormPet from "./FormPet.jsx";
+import { ReactComponent as PowerIcon } from "../../assets/images/boton-de-encendido-apagado.svg";
+import Alert from "./Alert.jsx";
+import Swal from "sweetalert2";
 
 const ProfileUser = () => {
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -83,7 +83,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`,
+                    `https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`,
                     {
                         method: "GET",
                         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
@@ -113,7 +113,7 @@ const ProfileUser = () => {
     useEffect(() => {
         const fetchEspecialidades = async () => {
                 try {
-                    const resEsp = await fetch("https://herbal-cod-arise-restaurant.trycloudflare.com/backend/actions/getEspecialidades.php");
+                    const resEsp = await fetch("https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/getEspecialidades.php");
                     if (resEsp.ok) {
                         const data = await resEsp.json();
                         setEspecialidades(data);
@@ -185,26 +185,28 @@ const ProfileUser = () => {
     // --------------------------------------------------
     const handleActualizarUsuario = async () => {
 
-        // 🔥 FIX IMPORTANTE //
-        // Agrega la contraseña al objeto usuarioEdit ANTES de enviarlo
-        if (contrasenia) {
-            usuarioEdit.contrasenia = contrasenia;
+    const formData = new FormData();
+
+    Object.keys(usuarioEdit).forEach((key) => {
+        if (key === "especialidades" && Array.isArray(usuarioEdit[key])) {
+            // mandar especialidades UNA sola vez como JSON
+            formData.append(
+                "especialidades",
+                JSON.stringify(usuarioEdit.especialidades)
+            );
+
+        } else if (usuarioEdit[key] !== null && usuarioEdit[key] !== undefined) {
+            formData.append(key, usuarioEdit[key]);
         }
+    });
 
-        const formData = new FormData();
-
-        Object.keys(usuarioEdit).forEach((key) => {
-            if (key === "especialidades" && Array.isArray(usuarioEdit[key])) {
-                usuarioEdit[key].forEach((id, index) => {
-                    formData.append(`especialidades[${index}]`, id);
-                });
-            } else {
-                formData.append(key, usuarioEdit[key]);
-            }
-        });
+    // contraseña aparte (como ya lo hacías)
+    if (contrasenia && contrasenia.trim() !== "") {
+        formData.append("contrasenia", contrasenia);
+    }
 
         try {
-            const response = await fetch("https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updateUser.php", {
+            const response = await fetch("https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/updateUser.php", {
                 method: "POST",
                 body: formData,
             });
@@ -214,9 +216,21 @@ const ProfileUser = () => {
             if (result.success) {
                 setUsuario(usuarioEdit);
                 setEditandoUsuario(false);
-                alert("Usuario actualizado correctamente.");
+                return Alert({
+                    Title: "Actualización",
+                    Detail: "Usuario actualizado correctamente.",
+                    Confirm: "Ok",
+                    Cancel: null,
+                    icon: "success"
+                });
             } else {
-                alert("Error al actualizar usuario.");
+                return Alert({
+                    Title: "Actualización",
+                    Detail: "Error al actualizar usuario.",
+                    Confirm: "Ok",
+                    Cancel: null,
+                    icon: "error"
+                });
             }
         } catch (error) {
             console.error("Error al actualizar usuario:", error);
@@ -234,7 +248,7 @@ const ProfileUser = () => {
             // actualizar existente (flujo previo)
             try {
                 const response = await fetch(
-                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/updatePet.php`,
+                    `https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/updatePet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -250,7 +264,21 @@ const ProfileUser = () => {
                     });
                     setEditandoMascota(false);
                     setAddingMascota(false);
+                    return Alert({
+                        Title: null,
+                        Detail: "Mascota actualizada correctamente 🐾",
+                        Confirm: "Ok",
+                        Cancel: null,
+                        icon: "success"
+                    });
                 } else {
+                    return Alert({
+                        Title: null,
+                        Detail: "Error al actualizar la mascota",
+                        Confirm: "Ok",
+                        Cancel: null,
+                        icon: "error"
+                    });
                 }
             } catch (error) {
             }
@@ -263,7 +291,7 @@ const ProfileUser = () => {
                 // Asegurarse de que tenga el id del usuario
                 const payload = { ...mascotaEdit, id_usuario: mascotaEdit.id_usuario || userData?.id_usuario };
                 const response = await fetch(
-                    `https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/addPet.php`,
+                    `https://training-elder-held-musician.trycloudflare.com/backend/actions/addPet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -299,7 +327,7 @@ const ProfileUser = () => {
                             uploadForm.append("petId", String(json.id_mascota));
 
                             const uploadResp = await fetch(
-                                "https://enhancement-flashing-comparative-respondents.trycloudflare.com/backend/actions/upload_pet_image.php",
+                                "https://training-elder-held-musician.trycloudflare.com/backend/actions/upload_pet_image.php",
                                 {
                                     method: "POST",
                                     body: uploadForm,
@@ -339,9 +367,10 @@ const ProfileUser = () => {
                     // Si subimos la imagen, mantener edit state acorde:
                     setEditandoMascota(false);
                     setAddingMascota(true);
-                } else {
-                    console.warn("addPet respondió success=false:", json);
-                }
+                    alert("Mascota agregada correctamente 🐾");
+                    } else {
+                        alert("Error al agregar la mascota");
+                    }
             } catch (error) {
                 console.error("Error al crear mascota:", error);
             }
@@ -371,21 +400,34 @@ const ProfileUser = () => {
                     handleActualizarUsuario={handleActualizarUsuario}
                     handleCancel={handleCancel}
                 />
+                {mascotas.length === 0 && !addingMascota ? (
+                    <div className="has-text-centered mt-5">
+                        <p className="mb-4">Este usuario no tiene mascotas registradas.</p>
 
-                <FormPet
-                    mascotas={mascotas}
-                    mascotaEdit={mascotaEdit}
-                    setMascotaEdit={setMascotaEdit}
-                    editandoMascota={editandoMascota}
-                    addingMascota={addingMascota}
-                    currentIndex={currentIndex}
-                    handlePrev={handlePrev}
-                    handleNext={handleNext}
-                    handleEditarMascota={handleEditarMascota}
-                    handleAgregarMascota={handleAgregarMascota}
-                    handleActualizarMascota={handleActualizarMascota}
-                    handleCancel={handleCancel}
-                />
+                        <button
+                            className="button is-primary"
+                            onClick={handleAgregarMascota}
+                        >
+                            Agregar mascota
+                        </button>
+                    </div>
+                ) : (
+                    <FormPet
+                        mascotas={mascotas}
+                        mascotaEdit={mascotaEdit}
+                        setMascotaEdit={setMascotaEdit}
+                        editandoMascota={editandoMascota}
+                        addingMascota={addingMascota}
+                        currentIndex={currentIndex}
+                        handlePrev={handlePrev}
+                        handleNext={handleNext}
+                        handleEditarMascota={handleEditarMascota}
+                        handleAgregarMascota={handleAgregarMascota}
+                        handleActualizarMascota={handleActualizarMascota}
+                        handleCancel={handleCancel}
+                    />
+                )}
+
                 <div style={{ height: "50px" }}></div>
             </div>
         </>

@@ -18,7 +18,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const backendBase = "https://herbal-cod-arise-restaurant.trycloudflare.com/backend";
+  const backendBase = "https://cards-gamma-ocean-dale.trycloudflare.com/backend";
 
   useEffect(() => {
     const checkSession = async () => {

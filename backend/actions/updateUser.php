@@ -1,96 +1,123 @@
 <?php
 require_once '../includes/session_config.php';
-
 header("Content-Type: application/json");
 
 require_once '../includes/db.php';
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
+    echo json_encode(["success" => false, "message" => "Error de conexión"]);
+    exit;
 }
 
-// 🔥 FORM DATA — NO JSON
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(["success" => false, "message" => "Método no permitido"]);
+    exit;
+}
+
 $data = $_POST;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // 📌 AHORA SE LEE DE $_POST (porque usás FormData en React)
-    if (
-        isset($data['nombre']) &&
-        isset($data['apellido']) &&
-        isset($data['email']) &&
-        isset($data['telefono']) &&
-        isset($data['rol']) &&
-        isset($data['id_usuario'])
-    ) {
-
-        $id = intval($_POST['id_usuario']);
-        $nombre = $conn->real_escape_string($_POST['nombre']);
-        $apellido = $conn->real_escape_string($_POST['apellido']);
-        $email = $conn->real_escape_string($_POST['email']);
-        $fecha_nacimiento = $conn->real_escape_string($_POST['fecha_nacimiento']);
-        $telefono = $conn->real_escape_string($_POST['telefono']);
-        $rol = intval($_POST['rol']);
-
-        // 🔥 Inicializamos esta variable SIEMPRE
-        $contrasenia = null;
-
-        // 🔥 Solo actualizar si viene una nueva contraseña
-        if (isset($data['contrasenia']) && !empty(trim($data['contrasenia']))) {
-            $hashedPass = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
-            $contrasenia = $conn->real_escape_string($hashedPass);
-        }
-
-        // 🔥 Eliminado console.log() (NO existe en PHP y rompe todo)
-        if ($contrasenia !== null) {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ?, contrasenia = ? WHERE id_usuario = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssissi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $contrasenia, $id);
-        } else {
-            $query = "UPDATE usuario SET nombre = ?, apellido = ?, email = ?, telefono = ?, rol = ?, fecha_nacimiento = ? WHERE id_usuario = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $id);
-        }
-
-        if ($stmt->execute()) {
-
-            // 🔹 Manejo de especialidades si es peluquero
-            if ($rol === 3 && isset($_POST['especialidad'])) {
-
-                // La especialidad llega como JSON desde React
-                $especialidades = json_decode($_POST['especialidad'], true);
-
-                if (!is_array($especialidades)) {
-                    $especialidades = [];
-                }
-
-                // borrar las anteriores
-                $conn->query("DELETE FROM peluquero_ofrece_servicio WHERE peluquero_id_usuario = $id");
-
-                // insertar las nuevas
-                foreach ($especialidades as $esp) {
-                    $espId = intval($esp);
-                    if ($espId > 0) {
-                        $conn->query("INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio) VALUES ($id, $espId)");
-                    }
-                }
-            }
-
-            echo json_encode(["success" => true, "message" => "Usuario actualizado correctamente"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Error al actualizar el usuario: " . $stmt->error]);
-        }
-
-        $stmt->close();
-
-    } else {
-        echo json_encode(["success" => false, "message" => "Datos incompletos para actualizar el usuario"]);
+/* =========================
+   VALIDACIONES BÁSICAS
+========================= */
+$required = ['id_usuario','nombre','apellido','email','telefono','rol','fecha_nacimiento'];
+foreach ($required as $field) {
+    if (!isset($data[$field])) {
+        echo json_encode(["success" => false, "message" => "Falta el campo $field"]);
+        exit;
     }
-
-} else {
-    echo json_encode(["success" => false, "message" => "Método no permitido"]);
 }
 
+/* =========================
+   DATOS
+========================= */
+$id = intval($data['id_usuario']);
+$nombre = $conn->real_escape_string($data['nombre']);
+$apellido = $conn->real_escape_string($data['apellido']);
+$email = $conn->real_escape_string($data['email']);
+$telefono = $conn->real_escape_string($data['telefono']);
+$fecha_nacimiento = $conn->real_escape_string($data['fecha_nacimiento']);
+$rol = intval($data['rol']);
+
+/* =========================
+   CONTRASEÑA (OPCIONAL)
+========================= */
+$contrasenia = null;
+if (!empty($data['contrasenia'])) {
+    $contrasenia = password_hash($data['contrasenia'], PASSWORD_BCRYPT);
+}
+
+/* =========================
+   UPDATE USUARIO
+========================= */
+if ($contrasenia !== null) {
+    $query = "UPDATE usuario 
+              SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?, contrasenia=?
+              WHERE id_usuario=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param(
+        "ssssissi",
+        $nombre,
+        $apellido,
+        $email,
+        $telefono,
+        $rol,
+        $fecha_nacimiento,
+        $contrasenia,
+        $id
+    );
+} else {
+    $query = "UPDATE usuario 
+              SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?
+              WHERE id_usuario=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param(
+        "ssssisi",
+        $nombre,
+        $apellido,
+        $email,
+        $telefono,
+        $rol,
+        $fecha_nacimiento,
+        $id
+    );
+}
+
+if (!$stmt->execute()) {
+    echo json_encode(["success" => false, "message" => $stmt->error]);
+    exit;
+}
+
+/* =========================
+   ESPECIALIDADES
+========================= */
+
+// 🔥 SIEMPRE limpiar
+$conn->query("DELETE FROM peluquero_ofrece_servicio WHERE peluquero_id_usuario = $id");
+
+// 🔥 SOLO volver a insertar si es peluquero
+if ($rol === 3 && isset($data['especialidad'])) {
+
+    $especialidades = json_decode($data['especialidad'], true);
+    if (!is_array($especialidades)) {
+        $especialidades = [];
+    }
+
+    foreach ($especialidades as $espId) {
+        $espId = intval($espId);
+        if ($espId > 0) {
+            $conn->query(
+                "INSERT INTO peluquero_ofrece_servicio (peluquero_id_usuario, servicio_id_servicio)
+                 VALUES ($id, $espId)"
+            );
+        }
+    }
+}
+
+$stmt->close();
 $conn->close();
-?>
+
+echo json_encode([
+    "success" => true,
+    "message" => "Usuario actualizado correctamente"
+]);
