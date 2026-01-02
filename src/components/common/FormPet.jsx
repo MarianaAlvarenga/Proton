@@ -16,10 +16,12 @@ const FormPet = ({
     handleEditarMascota,
     handleActualizarMascota,
     handleCancel,
+    puedeAgregarMascota // 👈 NUEVO
 }) => {
 
     const mascotaActual = mascotas[currentIndex] || {};
     const mostrarMascota = editandoMascota ? mascotaEdit : mascotaActual;
+
     const opcionesSexo = [
         { value: "Macho", label: "Macho" },
         { value: "Hembra", label: "Hembra" }
@@ -61,13 +63,12 @@ const FormPet = ({
 
             {/* ───── IMAGEN + BOTONES EDITAR / AGREGAR ───── */}
             <div className="mb-4">
-                    <PetImage
-                        petId={mostrarMascota?.id_mascota}
-                        mascotaEdit={mascotaEdit}
-                        setMascotaEdit={setMascotaEdit}
-                    />
+                <PetImage
+                    petId={mostrarMascota?.id_mascota}
+                    mascotaEdit={mascotaEdit}
+                    setMascotaEdit={setMascotaEdit}
+                />
 
-                {/* Botones como en FormUser (uno al lado del otro y posición correcta) */}
                 {!editandoMascota && (
                     <div className="field is-grouped mt-3">
                         <p className="control">
@@ -79,18 +80,19 @@ const FormPet = ({
                             </button>
                         </p>
 
-                        <p className="control">
-                            <button
-                                className="button is-light"
-                                onClick={handleAgregarMascota}
-                            >
-                                Agregar mascota
-                            </button>
-                        </p>
+                        {puedeAgregarMascota && (
+                            <p className="control">
+                                <button
+                                    className="button is-light"
+                                    onClick={handleAgregarMascota}
+                                >
+                                    Agregar mascota
+                                </button>
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
-
 
             <label className="label">Nombre:</label>
             <input
@@ -181,7 +183,7 @@ const FormPet = ({
                 }
             />
 
-            <label className="label">Peso:</label>
+            <label className="label">Peso (gr):</label>
             <input
                 className="input"
                 type="number"
@@ -262,21 +264,19 @@ const FormPet = ({
                 }
             />
 
-            {/* ───── BOTONES GUARDAR / CANCELAR (MISMOS QUE FormUser) ───── */}
             {editandoMascota && (
                 <div className="field is-grouped is-grouped-right mt-4">
+                    <p className="control">
+                        <button className="button is-light" onClick={handleCancel}>
+                            Cancelar
+                        </button>
+                    </p>
                     <p className="control">
                         <button
                             className="button is-primary is-link"
                             onClick={handleActualizarMascota}
                         >
                             Guardar
-                        </button>
-                    </p>
-
-                    <p className="control">
-                        <button className="button is-light" onClick={handleCancel}>
-                            Cancelar
                         </button>
                     </p>
                 </div>

@@ -29,7 +29,7 @@ const ModifyButton = ({ urlImage = ModifyImage, selectedUserId, onNoSelection })
       return;
     }
 
-    fetch("https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/getUserById.php", {
+    fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getUserById.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedUserId }),

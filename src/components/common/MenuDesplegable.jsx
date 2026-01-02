@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

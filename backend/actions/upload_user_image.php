@@ -89,7 +89,8 @@ try {
     }
 
     // Configurar directorio de uploads
-    $uploadDir = realpath(__DIR__ . '/../uploads');
+    $uploadDir = realpath(__DIR__ . '/../uploads/usuarios');
+
     if ($uploadDir === false) {
         // Intentar crear el directorio si no existe
         $uploadDir = __DIR__ . '/../uploads';
@@ -162,7 +163,9 @@ try {
         throw new Exception("Error preparando la consulta: " . $conn->error, 500);
     }
 
-    $stmt->bind_param("si", $filename, $userId);
+    $relativePath = "usuarios/" . $filename;
+$stmt->bind_param("si", $relativePath, $userId);
+
     
     if (!$stmt->execute()) {
         $stmt->close();
@@ -181,8 +184,9 @@ try {
 
     // Éxito
     sendJsonResponse(true, 'Imagen actualizada correctamente', [
-        'img_url' => $filename,
-        'full_url' => "http://localhost:8080/Proton/backend/uploads/$filename"
+        'img_url' => $relativePath,
+'full_url' => "http://localhost:8080/Proton/backend/uploads/$relativePath"
+
     ]);
 
 } catch (Exception $e) {

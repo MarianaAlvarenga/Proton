@@ -20,7 +20,7 @@ $data = $_POST;
 /* =========================
    VALIDACIONES BÁSICAS
 ========================= */
-$required = ['id_usuario','nombre','apellido','email','telefono','rol','fecha_nacimiento'];
+$required = ['id_usuario','nombre','apellido','email','telefono','rol'];
 foreach ($required as $field) {
     if (!isset($data[$field])) {
         echo json_encode(["success" => false, "message" => "Falta el campo $field"]);
@@ -36,7 +36,7 @@ $nombre = $conn->real_escape_string($data['nombre']);
 $apellido = $conn->real_escape_string($data['apellido']);
 $email = $conn->real_escape_string($data['email']);
 $telefono = $conn->real_escape_string($data['telefono']);
-$fecha_nacimiento = $conn->real_escape_string($data['fecha_nacimiento']);
+$fecha_nacimiento = !empty($data['fecha_nacimiento']) ? $conn->real_escape_string($data['fecha_nacimiento']) : null;
 $rol = intval($data['rol']);
 
 /* =========================
@@ -48,39 +48,72 @@ if (!empty($data['contrasenia'])) {
 }
 
 /* =========================
+   MANEJO DE IMAGEN (NUEVO)
+========================= */
+$img_url = null;
+
+if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = '../uploads/usuarios/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $extension = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
+    $fileName = 'user_' . $id . '_' . time() . '.' . $extension;
+    $filePath = $uploadDir . $fileName;
+
+    if (move_uploaded_file($_FILES['img']['tmp_name'], $filePath)) {
+        $img_url = 'usuarios/' . $fileName;
+    }
+}
+
+/* =========================
    UPDATE USUARIO
 ========================= */
 if ($contrasenia !== null) {
-    $query = "UPDATE usuario 
-              SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?, contrasenia=?
-              WHERE id_usuario=?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param(
-        "ssssissi",
-        $nombre,
-        $apellido,
-        $email,
-        $telefono,
-        $rol,
-        $fecha_nacimiento,
-        $contrasenia,
-        $id
-    );
+    if ($img_url !== null) {
+        $query = "UPDATE usuario 
+                  SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?, contrasenia=?, img_url=?
+                  WHERE id_usuario=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssssisssi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $contrasenia, $img_url, $id);
+    } else {
+        $query = "UPDATE usuario 
+                  SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?, contrasenia=?
+                  WHERE id_usuario=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssssissi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $contrasenia, $id);
+    }
 } else {
-    $query = "UPDATE usuario 
-              SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?
-              WHERE id_usuario=?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param(
-        "ssssisi",
-        $nombre,
-        $apellido,
-        $email,
-        $telefono,
-        $rol,
-        $fecha_nacimiento,
-        $id
-    );
+    if ($img_url !== null) {
+        if ($fecha_nacimiento !== null) {
+            $query = "UPDATE usuario 
+                      SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?, img_url=?
+                      WHERE id_usuario=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssissi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $img_url, $id);
+        } else {
+            $query = "UPDATE usuario 
+                      SET nombre=?, apellido=?, email=?, telefono=?, rol=?, img_url=?
+                      WHERE id_usuario=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $img_url, $id);
+        }
+    } else {
+        if ($fecha_nacimiento !== null) {
+            $query = "UPDATE usuario 
+                      SET nombre=?, apellido=?, email=?, telefono=?, rol=?, fecha_nacimiento=?
+                      WHERE id_usuario=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssisi", $nombre, $apellido, $email, $telefono, $rol, $fecha_nacimiento, $id);
+        } else {
+            $query = "UPDATE usuario 
+                      SET nombre=?, apellido=?, email=?, telefono=?, rol=?
+                      WHERE id_usuario=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssssii", $nombre, $apellido, $email, $telefono, $rol, $id);
+        }
+    }
 }
 
 if (!$stmt->execute()) {

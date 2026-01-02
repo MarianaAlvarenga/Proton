@@ -1,5 +1,4 @@
 // src/components/FormUser.jsx
-import ComboBox from "./ComboBox";
 import UserImage from "./UserImage.jsx";
 
 const FormUser = ({
@@ -13,6 +12,32 @@ const FormUser = ({
     handleActualizarUsuario,
     handleCancel,
 }) => {
+
+    const especialidadesUsuario = Array.isArray(usuarioEdit?.especialidades)
+        ? usuarioEdit.especialidades
+              .map(esp => {
+                  // ✅ Caso 1: viene como objeto { id_servicio, nombre }
+                  if (typeof esp === "object" && esp !== null && esp.id_servicio) {
+                      return Number(esp.id_servicio);
+                  }
+
+                  // ✅ Caso 2: viene como número o string numérico
+                  if (!Number.isNaN(Number(esp))) {
+                      return Number(esp);
+                  }
+
+                  // ✅ Caso 3: viene como string con nombre
+                  const encontrada = especialidades.find(
+                      e =>
+                          e.nombre.toLowerCase() ===
+                          String(esp).toLowerCase()
+                  );
+
+                  return encontrada ? Number(encontrada.id_servicio) : null;
+              })
+              .filter(id => id !== null)
+        : [];
+
     return (
         <div className="container mt-5">
             <h1 className="title is-2">
@@ -36,11 +61,9 @@ const FormUser = ({
             </div>
 
             {/* Nombre */}
-            <label className="label" htmlFor="name">Nombre:</label>
+            <label className="label">Nombre:</label>
             <input
                 className="input"
-                type="text"
-                id="name"
                 value={usuarioEdit?.nombre || ""}
                 readOnly={!editandoUsuario}
                 onChange={(e) =>
@@ -49,11 +72,9 @@ const FormUser = ({
             />
 
             {/* Apellido */}
-            <label className="label" htmlFor="LastName">Apellido:</label>
+            <label className="label">Apellido:</label>
             <input
                 className="input"
-                type="text"
-                id="LastName"
                 value={usuarioEdit?.apellido || ""}
                 readOnly={!editandoUsuario}
                 onChange={(e) =>
@@ -61,68 +82,62 @@ const FormUser = ({
                 }
             />
 
-            {/* Especialidades solo si existe el campo en el usuario */}
+            {/* Especialidades */}
             {usuarioEdit?.rol === 3 && (
-                    <div className="field mt-3">
-                        <label className="label">Especialidades:</label>
+                <div className="field mt-3">
+                    <label className="label">Especialidades:</label>
 
-                        {editandoUsuario ? (
-                            <div className="control">
-                                {especialidades.map((e) => {
-                                    const espId = Number(e.id_servicio);
-                                    const actuales = usuarioEdit.especialidades || [];
-                                    const isChecked = actuales.includes(espId);
+                    {editandoUsuario ? (
+                        <div className="control">
+                            {especialidades.map(e => {
+                                const espId = Number(e.id_servicio);
+                                const isChecked = especialidadesUsuario.includes(espId);
 
-                                    return (
-                                        <label key={espId} className="checkbox mr-3">
-                                            <input
-                                                type="checkbox"
-                                                checked={isChecked}
-                                                onChange={(ev) => {
-                                                    setUsuarioEdit(prev => {
-                                                        const actuales = prev.especialidades || [];
-                                                        if (ev.target.checked) {
-                                                            return {
-                                                                ...prev,
-                                                                especialidades: [...actuales, espId],
-                                                            };
-                                                        } else {
-                                                            return {
-                                                                ...prev,
-                                                                especialidades: actuales.filter(id => id !== espId),
-                                                            };
-                                                        }
-                                                    });
-                                                }}
-                                            />
-                                            {e.nombre}
-                                        </label>
+                                return (
+                                    <label key={espId} className="checkbox mr-3">
+                                        <input
+                                            type="checkbox"
+                                            checked={isChecked}
+                                            onChange={(ev) => {
+                                                setUsuarioEdit(prev => {
+                                                    const actuales = especialidadesUsuario;
+                                                    return {
+                                                        ...prev,
+                                                        especialidades: ev.target.checked
+                                                            ? [...actuales, espId]
+                                                            : actuales.filter(id => id !== espId),
+                                                    };
+                                                });
+                                            }}
+                                        />
+                                        {e.nombre}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <ul>
+                            {especialidadesUsuario.length > 0 ? (
+                                especialidadesUsuario.map(id => {
+                                    const esp = especialidades.find(
+                                        e => Number(e.id_servicio) === id
                                     );
-                                })}
-                            </div>
-                        ) : (
-                            <ul>
-                                {usuarioEdit.especialidades.length > 0 ? (
-                                    usuarioEdit.especialidades.map(id => {
-                                        const esp = especialidades.find(e => Number(e.id_servicio) === Number(id));
-                                        return <li key={id}>{esp?.nombre || "Especialidad"}</li>;
-                                    })
-                                ) : (
-                                    <p>No tiene especialidades registradas</p>
-                                )}
-                            </ul>
-                        )}
-                    </div>
-                )}
+                                    return <li key={id}>{esp?.nombre}</li>;
+                                })
+                            ) : (
+                                <p>No tiene especialidades registradas</p>
+                            )}
+                        </ul>
+                    )}
+                </div>
+            )}
 
-            {/* Fecha de nacimiento */}
-            <label className="label" htmlFor="born">Fecha de nacimiento:</label>
+            {/* Fecha nacimiento */}
+            <label className="label">Fecha de nacimiento:</label>
             <input
                 className="input"
                 type="date"
-                id="born"
                 value={usuarioEdit?.fecha_nacimiento || ""}
-                min="1900-01-01"
                 readOnly={!editandoUsuario}
                 onChange={(e) =>
                     setUsuarioEdit(prev => ({ ...prev, fecha_nacimiento: e.target.value }))
@@ -130,11 +145,9 @@ const FormUser = ({
             />
 
             {/* Teléfono */}
-            <label className="label" htmlFor="phone">Teléfono:</label>
+            <label className="label">Teléfono:</label>
             <input
                 className="input"
-                type="tel"
-                id="phone"
                 value={usuarioEdit?.telefono || ""}
                 readOnly={!editandoUsuario}
                 onChange={(e) =>
@@ -143,65 +156,45 @@ const FormUser = ({
             />
 
             {/* Email */}
-            <div className="field">
-                <label className="label" htmlFor="email">Email:</label>
-                <p className="control has-icons-left has-icons-right">
-                    <input
-                        className="input"
-                        type="email"
-                        id="email"
-                        value={usuarioEdit?.email || ""}
-                        readOnly={!editandoUsuario}
-                        onChange={(e) =>
-                            setUsuarioEdit(prev => ({ ...prev, email: e.target.value }))
-                        }
-                    />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                    </span>
-                </p>
-            </div>
+            <label className="label">Email:</label>
+            <input
+                className="input"
+                type="email"
+                value={usuarioEdit?.email || ""}
+                readOnly={!editandoUsuario}
+                onChange={(e) =>
+                    setUsuarioEdit(prev => ({ ...prev, email: e.target.value }))
+                }
+            />
 
             {/* Contraseña */}
-            <div className="field">
-                <label className="label" htmlFor="pass">Contraseña:</label>
-                <p className="control has-icons-left">
-                    <input
-                        className="input"
-                        type="password"   // ← SOLO ESTO CAMBIÉ
-                        id="pass"
-                        value={contrasenia}
-                        readOnly={!editandoUsuario}
-                        onChange={(e) => setContrasenia(e.target.value)}
-                        placeholder="Ingrese nueva contraseña o deje vacío"
-                    />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-lock"></i>
-                    </span>
-                </p>
-            </div>
+            <label className="label">Contraseña:</label>
+            <input
+                className="input"
+                type="password"
+                value={contrasenia}
+                readOnly={!editandoUsuario}
+                onChange={(e) => setContrasenia(e.target.value)}
+                placeholder="Ingrese nueva contraseña o deje vacío"
+            />
 
             {/* Botones */}
             {editandoUsuario && (
-                <div className="field is-grouped is-grouped-right">
-                    <p className="control">
-                        <button
-                            className="button is-primary is-link"
-                            onClick={() =>
-                                handleActualizarUsuario({
-                                    ...usuarioEdit,
-                                    contrasenia: contrasenia || null,
-                                })
-                            }
-                        >
-                            Actualizar
-                        </button>
-                    </p>
-                    <p className="control">
-                        <button className="button is-light" onClick={handleCancel}>
-                            Cancelar
-                        </button>
-                    </p>
+                <div className="field is-grouped is-grouped-right mt-4">
+                    <button className="button is-light" onClick={handleCancel}>
+                        Cancelar
+                    </button>
+                    <button
+                        className="button is-primary is-link"
+                        onClick={() =>
+                            handleActualizarUsuario({
+                                ...usuarioEdit,
+                                contrasenia: contrasenia || null,
+                            })
+                        }
+                    >
+                        Actualizar
+                    </button>
                 </div>
             )}
         </div>

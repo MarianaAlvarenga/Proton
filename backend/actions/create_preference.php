@@ -49,7 +49,7 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/success.php",
+        "success" => "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/success.php",
         "failure" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/failure.php",
         "pending" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/pending.php"
     ],

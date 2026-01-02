@@ -8,7 +8,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://before-discussion-picked-informational.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -19,11 +19,18 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             const data = await response.json();
 
             // 🔥 CAMBIO ÚNICO: completar ruta correctamente
-            setSelectedImage(
-                data.img_url
-                    ? `https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
-                    : DefaultUserImage
-            );
+            if (!data.img_url) {
+                setSelectedImage(DefaultUserImage);
+            } else if (data.img_url.startsWith("http")) {
+                // ya es una URL completa
+                setSelectedImage(`${data.img_url}?t=${Date.now()}`);
+            } else {
+                // es solo el nombre del archivo
+                setSelectedImage(
+                    `https://before-discussion-picked-informational.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
+                );
+            }
+
 
         } catch (error) {
             console.error("Error al obtener imagen:", error);
@@ -43,28 +50,28 @@ const UserImage = ({ userId, onTempImageSelected }) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-        alert("La imagen no debe exceder 2MB");
-        return;
-    }
-
-    if (!userId) {
-        try {
-            const imageUrl = URL.createObjectURL(file);
-            setSelectedImage(imageUrl);
-            
-            if (typeof onTempImageSelected === "function") {
-                onTempImageSelected(file);
-            }
-            
-        } catch (error) {
-            console.error("Error procesando imagen:", error);
-            alert("Error al procesar la imagen seleccionada");
-        } finally {
-            if (fileInputRef.current) fileInputRef.current.value = "";
+        if (file.size > 2 * 1024 * 1024) {
+            alert("La imagen no debe exceder 2MB");
+            return;
         }
-        return;
-    }
+
+        if (!userId) {
+            try {
+                const imageUrl = URL.createObjectURL(file);
+                setSelectedImage(imageUrl);
+
+                if (typeof onTempImageSelected === "function") {
+                    onTempImageSelected(file);
+                }
+
+            } catch (error) {
+                console.error("Error procesando imagen:", error);
+                alert("Error al procesar la imagen seleccionada");
+            } finally {
+                if (fileInputRef.current) fileInputRef.current.value = "";
+            }
+            return;
+        }
 
         const formData = new FormData();
         formData.append("image", file);
@@ -73,7 +80,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
         try {
             const response = await fetch(
-                "https://cards-gamma-ocean-dale.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -86,7 +93,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
                 let errorData = {};
                 try {
                     errorData = JSON.parse(responseText);
-                } catch (e) {}
+                } catch (e) { }
 
                 throw new Error(
                     errorData.message ||
@@ -99,13 +106,13 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             if (!data.success) {
                 throw new Error(data.message || "Error al procesar la imagen");
             }
-    
+
             let fileName = data.img_url;
 
             if (fileName.includes("?")) {
-                setSelectedImage(`https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${fileName}`);
+                setSelectedImage(`https://before-discussion-picked-informational.trycloudflare.com/backend/uploads/${fileName}`);
             } else {
-                setSelectedImage(`https://cards-gamma-ocean-dale.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
+                setSelectedImage(`https://before-discussion-picked-informational.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
             }
 
             alert("¡Imagen actualizada correctamente!");
