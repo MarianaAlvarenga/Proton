@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
-import UserImage from "./UserImage";
 import Label from "./Label";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
