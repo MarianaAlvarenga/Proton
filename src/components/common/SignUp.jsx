@@ -7,6 +7,8 @@ import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
 import Alert from "./Alert";
 import "./SignUp.css";
+import usuarioPlaceholder from "../../assets/images/usuario.png";
+
 
 const SignUp = () => {
   const location = useLocation();
@@ -20,7 +22,7 @@ const SignUp = () => {
     contrasenia: "",
     confirmarContrasenia: "",
     rol: 1,
-    especialidad: [], // ⭐ array real
+    especialidad: [],
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -34,7 +36,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -44,7 +46,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -68,8 +70,6 @@ const SignUp = () => {
           contrasenia: "",
           confirmarContrasenia: "",
           rol: userData.rol || 1,
-
-          // 🔥 NORMALIZACIÓN CORRECTA
           especialidad: Array.isArray(userData.especialidades)
             ? userData.especialidades.map(e => Number(e.id_servicio))
             : [],
@@ -87,7 +87,6 @@ const SignUp = () => {
   };
 
   const handleEspecialidadChange = (id) => {
-    // ⭐ permite múltiples selecciones
     setFormData((prev) => {
       const exists = prev.especialidad.includes(id);
       return {
@@ -126,8 +125,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://alerts-poor-rides-often.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://alerts-poor-rides-often.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");
@@ -205,8 +204,8 @@ const SignUp = () => {
           <div className="column is-12-mobile is-8-tablet is-6-desktop is-5-widescreen">
             <div className="box" style={{ padding: "20px", boxShadow: "0 2px 5px rgba(0,0,0,0.1)" }}>
 
-              {/* Imagen central editable */}
-              {isEditMode && imagenPreview && (
+              {/* Imagen central editable (ALTA Y EDICIÓN) */}
+              {(imagenPreview !== null || !isEditMode) && (
                 <label
                   style={{
                     display: "block",
@@ -217,7 +216,7 @@ const SignUp = () => {
                   }}
                 >
                   <img
-                    src={imagenPreview}
+                    src={imagenPreview || usuarioPlaceholder}
                     alt="Foto de perfil"
                     style={{
                       width: "120px",
@@ -243,10 +242,6 @@ const SignUp = () => {
                 </label>
               )}
 
-
-
-
-
               <form onSubmit={handleSubmit}>
                 {showComboBox && !isEditMode && (
                   <ComboBox
@@ -259,7 +254,6 @@ const SignUp = () => {
                   />
                 )}
 
-                {/* ⭐ CHECKBOXES DE ESPECIALIDADES */}
                 {mostrarEspecialidad() && (
                   <div style={{ margin: "15px 0" }}>
                     <label className="label">Especialidades</label>
@@ -270,7 +264,6 @@ const SignUp = () => {
                             type="checkbox"
                             checked={formData.especialidad.includes(Number(e.id_servicio))}
                             onChange={() => handleEspecialidadChange(Number(e.id_servicio))}
-
                           />
                           &nbsp;{e.nombre}
                         </label>
@@ -293,7 +286,6 @@ const SignUp = () => {
                   )}
 
                   <div className="is-flex" style={{ gap: "10px", marginTop: "20px" }}>
-
                     <button
                       type="button"
                       className="button is-primary is-fullwidth has-text-white"
@@ -308,6 +300,7 @@ const SignUp = () => {
                   </div>
                 </section>
               </form>
+
             </div>
           </div>
         </div>

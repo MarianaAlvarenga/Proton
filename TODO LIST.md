@@ -7,10 +7,11 @@ administradores/vendedores/peluqueros no deben tener mascotas asociadas.✔️
 en "perfil" de peluquero, en "Especialidades" aparecen "Especialidad" en lugar del nombre de la especialidad✔️
 cuando se edita peluquero siendo administrador debe completar checkbox de especialidades con las que tenga asociadas.✔️
 no se puede editar la foto cuando se edita un usuario desde admin.✔️
-((((para commitear 
 ----------------------------------------------------------------
+resuelve imágen de perfil en signup.jsx✔️
+no actualiza foto de perfil en editar usuario✔️
+((((para commitear 
 botón "eliminar mascota" ?
-no actualiza foto de perfil en editar usuario
 
 "mascota agregada correctamente" --> tiene que ser con modal.
 # TODO LIST
