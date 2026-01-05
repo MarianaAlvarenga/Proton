@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
-import UserImage from "./UserImage";
 import Label from "./Label";
 import SubNavBar from "./SubNavBar";
 import ComboBox from "./ComboBox";
@@ -34,7 +33,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -44,7 +43,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -126,8 +125,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");
@@ -242,10 +241,6 @@ const SignUp = () => {
                   />
                 </label>
               )}
-
-
-
-
 
               <form onSubmit={handleSubmit}>
                 {showComboBox && !isEditMode && (

@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

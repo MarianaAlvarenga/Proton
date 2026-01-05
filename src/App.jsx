@@ -21,6 +21,7 @@ import UserSaleInfo from './components/sales/UserSaleInfo';
 import ProfileUser from './components/common/ProfileUser';
 import Landing from './pages/Landing';
 import SuccessPage from './components/common/SuccessPage';
+import Asistencia from './components/shifts/Asistencia';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path="/ProfileUser" element={<ProfileUser/>} />
           <Route path="/" element={<Landing />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/Asistencia" element={<Asistencia />} />
         </Routes>
       </Layout>
     </Router>

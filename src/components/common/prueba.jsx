@@ -37,7 +37,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("https://before-discussion-picked-informational.trycloudflare.com/backend/actions/getRoles.php");
+        const response = await fetch("https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/getRoles.php");
         const data = await response.json();
         if (data.error) {
           console.error(data.message);
@@ -98,8 +98,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://before-discussion-picked-informational.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,

@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://before-discussion-picked-informational.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://deliver-scenes-msgid-mechanics.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {
