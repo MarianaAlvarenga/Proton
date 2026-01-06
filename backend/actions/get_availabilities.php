@@ -57,9 +57,15 @@ try {
         JOIN dias_horas_disponibles dhd ON dd.id_dias_disponibles = dhd.id_dias_disponibles
         JOIN horas_disponibles hd ON dhd.id_horario_disponible = hd.id_horario_disponible
         LEFT JOIN turno t ON t.id_peluquero = td.id_usuario 
-            AND t.fecha = dd.fecha_disponible 
-            AND t.hora_inicio = hd.hora_inicial 
-            AND t.hora_fin = hd.hora_final
+    AND t.fecha = dd.fecha_disponible 
+    AND t.hora_inicio = hd.hora_inicial 
+    AND t.hora_fin = hd.hora_final
+    AND NOT EXISTS (
+        SELECT 1 
+        FROM asistencia a 
+        WHERE a.id_turno = t.id_turno
+    )
+
         WHERE td.id_usuario = ?
         ORDER BY dd.fecha_disponible, hd.hora_inicial
     ";

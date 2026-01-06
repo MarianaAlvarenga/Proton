@@ -30,10 +30,14 @@ $sql = "
         u.apellido,
         u.email
     FROM turno t
-    INNER JOIN usuario u 
-        ON u.id_usuario = t.cliente_id
-    WHERE t.id_peluquero = ?
-      AND t.fecha = CURDATE()
+INNER JOIN usuario u 
+    ON u.id_usuario = t.cliente_id
+LEFT JOIN asistencia a 
+    ON a.id_turno = t.id_turno
+WHERE t.id_peluquero = ?
+  AND t.fecha = CURDATE()
+  AND a.id_turno IS NULL
+
     ORDER BY t.hora_inicio
 ";
 
