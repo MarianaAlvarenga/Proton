@@ -8,7 +8,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://alerts-poor-rides-often.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -27,7 +27,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             } else {
                 // es solo el nombre del archivo
                 setSelectedImage(
-                    `https://alerts-poor-rides-often.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
+                    `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                 );
             }
 
@@ -80,7 +80,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
         try {
             const response = await fetch(
-                "https://alerts-poor-rides-often.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -110,9 +110,9 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             let fileName = data.img_url;
 
             if (fileName.includes("?")) {
-                setSelectedImage(`https://alerts-poor-rides-often.trycloudflare.com/backend/uploads/${fileName}`);
+                setSelectedImage(`https://bizarre-directors-drugs-slim.trycloudflare.com/backend/uploads/${fileName}`);
             } else {
-                setSelectedImage(`https://alerts-poor-rides-often.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
+                setSelectedImage(`https://bizarre-directors-drugs-slim.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
             }
 
             alert("¡Imagen actualizada correctamente!");

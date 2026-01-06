@@ -6,7 +6,10 @@ import "./Asistencia.css";
 import Label from '../common/Label'
 
 const Asistencia = () =>{
-    const user          = "Pepito";
+  const navigate = useNavigate();
+
+  
+  const user          = "Pepito";
     const fecha_turno   = "25/02/2026";
     const horario_turno = "17:00";
 

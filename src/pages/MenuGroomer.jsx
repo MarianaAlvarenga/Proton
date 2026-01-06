@@ -10,7 +10,6 @@ const MenuGroomer = () => {
   const { width } = useWindowSize();
   const isMobile = width < 768;
 
-  // 🔹 Handlers que navegan con state
   const handleAgendarTurnoClick = () => {
     navigate("/Shifts", {
       state: {
@@ -33,11 +32,20 @@ const MenuGroomer = () => {
     });
   };
 
-  // 🔹 Links para SubNavBar (solo para desktop)
+  // ✅ NUEVO: asistencia
+  const handleAsistenciaClick = () => {
+    navigate("/Shifts", {
+      state: {
+        userRole: 3,
+        mode: "asistencia",
+      },
+    });
+  };
+
   const links = [
     { label: "Disponibilidad", path: "/Shifts", icon: "disponibilidad.png", onClick: handleDisponibilidadClick },
     { label: "Agendar turno", path: "/Shifts", icon: "agenda.png", onClick: handleAgendarTurnoClick },
-    { label: "Asistencia", path: "#", icon: "agenda.png" },
+    { label: "Asistencia", path: "/Shifts", icon: "agenda.png", onClick: handleAsistenciaClick },
   ];
 
   return (
@@ -56,7 +64,6 @@ const MenuGroomer = () => {
         <NavBar />
         {!isMobile ? (
           <>
-            {/* 🔹 SubNavBar usa los mismos links pero ahora con handlers */}
             <SubNavBar links={links} />
             <Carousel />
           </>
@@ -70,59 +77,26 @@ const MenuGroomer = () => {
               flexDirection: "column",
             }}
           >
-            <div
-              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-              style={{
-                height: "calc(50% - 1em)",
-                marginBottom: "1em",
-                backgroundColor: "#EEE6FF",
-                borderRadius: "8px",
-              }}
-            >
+            <div className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{ height: "calc(50% - 1em)", marginBottom: "1em", backgroundColor: "#EEE6FF", borderRadius: "8px" }}>
               <a role="button" onClick={handleDisponibilidadClick}>
-                <img
-                  src={require("../../src/assets/images/disponibilidad.png")}
-                  alt="Disponibilidad"
-                  style={{ width: "5em" }}
-                />
+                <img src={require("../../src/assets/images/disponibilidad.png")} alt="Disponibilidad" style={{ width: "5em" }} />
                 <h2 className="title is-2">Disponibilidad</h2>
               </a>
             </div>
 
-            <div
-              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-              style={{
-                height: "calc(50% - 1em)",
-                backgroundColor: "#EEE6FF",
-                marginBottom: "1em",
-                borderRadius: "8px",
-              }}
-            >
+            <div className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{ height: "calc(50% - 1em)", backgroundColor: "#EEE6FF", marginBottom: "1em", borderRadius: "8px" }}>
               <a role="button" onClick={handleAgendarTurnoClick}>
-                <img
-                  src={require("../../src/assets/images/agenda.png")}
-                  alt="Agenda"
-                  style={{ width: "5em" }}
-                />
+                <img src={require("../../src/assets/images/agenda.png")} alt="Agenda" style={{ width: "5em" }} />
                 <h2 className="title is-2">Agendar turno</h2>
               </a>
             </div>
 
-            <div
-              className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
-              style={{
-                height: "calc(50% - 1em)",
-                backgroundColor: "#EEE6FF",
-                borderRadius: "8px",
-                marginBottom: "1em",
-              }}
-            >
-              <a role="button">
-                <img
-                  src={require("../../src/assets/images/lista-de-verificacion.png")}
-                  alt="Verificacion"
-                  style={{ width: "5em" }}
-                />
+            <div className="column is-full is-flex is-flex-direction-column is-justify-content-center is-align-items-center"
+              style={{ height: "calc(50% - 1em)", backgroundColor: "#EEE6FF", borderRadius: "8px", marginBottom: "1em" }}>
+              <a role="button" onClick={handleAsistenciaClick}>
+                <img src={require("../../src/assets/images/lista-de-verificacion.png")} alt="Verificacion" style={{ width: "5em" }} />
                 <h2 className="title is-2">Asistencia</h2>
               </a>
             </div>

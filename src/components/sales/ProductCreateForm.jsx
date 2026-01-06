@@ -24,12 +24,12 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getCategories.php')
+        axios.get('https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getCategories.php')
             .then(response => setCategories(response.data))
             .catch(error => console.error("Hubo un error al obtener las categorías:", error));
 
         if (productId) {
-            axios.get(`https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -91,13 +91,13 @@ const ProductCreateForm = () => {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://alerts-poor-rides-often.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
                 response = await axios.post(
-                    'https://alerts-poor-rides-often.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/addProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );

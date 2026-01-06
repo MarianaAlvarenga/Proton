@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { useNavigate } from "react-router-dom";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
 
@@ -13,8 +14,10 @@ export default function Calendar({
   selectedServicioId,
   onClose,
   selectedClientEmail,
-  isAgendarTurno // Agregamos esta prop
+  isAgendarTurno,
+  isAsistencia
 }) {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -27,7 +30,9 @@ export default function Calendar({
     }
 
     setLoading(true);
-    fetch(`https://alerts-poor-rides-often.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`)
+    fetch(
+      `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+    )
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Error ${res.status}: ${res.statusText}`);
@@ -35,7 +40,7 @@ export default function Calendar({
         return res.json();
       })
       .then((data) => {
-        const mapped = (data || []).map((avail) => ({
+        let mapped = (data || []).map((avail) => ({
           id: avail.id_turno || `avail-${avail.fecha_disponible}-${avail.hora_inicial}`,
           title: avail.estado === "ocupado" ? "Ocupado" : "Disponible",
           start: `${avail.fecha_disponible}T${avail.hora_inicial}`,
@@ -51,6 +56,16 @@ export default function Calendar({
             id_peluquero: avail.id_peluquero,
           },
         }));
+
+        if (isAsistencia) {
+          const hoy = new Date().toISOString().split("T")[0];
+          mapped = mapped.filter(
+            (e) =>
+              e.extendedProps.estado === "ocupado" &&
+              e.extendedProps.fecha_disponible === hoy
+          );
+        }
+
         setEvents(mapped);
         setLoading(false);
       })
@@ -116,9 +131,17 @@ export default function Calendar({
   };
 
   const handleEventClick = async (info) => {
+    if (isAsistencia) {
+      navigate("/Asistencia", {
+        state: {
+          turno: info.event.extendedProps
+        }
+      });
+      return;
+    }
+
     const estado = info.event.extendedProps?.estado || "disponible";
 
-    // 🔹 Si el peluquero está en modo "definir disponibilidad"
     if (isSettingAvailability && userRole === 3) {
       if (estado === "ocupado") {
         alert("No podés eliminar un turno ya reservado.");
@@ -153,16 +176,19 @@ export default function Calendar({
           return;
         }
 
-        const res = await fetch("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/delete_availability.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id_peluquero: id_peluquero,
-            fecha: fecha_disponible,
-            hora_inicio: hora_inicial,
-            hora_fin: hora_final,
-          }),
-        });
+        const res = await fetch(
+          "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/delete_availability.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id_peluquero: id_peluquero,
+              fecha: fecha_disponible,
+              hora_inicio: hora_inicial,
+              hora_fin: hora_final,
+            }),
+          }
+        );
 
         const responseText = await res.text();
         const json = JSON.parse(responseText);
@@ -182,9 +208,7 @@ export default function Calendar({
       return;
     }
 
-    // 🔹 Si el usuario está en modo "sacar turno"
     if (!isSettingAvailability || (userRole === 3 && isAgendarTurno)) {
-      // Solo roles válidos: cliente(1), peluquero(3), admin(4)
       if (!(userRole === 1 || userRole === 3 || userRole === 4)) {
         alert("No autorizado para reservar turnos.");
         return;
@@ -205,7 +229,6 @@ export default function Calendar({
         return;
       }
 
-      // Si es admin o peluquero en modo agendar, debe tener un cliente seleccionado
       if ((userRole === 4 || (userRole === 3 && isAgendarTurno)) && !selectedClientEmail) {
         alert("Seleccioná un cliente antes de reservar el turno.");
         return;
@@ -222,20 +245,23 @@ export default function Calendar({
       const user = JSON.parse(localStorage.getItem("user")) || {};
 
       try {
-        const res = await fetch("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/save_appointment.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fecha: fecha_disponible,
-            hora_inicio: hora_inicial,
-            hora_fin: hora_final,
-            id: user.id_usuario,
-            userRole: user.rol,
-            id_peluquero: peluqueroId,
-            servicio_id: selectedServicioId,
-            email_cliente: selectedClientEmail || null,
-          }),
-        });
+        const res = await fetch(
+          "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/save_appointment.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fecha: fecha_disponible,
+              hora_inicio: hora_inicial,
+              hora_fin: hora_final,
+              id: user.id_usuario,
+              userRole: user.rol,
+              id_peluquero: peluqueroId,
+              servicio_id: selectedServicioId,
+              email_cliente: selectedClientEmail || null,
+            }),
+          }
+        );
 
         const responseText = await res.text();
         let json;
@@ -264,7 +290,6 @@ export default function Calendar({
     }
   };
 
-
   const handleSave = async () => {
     if (selectedSlots.length === 0) {
       alert("No hay horarios seleccionados para guardar.");
@@ -280,26 +305,25 @@ export default function Calendar({
         return;
       }
 
-      console.log("Enviando disponibilidades:", selectedSlots);
-
-      const res = await fetch("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/availability.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_peluquero: id_peluquero,
-          disponibilidades: selectedSlots,
-        }),
-      });
+      const res = await fetch(
+        "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/availability.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_peluquero: id_peluquero,
+            disponibilidades: selectedSlots,
+          }),
+        }
+      );
 
       const responseText = await res.text();
-      console.log("Respuesta del servidor:", responseText);
 
       let result;
       try {
         result = JSON.parse(responseText);
       } catch (parseError) {
-        console.error("Error parseando JSON:", parseError);
-        throw new Error(`Respuesta inválida del servidor: ${responseText.substring(0, 100)}`);
+        throw new Error(`Respuesta inválida del servidor`);
       }
 
       if (!res.ok || !result.success) {
@@ -323,14 +347,17 @@ export default function Calendar({
       <h1 className="title is-3 has-text-centered">Calendario</h1>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        selectable={true}
+        initialView={isAsistencia ? "timeGridDay" : "timeGridWeek"}
+        selectable={!isAsistencia}
         events={events}
         select={handleSelect}
         eventClick={handleEventClick}
       />
       {isSettingAvailability && (
-        <div className="calendar-footer" style={{ marginTop: "1rem", marginBottom: "2rem" }}>
+        <div
+          className="calendar-footer"
+          style={{ marginTop: "1rem", marginBottom: "2rem" }}
+        >
           <button
             className="button is-fullwidth"
             style={{ backgroundColor: "#9b59b6", color: "white", fontWeight: "bold" }}

@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

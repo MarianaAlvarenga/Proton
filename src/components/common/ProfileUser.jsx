@@ -42,7 +42,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -80,7 +80,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -97,7 +97,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);

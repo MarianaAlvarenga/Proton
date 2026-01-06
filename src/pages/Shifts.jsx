@@ -12,15 +12,14 @@ const Shifts = () => {
 
   const locationState = location.state || {};
 
-  // modos derivados del state (mantener tu lógica actual)
-  const isSettingAvailability = locationState.isSettingAvailability ?? (locationState.mode === "disponibilidad");
-  const isAgendarTurno = locationState.isAgendarTurno ?? (locationState.mode === "agendar");
-  const mode = locationState.mode || "";
+  const isSettingAvailability =
+    locationState.isSettingAvailability ?? locationState.mode === 'disponibilidad';
+  const isAgendarTurno =
+    locationState.isAgendarTurno ?? locationState.mode === 'agendar';
+  const isAsistencia = locationState.mode === 'asistencia';
 
-  // user desde localStorage
   const user = JSON.parse(localStorage.getItem('user')) || {};
 
-  // userRole: primero el state, luego los campos del user guardado, y finalmente 3
   const userRole = Number(
     locationState.userRole ??
     user.rol ??
@@ -28,24 +27,21 @@ const Shifts = () => {
     3
   );
 
-  console.log("DEBUG Shifts: location.state =", locationState, "userFromStorage =", user, "resolved userRole =", userRole, "isAgendarTurno =", isAgendarTurno, "isSettingAvailability =", isSettingAvailability);
-
-
   const isRange = false;
 
-  // Estados
   const [especialidades, setEspecialidades] = useState([]);
   const [selectedEspecialidad, setSelectedEspecialidad] = useState('');
   const [peluqueros, setPeluqueros] = useState([]);
   const [selectedPeluquero, setSelectedPeluquero] = useState('');
   const [emailAdmin, setEmailAdmin] = useState('');
 
-  // Traer especialidades (solo admin o cliente o cuando se está agendando)
   useEffect(() => {
     if (userRole === 1 || userRole === 4 || isAgendarTurno) {
       const fetchEspecialidades = async () => {
         try {
-          const res = await axios.get('https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getEspecialidades.php');
+          const res = await axios.get(
+            'https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getEspecialidades.php'
+          );
           setEspecialidades(res.data || []);
         } catch (error) {
           console.error('Error obteniendo especialidades:', error);
@@ -55,7 +51,6 @@ const Shifts = () => {
     }
   }, [userRole, isAgendarTurno]);
 
-  // Traer peluqueros según especialidad
   useEffect(() => {
     if (!(userRole === 1 || userRole === 4 || isAgendarTurno)) return;
     if (!selectedEspecialidad) {
@@ -67,7 +62,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://alerts-poor-rides-often.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
@@ -79,94 +74,27 @@ const Shifts = () => {
     fetchPeluqueros();
   }, [selectedEspecialidad, userRole, isAgendarTurno]);
 
-  // Calculamos el id de peluquero que le pasamos al Calendar:
-  // - Si estamos definiendo disponibilidad: siempre el usuario autenticado (peluquero).
-  // - Si un peluquero está en modo "agendar": también le pasamos su propio id para ver sus disponibilidades.
-  // - En los demás casos (cliente/admin), se usa selectedPeluquero (se elige en el combobox).
-  const calendarPeluqueroId = isSettingAvailability
-    ? user.id_usuario
-    : (userRole === 3 && isAgendarTurno ? user.id_usuario : selectedPeluquero);
+  const calendarPeluqueroId =
+    isSettingAvailability || isAsistencia
+      ? user.id_usuario
+      : userRole === 3 && isAgendarTurno
+        ? user.id_usuario
+        : selectedPeluquero;
 
-  // Guardar turno o disponibilidad
-  const handleCalendarClose = async (dates) => {
-    try {
-      const userData = JSON.parse(localStorage.getItem('user')) || {};
-
-      // --- GUARDAR DISPONIBILIDAD (solo peluquero en modo disponibilidad)
-      if (isSettingAvailability) {
-        if (!dates || dates.length === 0) {
-          alert("Por favor seleccioná al menos una fecha válida");
-          return;
-        }
-
-        await axios.post(
-          'https://alerts-poor-rides-often.trycloudflare.com/backend/actions/save_availability.php',
-          {
-            id_peluquero: userData.id_usuario,
-            disponibilidad: dates,
-          },
-          { headers: { 'Content-Type': 'application/json' } }
-        );
-
-        alert("¡Disponibilidad guardada correctamente!");
-        navigate('/MenuGroomer');
-        return;
-      }
-
-      // --- AGENDAR TURNO (admin, cliente o peluquero en modo agendar)
-      if (!dates || dates.length === 0) {
-        alert("Por favor seleccioná al menos una fecha válida");
-        return;
-      }
-
-      if (!selectedPeluquero && (userRole === 1 || userRole === 4 || isAgendarTurno) && !(userRole === 3 && isAgendarTurno)) {
-        // Si es admin/cliente requiere selectedPeluquero (salvo peluquero en modo agendar, que usa su propio id)
-        throw new Error("Por favor seleccioná un peluquero");
-      }
-
-      // Determinar email del cliente según rol:
-      let emailCliente = '';
-      if (userRole === 4) {
-        // admin: puede escribir email (si no lo hace, usamos fallback al email del admin??) -> mantenemos comportamiento previo
-        emailCliente = emailAdmin || userData.email;
-      } else if (userRole === 3 && isAgendarTurno) {
-        // peluquero en modo agendar: **debe** ingresar el email del cliente
-        emailCliente = emailAdmin;
-        if (!emailCliente) throw new Error("Por favor ingresá el email del cliente al que le querés sacar el turno");
-      } else if (userRole === 1) {
-        // cliente: se usa su email
-        emailCliente = userData.email;
-      }
-
-      await axios.post(
-        'https://alerts-poor-rides-often.trycloudflare.com/backend/actions/save_appointment.php',
-        {
-          id_peluquero: selectedPeluquero || userData.id_usuario,
-          fecha: dates[0].fecha_disponible,
-          hora_inicio: dates[0].hora_inicial,
-          hora_fin: dates[0].hora_final,
-          email_cliente: emailCliente
-        },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-
-      alert("¡Turno agendado correctamente!");
-    } catch (error) {
-      console.error("Error:", error);
-      alert(error.response?.data?.message || error.message || "Error desconocido");
+  const handleCalendarClose = () => {
+    if (isSettingAvailability) {
+      navigate('/MenuGroomer');
     }
   };
-
-  console.log("location.state:", location.state);
-
 
   return (
     <div>
       <NavBar />
-      <SubNavBar showBack currentPage='Turnos' />
+      <SubNavBar showBack currentPage="Turnos" />
 
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-        {((userRole === 4) || (userRole === 3 && isAgendarTurno)) && (
+
+        {!isAsistencia && ((userRole === 4) || (userRole === 3 && isAgendarTurno)) && (
           <div style={{ marginBottom: '1em' }}>
             <label className="label">Email del cliente</label>
             <input
@@ -179,8 +107,7 @@ const Shifts = () => {
           </div>
         )}
 
-        {/* Combobox de especialidades (cliente, admin o peluquero en modo agendar) */}
-        {(userRole === 1 || userRole === 4 || isAgendarTurno) && especialidades.length > 0 && (
+        {!isAsistencia && (userRole === 1 || userRole === 4 || isAgendarTurno) && especialidades.length > 0 && (
           <ComboBox
             value={selectedEspecialidad}
             onChange={(val) => setSelectedEspecialidad(val)}
@@ -192,8 +119,7 @@ const Shifts = () => {
           />
         )}
 
-        {/* Combobox de peluqueros (cliente, admin o peluquero en modo agendar) */}
-        {(userRole === 1 || userRole === 4 || isAgendarTurno) && peluqueros.length > 0 && (
+        {!isAsistencia && (userRole === 1 || userRole === 4 || isAgendarTurno) && peluqueros.length > 0 && (
           <ComboBox
             value={selectedPeluquero}
             onChange={(val) => setSelectedPeluquero(val)}
@@ -205,7 +131,6 @@ const Shifts = () => {
           />
         )}
 
-        {/* Calendario */}
         <Calendar
           peluqueroId={calendarPeluqueroId}
           isRange={isRange}
@@ -216,6 +141,7 @@ const Shifts = () => {
           selectedServicioId={selectedEspecialidad}
           selectedClientEmail={emailAdmin}
           isAgendarTurno={isAgendarTurno}
+          isAsistencia={isAsistencia}
         />
       </div>
     </div>
