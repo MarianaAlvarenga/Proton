@@ -3,107 +3,126 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
 import "./Asistencia.css";
-import Label from '../common/Label'
 
-const Asistencia = () =>{
+const Asistencia = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const turnoBase = location.state?.turno;
 
-  
-  const user          = "Pepito";
-    const fecha_turno   = "25/02/2026";
-    const horario_turno = "17:00";
+  const [turno, setTurno] = useState(null);
+  const [asistio, setAsistio] = useState(null);
+  const [horaLlegada, setHoraLlegada] = useState("");
+  const [horaFin, setHoraFin] = useState("");
+  const [observaciones, setObservaciones] = useState("");
 
-    const [asistio, setAsistio] = useState(null);
+  useEffect(() => {
+    if (!turnoBase?.id_turno) return;
 
-    const handleSubmit = () => {
+    fetch(`/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setTurno(data.turno);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
-    }
-    return(
-        <>
-            <NavBar />
-            <SubNavBar />
-            <div className="container mt-5">                       
-              <h1 className="title has-text-centered">
-                  Cliente: {user}
-              </h1>
-              <h2 className="subtitle is-4">
-                  Fecha del turno: {fecha_turno}
-              </h2>
-              <h2 className="subtitle is-4">
-                  Horario del turno: {horario_turno}
-              </h2>
-              <div className="field">
-                <label className="subtitle is-4">¿Asistió al turno?</label>
+  const handleSubmit = () => {
+    fetch("/backend/actions/saveAsistencia.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id_turno: turno.id_turno,
+        asistio,
+        hora_llegada: asistio ? horaLlegada : null,
+        hora_finalizacion: asistio ? horaFin : null,
+        observaciones: asistio ? observaciones : null
+      })
+    })
+      .then(res => res.json())
+      .then(() => navigate(-1))
+      .catch(console.error);
+  };
 
-                <div className="control mt-5">
-                  <label className="radio mr-6">
-                    <input
-                      type="radio"
-                      name="estado"
-                      value="si"
-                      onChange={() => setAsistio(true)}
-                    />
-                    SI
-                  </label>
+  if (!turno) return null;
 
-                  <label className="radio">
-                    <input
-                      type="radio"
-                      name="estado"
-                      value="no"
-                      onChange={() => setAsistio(false)}
-                    />
-                    NO
-                  </label>
-                </div>
-              </div>
+  return (
+    <>
+      <NavBar />
+      <SubNavBar />
 
-              {asistio === true && (
-                <>
-                  <div className="field mt-4">
-                    <label className="label">Hora de llegada:</label>
-                    <div className="control">
-                      <input className="input" type="time" />
-                    </div>
-                  </div>
+      <div className="container mt-5">
+        <h1 className="title has-text-centered">
+          Cliente: {turno.cliente_nombre} {turno.cliente_apellido}
+        </h1>
 
-                  <div className="field mt-4">
-                    <label className="label">Hora de Finalización:</label>
-                    <div className="control">
-                      <input className="input" type="time" />
-                    </div>
-                  </div>
+        <h2 className="subtitle is-4">
+          Fecha del turno: {turno.fecha}
+        </h2>
 
-                  <div className="field mt-4">
-                    <label className="label">Observaciones:</label>
-                    <div className="control">
-                      <textarea className="textarea" />
-                    </div>
-                  </div>
-                </>
-              )}
+        <h2 className="subtitle is-4">
+          Horario del turno: {turno.hora_inicio} - {turno.hora_fin}
+        </h2>
 
-                <div className="is-flex" style={{ gap: "10px", margin: "20px" }}>
+        <div className="field">
+          <label className="subtitle is-4">¿Asistió al turno?</label>
 
-                  <button
-                    type="button"
-                    className="button is-primary is-fullwidth has-text-white"
-                    style={{ flex: 1 }}
-                    onClick={() => navigate(-1)}
-                  >
-                    Cancelar
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="button is-primary is-fullwidth has-text-white" 
-                    style={{ flex: 1 }}
-                  >
-                    Aceptar
-                  </button>
-                </div>
+          <div className="control mt-5">
+            <label className="radio mr-6">
+  <input
+    type="radio"
+    name="asistio"
+    checked={asistio === true}
+    onChange={() => setAsistio(true)}
+  />
+  SI
+</label>
+
+<label className="radio">
+  <input
+    type="radio"
+    name="asistio"
+    checked={asistio === false}
+    onChange={() => setAsistio(false)}
+  />
+  NO
+</label>
+
+          </div>
+        </div>
+
+        {asistio === true && (
+          <>
+            <div className="field mt-4">
+              <label className="label">Hora de llegada</label>
+              <input className="input" type="time" value={horaLlegada} onChange={e => setHoraLlegada(e.target.value)} />
             </div>
-        </>
-    )
-}
+
+            <div className="field mt-4">
+              <label className="label">Hora de finalización</label>
+              <input className="input" type="time" value={horaFin} onChange={e => setHoraFin(e.target.value)} />
+            </div>
+
+            <div className="field mt-4">
+              <label className="label">Observaciones</label>
+              <textarea className="textarea" value={observaciones} onChange={e => setObservaciones(e.target.value)} />
+            </div>
+          </>
+        )}
+
+        <div className="is-flex" style={{ gap: "10px", marginTop: "20px" }}>
+          <button className="button is-light" onClick={() => navigate(-1)}>
+            Cancelar
+          </button>
+
+          <button className="button is-primary" onClick={handleSubmit} disabled={asistio === null}>
+            Guardar
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Asistencia;

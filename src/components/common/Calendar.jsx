@@ -134,7 +134,9 @@ export default function Calendar({
     if (isAsistencia) {
       navigate("/Asistencia", {
         state: {
-          turno: info.event.extendedProps
+          turno: {
+          id_turno: info.event.extendedProps.turno_id
+          }
         }
       });
       return;
