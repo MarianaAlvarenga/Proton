@@ -18,7 +18,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const backendBase = "https://bizarre-directors-drugs-slim.trycloudflare.com/backend";
+  const backendBase = "https://definitions-persons-coated-ist.trycloudflare.com/backend";
 
   useEffect(() => {
     const checkSession = async () => {

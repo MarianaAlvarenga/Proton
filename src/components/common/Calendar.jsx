@@ -31,7 +31,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -179,7 +179,7 @@ export default function Calendar({
         }
 
         const res = await fetch(
-          "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/delete_availability.php",
+          "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/delete_availability.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -248,7 +248,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -308,7 +308,7 @@ export default function Calendar({
       }
 
       const res = await fetch(
-        "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/availability.php",
+        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

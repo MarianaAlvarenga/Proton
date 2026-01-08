@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
