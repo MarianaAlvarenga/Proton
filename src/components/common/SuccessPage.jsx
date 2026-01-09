@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import Alert from "./Alert.jsx";
 
 const SuccessPage = () => {
@@ -19,17 +20,11 @@ const SuccessPage = () => {
     if (ok === "1") {
       console.log("SuccessPage: compra OK → limpiando carrito.");
 
-      // → localStorage
       localStorage.removeItem("cart");
       localStorage.removeItem("total");
 
-      // → cookies
       document.cookie = "cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie = "total=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-      // → si tenés context, descomentá esto:
-      // setCart([]);
-      // setTotal(0);
     }
 
     // ================================
@@ -37,7 +32,6 @@ const SuccessPage = () => {
     // ================================
     const stored = localStorage.getItem("user");
     if (!stored) {
-      console.warn("SuccessPage: no hay 'user' en localStorage. Redirigiendo a /login.");
       navigate("/login", { replace: true });
       return;
     }
@@ -45,15 +39,29 @@ const SuccessPage = () => {
     let user = null;
     try {
       user = JSON.parse(stored);
-    } catch (err) {
-      console.error("SuccessPage: error parseando localStorage user:", err);
+    } catch {
       localStorage.removeItem("user");
       navigate("/login", { replace: true });
       return;
     }
 
-    console.log("USER EN SUCCESSPAGE:", user);
     const rolNumber = Number(user.rol);
+
+    const redirectByRol = () => {
+      switch (rolNumber) {
+        case 1:
+        case 2:
+          navigate("/Products", { replace: true });
+          break;
+
+        case 4:
+          navigate("/MenuAdmin", { replace: true });
+          break;
+
+        default:
+          navigate("/", { replace: true });
+      }
+    };
 
     // ================================
     // 🟢 MOSTRAR ALERTA
@@ -67,27 +75,17 @@ const SuccessPage = () => {
         Cancel: "Ver comprobante",
         OnCancel: () => {
           window.open("https://www.mercadopago.com.ar", "_blank");
-          return false;
         },
       });
 
       if (result.isConfirmed) {
-        switch (rolNumber) {
-          case 1:
-          case 2:
-            navigate("/Products", { replace: true });
-            break;
+        redirectByRol();
+        return;
+      }
 
-          case 4:
-            navigate("/MenuAdmin", { replace: true });
-            break;
-
-          default:
-            console.warn("SuccessPage: rol desconocido → landing.");
-            navigate("/", { replace: true });
-        }
-      } else {
-        console.log("Usuario eligió ver comprobante.");
+      // ❌ Cruz del modal
+      if (result.isDismissed && result.dismiss === Swal.DismissReason.close) {
+        redirectByRol();
       }
     };
 

@@ -12,31 +12,28 @@ const Alert = ({
     title: Title,
     text: Detail,
     icon: icon,
-    showCancelButton: !!(Cancel && OnCancel),
+
+    // 🔹 Confirm sigue igual
     confirmButtonText: Confirm,
-    cancelButtonText: Cancel,
+
+    // 🔹 Usamos DENY en vez de CANCEL
+    showDenyButton: !!(Cancel && OnCancel),
+    denyButtonText: Cancel,
+    denyButtonColor: "#6c757d",
     allowOutsideClick: false,
     reverseButtons: true,
     showCloseButton: true,
 
-    didOpen: () => {
-      const cancelBtn = Swal.getCancelButton();
-      if (!cancelBtn) return;
-
-      const handler = () => {
-        // Ejecutar lógica custom si existe
-        if (OnCancel) {
-          try {
-            OnCancel();
-          } catch (err) {
-            console.error("Error en OnCancel:", err);
-          }
+    // 🧠 Esto evita que el modal se cierre
+    preDeny: () => {
+      if (OnCancel) {
+        try {
+          OnCancel();
+        } catch (err) {
+          console.error("Error en OnCancel:", err);
         }
-        // ⚠️ NO prevenimos el evento
-        // SweetAlert se encarga de cerrar el modal
-      };
-
-      cancelBtn.addEventListener("click", handler, { capture: true });
+      }
+      return false; // ⛔ NO cerrar modal
     }
   });
 };
