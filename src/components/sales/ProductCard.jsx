@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

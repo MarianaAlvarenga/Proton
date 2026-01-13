@@ -229,3 +229,22 @@
 [30-Dec-2025 23:56:06 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_69545886211a68.01423387.jpg
 [30-Dec-2025 23:56:06 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 4
 [05-Jan-2026 16:35:20 Europe/Berlin] Imagen subida exitosamente para usuario 111: img_695bda387ed36.png
+[13-Jan-2026 23:03:59 Europe/Berlin] ERROR en upload_user_image.php: Solo se permiten imágenes JPEG y PNG. Tipo recibido: image/webp en C:\xampp\htdocs\Proton\backend\actions\upload_user_image.php:83
+[13-Jan-2026 23:04:10 Europe/Berlin] Imagen subida exitosamente para usuario 114: img_6966c15a049e8.jpg
+[13-Jan-2026 23:04:25 Europe/Berlin] Imagen subida exitosamente para usuario 114: img_6966c169f2762.jpg
+[13-Jan-2026 23:04:31 Europe/Berlin] Imagen subida exitosamente para usuario 114: img_6966c16f6968f.jpg
+[13-Jan-2026 23:05:36 Europe/Berlin] Imagen subida exitosamente para usuario 114: img_6966c1b0b9fe4.jpg
+[13-Jan-2026 23:10:14 Europe/Berlin] Imagen subida exitosamente para usuario 114: img_6966c2c6778a2.jpg
+[13-Jan-2026 23:10:56 Europe/Berlin] Inicio subida imagen para petId: 7
+[13-Jan-2026 23:10:56 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => WIN_20220806_20_10_02_Pro.jpg
+    [full_path] => WIN_20220806_20_10_02_Pro.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php6E75.tmp
+    [error] => 0
+    [size] => 57877
+)
+
+[13-Jan-2026 23:10:56 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6966c2f0b3a558.44231580.jpg
+[13-Jan-2026 23:10:56 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 7

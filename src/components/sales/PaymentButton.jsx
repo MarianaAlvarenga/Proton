@@ -1,17 +1,48 @@
 import React from "react";
 import axios from "axios";
+import Alert from "../common/Alert";
 
 const PaymentButton = ({ cart, userEmail, isRegistered }) => {
   const handlePayment = async () => {
     try {
-      // 👇 solo se exige email si el usuario es registrado
+      // 👇 si es usuario registrado, el email es obligatorio
       if (isRegistered && !userEmail) {
-        alert("Debe ingresar un email válido para continuar.");
+        Alert({
+          Title: "Email requerido",
+          Detail: "Debe ingresar un email válido para continuar.",
+          icon: "warning",
+          Confirm: "Entendido"
+        });
         return;
       }
 
+      // 👇 verificar email en la BD si es usuario registrado
+      if (isRegistered) {
+        const checkEmailResponse = await fetch(
+          "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/checkEmail.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail }),
+          }
+        );
+
+        const checkEmailResult = await checkEmailResponse.json();
+
+        if (!checkEmailResult.exists) {
+          Alert({
+            Title: "Email no registrado",
+            Detail: "El correo electrónico ingresado no pertenece a un usuario registrado.",
+            icon: "error",
+            Confirm: "Entendido"
+          });
+          return;
+        }
+      }
+
+      // 👇 guardar carrito
       await axios.post(
-        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/save_cart.php",
+        "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/save_cart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -19,6 +50,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         }
       );
 
+      // 👇 items para MercadoPago
       const mpItems = cart.map(item => ({
         title: item.name,
         quantity: item.quantity,
@@ -27,7 +59,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }));
 
       const response = await axios.post(
-        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/create_preference.php",
+        "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
@@ -42,12 +74,22 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       if (response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        alert("Hubo un problema al iniciar el pago.");
+        Alert({
+          Title: "Error",
+          Detail: "Hubo un problema al iniciar el pago.",
+          icon: "error",
+          Confirm: "Entendido"
+        });
       }
 
     } catch (error) {
       console.error("Error al procesar la compra:", error);
-      alert("Error al conectar con el servidor.");
+      Alert({
+        Title: "Error de conexión",
+        Detail: "No se pudo conectar con el servidor.",
+        icon: "error",
+        Confirm: "Entendido"
+      });
     }
   };
 

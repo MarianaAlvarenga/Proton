@@ -18,7 +18,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const backendBase = "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend";
+  const backendBase = "https://mas-host-least-disciplines.trycloudflare.com/backend";
 
   useEffect(() => {
     const checkSession = async () => {

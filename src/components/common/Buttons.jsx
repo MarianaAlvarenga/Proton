@@ -29,7 +29,7 @@ const ModifyButton = ({ urlImage = ModifyImage, selectedUserId, onNoSelection })
       return;
     }
 
-    fetch("https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getUserById.php", {
+    fetch("https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getUserById.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedUserId }),

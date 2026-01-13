@@ -40,7 +40,7 @@ const Shifts = () => {
       const fetchEspecialidades = async () => {
         try {
           const res = await axios.get(
-            'https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getEspecialidades.php'
+            'https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getEspecialidades.php'
           );
           setEspecialidades(res.data || []);
         } catch (error) {
@@ -62,7 +62,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
@@ -75,11 +75,12 @@ const Shifts = () => {
   }, [selectedEspecialidad, userRole, isAgendarTurno]);
 
   const calendarPeluqueroId =
-    isSettingAvailability || isAsistencia
-      ? user.id_usuario
-      : userRole === 3 && isAgendarTurno
-        ? user.id_usuario
-        : selectedPeluquero;
+  isSettingAvailability || isAsistencia
+    ? user.id_usuario
+    : isAgendarTurno
+      ? (selectedPeluquero || user.id_usuario)
+      : selectedPeluquero;
+
 
   const handleCalendarClose = () => {
     if (isSettingAvailability) {

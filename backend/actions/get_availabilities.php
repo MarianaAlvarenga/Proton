@@ -1,72 +1,53 @@
 <?php
 require_once '../includes/session_config.php';
+require_once '../includes/db.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once '../includes/db.php';
-
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
-
 if ($conn->connect_error) {
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]);
+    echo json_encode(["success" => false, "message" => "Error de conexión"]);
     exit();
 }
-
 $conn->set_charset('utf8');
 
-// Aceptar id_peluquero por GET (query param) o por JSON en body
-$id_peluquero = null;
-if (isset($_GET['id_peluquero']) && !empty($_GET['id_peluquero'])) {
-    $id_peluquero = intval($_GET['id_peluquero']);
-} else {
-    $data = json_decode(file_get_contents("php://input"), true);
-    if (isset($data['id_peluquero']) && !empty($data['id_peluquero'])) {
-        $id_peluquero = intval($data['id_peluquero']);
-    }
-}
-
+// Obtener id_peluquero
+$id_peluquero = intval($_GET['id_peluquero'] ?? 0);
 if (!$id_peluquero) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Falta el id_peluquero."]);
+    echo json_encode(["success" => false, "message" => "Falta id_peluquero"]);
     exit();
 }
 
 try {
-    // Limpieza de datos huérfanos
-    $conn->query("DELETE FROM dias_horas_disponibles WHERE id_dias_disponibles NOT IN (SELECT id_dias_disponibles FROM dias_disponibles)");
-    $conn->query("DELETE FROM dias_horas_disponibles WHERE id_horario_disponible NOT IN (SELECT id_horario_disponible FROM horas_disponibles)");
-    $conn->query("DELETE FROM dias_disponibles WHERE id_dias_disponibles NOT IN (SELECT id_dias_disponibles FROM dias_horas_disponibles)");
-    $conn->query("DELETE FROM horas_disponibles WHERE id_horario_disponible NOT IN (SELECT id_horario_disponible FROM dias_horas_disponibles)");
-    $conn->query("DELETE FROM tiene_dias WHERE id_dias_disponibles NOT IN (SELECT id_dias_disponibles FROM dias_disponibles)");
-
-    // Traer disponibilidades actuales para el peluquero
     $query = "
         SELECT 
-            dd.fecha_disponible, 
-            hd.hora_inicial, 
-            hd.hora_final, 
-            td.id_usuario AS id_peluquero,
+            dd.fecha_disponible,
+            hd.hora_inicial,
+            hd.hora_final,
+            dhd.id_usuario AS id_peluquero,
             t.id_turno,
             CASE 
-                WHEN t.id_turno IS NOT NULL THEN 'ocupado' 
-                ELSE 'disponible' 
+                WHEN t.id_turno IS NOT NULL THEN 'ocupado'
+                ELSE 'disponible'
             END AS estado
-        FROM tiene_dias td 
-        JOIN dias_disponibles dd ON td.id_dias_disponibles = dd.id_dias_disponibles
-        JOIN dias_horas_disponibles dhd ON dd.id_dias_disponibles = dhd.id_dias_disponibles
-        JOIN horas_disponibles hd ON dhd.id_horario_disponible = hd.id_horario_disponible
-        LEFT JOIN turno t ON t.id_peluquero = td.id_usuario 
-    AND t.fecha = dd.fecha_disponible 
-    AND t.hora_inicio = hd.hora_inicial 
-    AND t.hora_fin = hd.hora_final
-    AND NOT EXISTS (
-        SELECT 1 
-        FROM asistencia a 
-        WHERE a.id_turno = t.id_turno
-    )
-
-        WHERE td.id_usuario = ?
+        FROM dias_horas_disponibles dhd
+        JOIN dias_disponibles dd 
+            ON dd.id_dias_disponibles = dhd.id_dias_disponibles
+        JOIN horas_disponibles hd 
+            ON hd.id_horario_disponible = dhd.id_horario_disponible
+        LEFT JOIN turno t
+            ON t.id_peluquero = dhd.id_usuario
+           AND t.fecha = dd.fecha_disponible
+           AND t.hora_inicio = hd.hora_inicial
+           AND t.hora_fin = hd.hora_final
+           AND NOT EXISTS (
+                SELECT 1 
+                FROM asistencia a 
+                WHERE a.id_turno = t.id_turno
+           )
+        WHERE dhd.id_usuario = ?
         ORDER BY dd.fecha_disponible, hd.hora_inicial
     ";
 
@@ -74,26 +55,17 @@ try {
     $stmt->bind_param("i", $id_peluquero);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    $disponibilidades = [];
+
+    $data = [];
     while ($row = $result->fetch_assoc()) {
-        $disponibilidades[] = [
-            "fecha_disponible" => $row['fecha_disponible'],
-            "hora_inicial" => $row['hora_inicial'],
-            "hora_final" => $row['hora_final'],
-            "id_peluquero" => $row['id_peluquero'],
-            "id_turno" => $row['id_turno'],
-            "estado" => $row['estado']
-        ];
+        $data[] = $row;
     }
-    
-    http_response_code(200);
-    echo json_encode($disponibilidades);
-    
+
+    echo json_encode($data);
+
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Error: " . $e->getMessage()]);
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }
 
 $conn->close();
-?>

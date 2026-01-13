@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import DefaultUserImage from "../../assets/images/usuario.png";
+import Alert from "../common/Alert";
 
 const UserImage = ({ userId, onTempImageSelected }) => {
     const fileInputRef = useRef(null);
@@ -8,7 +9,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://mas-host-least-disciplines.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -18,19 +19,15 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
             const data = await response.json();
 
-            // 🔥 CAMBIO ÚNICO: completar ruta correctamente
             if (!data.img_url) {
                 setSelectedImage(DefaultUserImage);
             } else if (data.img_url.startsWith("http")) {
-                // ya es una URL completa
                 setSelectedImage(`${data.img_url}?t=${Date.now()}`);
             } else {
-                // es solo el nombre del archivo
                 setSelectedImage(
-                    `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
+                    `https://mas-host-least-disciplines.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                 );
             }
-
 
         } catch (error) {
             console.error("Error al obtener imagen:", error);
@@ -51,7 +48,12 @@ const UserImage = ({ userId, onTempImageSelected }) => {
         if (!file) return;
 
         if (file.size > 2 * 1024 * 1024) {
-            alert("La imagen no debe exceder 2MB");
+            Alert({
+                Title: "Imagen demasiado grande",
+                Detail: "La imagen no debe exceder los 2MB.",
+                icon: "error",
+                Confirm: "Entendido"
+            });
             return;
         }
 
@@ -66,7 +68,12 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
             } catch (error) {
                 console.error("Error procesando imagen:", error);
-                alert("Error al procesar la imagen seleccionada");
+                Alert({
+                    Title: "Error",
+                    Detail: "Error al procesar la imagen seleccionada.",
+                    icon: "error",
+                    Confirm: "Cerrar"
+                });
             } finally {
                 if (fileInputRef.current) fileInputRef.current.value = "";
             }
@@ -77,10 +84,9 @@ const UserImage = ({ userId, onTempImageSelected }) => {
         formData.append("image", file);
         formData.append("userId", userId.toString());
 
-
         try {
             const response = await fetch(
-                "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -110,16 +116,26 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             let fileName = data.img_url;
 
             if (fileName.includes("?")) {
-                setSelectedImage(`https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/uploads/${fileName}`);
+                setSelectedImage(`https://mas-host-least-disciplines.trycloudflare.com/backend/uploads/${fileName}`);
             } else {
-                setSelectedImage(`https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
+                setSelectedImage(`https://mas-host-least-disciplines.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
             }
 
-            alert("¡Imagen actualizada correctamente!");
+            Alert({
+                Title: "Imagen actualizada",
+                Detail: "Tu foto de perfil se actualizó correctamente.",
+                icon: "success",
+                Confirm: "Perfecto"
+            });
 
         } catch (error) {
             console.error("Detalle completo del error:", error);
-            alert(`Error al subir la imagen:\n${error.message}`);
+            Alert({
+                Title: "Error al subir imagen",
+                Detail: error.message,
+                icon: "error",
+                Confirm: "Cerrar"
+            });
         } finally {
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';

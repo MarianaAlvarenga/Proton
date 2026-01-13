@@ -10,18 +10,23 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $codigo_producto = $_POST['codigo_producto'];
-    $nombre_producto = $_POST['nombre_producto'];
-    $descripcion_producto = $_POST['descripcion_producto'];
-    $stock_producto = $_POST['stock_producto'];
-    $punto_reposicion = $_POST['punto_reposicion'];
-    $categoria_id_categoria = $_POST['categoria_id_categoria'];
-    $precio_producto = $_POST['precio_producto'];
+    $codigo_producto = $_POST['codigo_producto'] ?? null;
+    $nombre_producto = $_POST['nombre_producto'] ?? null;
+    $descripcion_producto = $_POST['descripcion_producto'] ?? null;
+    $stock_producto = $_POST['stock_producto'] ?? null;
+    $punto_reposicion = $_POST['punto_reposicion'] ?? null;
+    $categoria_id_categoria = $_POST['categoria_id_categoria'] ?? null;
+    $precio_producto = $_POST['precio_producto'] ?? null;
 
+    // ✅ Validación correcta (0 es válido)
     if (
-        empty($codigo_producto) || empty($nombre_producto) || empty($descripcion_producto) ||
-        empty($stock_producto) || empty($punto_reposicion) || empty($categoria_id_categoria) ||
-        empty($precio_producto)
+        trim($codigo_producto) === "" ||
+        trim($nombre_producto) === "" ||
+        trim($descripcion_producto) === "" ||
+        $stock_producto === null ||
+        $punto_reposicion === null ||
+        $categoria_id_categoria === null ||
+        $precio_producto === null
     ) {
         echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
         exit;
@@ -32,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // =============================
     $newImage = null;
 
-    // Si el usuario sube una nueva imagen
     if (isset($_FILES['image_url']) && $_FILES['image_url']['error'] === UPLOAD_ERR_OK) {
 
         $uploadDir = "../uploads/";
@@ -40,13 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $targetPath = $uploadDir . $fileName;
 
         if (move_uploaded_file($_FILES['image_url']['tmp_name'], $targetPath)) {
-            // 🚀 guardamos ruta relativa
             $newImage = "http://localhost:8888/backend/uploads/" . $fileName;
-
         }
 
     } else {
-        // No se subió imagen → mantener la anterior
         $q = $conn->query("SELECT image_url FROM producto WHERE codigo_producto = '$codigo_producto'");
         $r = $q->fetch_assoc();
         $newImage = $r['image_url'];
