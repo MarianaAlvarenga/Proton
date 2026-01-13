@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useNavigate } from "react-router-dom";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
+import Alert from "./Alert";
 
 export default function Calendar({
   peluqueroId,
@@ -31,7 +32,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -74,8 +75,6 @@ export default function Calendar({
         setLoading(false);
       });
   };
-
-  console.log("isAgendarTurno en Calendar:", isAgendarTurno);
 
   useEffect(() => {
     fetchDisponibilidades(peluqueroId);
@@ -146,11 +145,24 @@ export default function Calendar({
 
     if (isSettingAvailability && userRole === 3) {
       if (estado === "ocupado") {
-        alert("No podés eliminar un turno ya reservado.");
+        Alert({
+          Title: "Acción no permitida",
+          Detail: "No podés eliminar un turno ya reservado.",
+          icon: "error"
+        });
         return;
       }
 
-      if (!window.confirm("¿Eliminar este horario?")) return;
+      const confirmDelete = await Alert({
+        Title: "Eliminar horario",
+        Detail: "¿Seguro que querés eliminar este horario?",
+        Confirm: "Eliminar",
+        Cancel: "Cancelar",
+        icon: "warning",
+        OnCancel: () => {}
+      });
+
+      if (!confirmDelete.isConfirmed) return;
 
       if (info.event.extendedProps?.isTemp) {
         setEvents((prev) => prev.filter((e) => e.id !== info.event.id));
@@ -174,12 +186,16 @@ export default function Calendar({
         const id_peluquero = info.event.extendedProps?.id_peluquero || peluqueroId;
 
         if (!fecha_disponible || !hora_inicial || !hora_final || !id_peluquero) {
-          alert("No se puede eliminar: datos incompletos.");
+          Alert({
+            Title: "Error",
+            Detail: "No se puede eliminar: datos incompletos.",
+            icon: "error"
+          });
           return;
         }
 
         const res = await fetch(
-          "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/delete_availability.php",
+          "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/delete_availability.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -196,15 +212,26 @@ export default function Calendar({
         const json = JSON.parse(responseText);
 
         if (!res.ok || json.success === false) {
-          alert(json.message || "No se pudo eliminar la disponibilidad.");
+          Alert({
+            Title: "Error",
+            Detail: json.message || "No se pudo eliminar la disponibilidad.",
+            icon: "error"
+          });
           return;
         }
 
         fetchDisponibilidades(peluqueroId);
-        alert("Disponibilidad eliminada correctamente.");
+        Alert({
+          Title: "Listo",
+          Detail: "Disponibilidad eliminada correctamente.",
+          icon: "success"
+        });
       } catch (error) {
-        console.error("Error eliminando disponibilidad:", error);
-        alert("Error eliminando disponibilidad: " + error.message);
+        Alert({
+          Title: "Error",
+          Detail: "Error eliminando disponibilidad: " + error.message,
+          icon: "error"
+        });
       }
 
       return;
@@ -212,27 +239,47 @@ export default function Calendar({
 
     if (!isSettingAvailability || (userRole === 3 && isAgendarTurno)) {
       if (!(userRole === 1 || userRole === 3 || userRole === 4)) {
-        alert("No autorizado para reservar turnos.");
+        Alert({
+          Title: "Acceso denegado",
+          Detail: "No autorizado para reservar turnos.",
+          icon: "error"
+        });
         return;
       }
 
       if (estado === "ocupado") {
-        alert("Este turno ya está ocupado.");
+        Alert({
+          Title: "Turno ocupado",
+          Detail: "Este turno ya está ocupado.",
+          icon: "warning"
+        });
         return;
       }
 
       if (userRole !== 3 && !selectedServicioId) {
-        alert("Por favor seleccioná primero la especialidad a reservar.");
+        Alert({
+          Title: "Falta información",
+          Detail: "Por favor seleccioná primero la especialidad a reservar.",
+          icon: "warning"
+        });
         return;
       }
 
       if (!peluqueroId) {
-        alert("Por favor seleccioná un peluquero.");
+        Alert({
+          Title: "Falta información",
+          Detail: "Por favor seleccioná un peluquero.",
+          icon: "warning"
+        });
         return;
       }
 
       if ((userRole === 4 || (userRole === 3 && isAgendarTurno)) && !selectedClientEmail) {
-        alert("Seleccioná un cliente antes de reservar el turno.");
+        Alert({
+          Title: "Cliente no seleccionado",
+          Detail: "Seleccioná un cliente antes de reservar el turno.",
+          icon: "warning"
+        });
         return;
       }
 
@@ -242,13 +289,23 @@ export default function Calendar({
       const hora_final = new Date(info.event.end).toTimeString().substring(0, 5);
 
       const confirmMsg = `¿Confirmás reservar el turno el ${fecha_disponible} de ${hora_inicial} a ${hora_final}?`;
-      if (!window.confirm(confirmMsg)) return;
+
+      const confirmReserva = await Alert({
+        Title: "Confirmar turno",
+        Detail: confirmMsg,
+        Confirm: "Confirmar",
+        Cancel: "Cancelar",
+        icon: "question",
+        OnCancel: () => {}
+      });
+
+      if (!confirmReserva.isConfirmed) return;
 
       const user = JSON.parse(localStorage.getItem("user")) || {};
 
       try {
         const res = await fetch(
-          "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -266,27 +323,30 @@ export default function Calendar({
         );
 
         const responseText = await res.text();
-        let json;
-        try {
-          json = JSON.parse(responseText);
-        } catch {
-          console.error("Respuesta inválida del servidor:", responseText);
-          alert("Error del servidor: respuesta inválida.");
-          fetchDisponibilidades(peluqueroId);
-          return;
-        }
+        const json = JSON.parse(responseText);
 
         if (!res.ok || !json.success) {
-          alert(json.message || "No se pudo reservar el turno.");
+          Alert({
+            Title: "Error",
+            Detail: json.message || "No se pudo reservar el turno.",
+            icon: "error"
+          });
           fetchDisponibilidades(peluqueroId);
           return;
         }
 
         fetchDisponibilidades(peluqueroId);
-        alert("Turno reservado correctamente.");
+        Alert({
+          Title: "Turno reservado",
+          Detail: "Turno reservado correctamente.",
+          icon: "success"
+        });
       } catch (error) {
-        console.error(error);
-        alert("Error al reservar turno.");
+        Alert({
+          Title: "Error",
+          Detail: "Error al reservar turno.",
+          icon: "error"
+        });
         fetchDisponibilidades(peluqueroId);
       }
     }
@@ -294,7 +354,11 @@ export default function Calendar({
 
   const handleSave = async () => {
     if (selectedSlots.length === 0) {
-      alert("No hay horarios seleccionados para guardar.");
+      Alert({
+        Title: "Atención",
+        Detail: "No hay horarios seleccionados para guardar.",
+        icon: "warning"
+      });
       return;
     }
 
@@ -303,12 +367,16 @@ export default function Calendar({
       const id_peluquero = userData?.id_usuario;
 
       if (!id_peluquero) {
-        alert("Debes iniciar sesión para guardar disponibilidad");
+        Alert({
+          Title: "Sesión requerida",
+          Detail: "Debes iniciar sesión para guardar disponibilidad.",
+          icon: "warning"
+        });
         return;
       }
 
       const res = await fetch(
-        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/availability.php",
+        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -320,25 +388,27 @@ export default function Calendar({
       );
 
       const responseText = await res.text();
-
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        throw new Error(`Respuesta inválida del servidor`);
-      }
+      const result = JSON.parse(responseText);
 
       if (!res.ok || !result.success) {
         throw new Error(result.message || "No se pudo guardar la disponibilidad.");
       }
 
-      alert("Disponibilidad guardada correctamente.");
+      Alert({
+        Title: "Guardado",
+        Detail: "Disponibilidad guardada correctamente.",
+        icon: "success"
+      });
+
       if (onClose) {
         onClose(selectedSlots);
       }
     } catch (error) {
-      console.error("Error al guardar disponibilidad:", error);
-      alert(`Error al guardar la disponibilidad: ${error.message}`);
+      Alert({
+        Title: "Error",
+        Detail: `Error al guardar la disponibilidad: ${error.message}`,
+        icon: "error"
+      });
     }
   };
 

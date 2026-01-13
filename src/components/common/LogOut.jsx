@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

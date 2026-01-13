@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -200,7 +200,7 @@ const ProductCard = ({
 
       {isAdmin
         && Number(ProductStock) > 0
-        && Number(ProductStock) < Number(ProductReplenishment) && (
+        && Number(ProductStock) <= Number(ProductReplenishment) && (
           <p style={{ color: "red", fontWeight: "bold", marginTop: "6px" }}>
             REPOSICIÓN NECESARIA (Stock: {ProductStock})
           </p>

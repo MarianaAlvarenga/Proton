@@ -42,7 +42,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -80,7 +80,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -97,7 +97,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://bizarre-directors-drugs-slim.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);
@@ -157,28 +157,28 @@ const ProfileUser = () => {
 
     const handleActualizarUsuario = async () => {
 
-    const formData = new FormData();
+        const formData = new FormData();
 
-    Object.keys(usuarioEdit).forEach((key) => {
-        if (key === "especialidades" && Array.isArray(usuarioEdit[key])) {
-            // mandar especialidades UNA sola vez como JSON
-            formData.append(
-                "especialidades",
-                JSON.stringify(usuarioEdit.especialidades)
-            );
+        Object.keys(usuarioEdit).forEach((key) => {
+            if (key === "especialidades" && Array.isArray(usuarioEdit[key])) {
+                // mandar especialidades UNA sola vez como JSON
+                formData.append(
+                    "especialidades",
+                    JSON.stringify(usuarioEdit.especialidades)
+                );
 
-        } else if (usuarioEdit[key] !== null && usuarioEdit[key] !== undefined) {
-            formData.append(key, usuarioEdit[key]);
+            } else if (usuarioEdit[key] !== null && usuarioEdit[key] !== undefined) {
+                formData.append(key, usuarioEdit[key]);
+            }
+        });
+
+        // contraseña aparte (como ya lo hacías)
+        if (contrasenia && contrasenia.trim() !== "") {
+            formData.append("contrasenia", contrasenia);
         }
-    });
-
-    // contraseña aparte (como ya lo hacías)
-    if (contrasenia && contrasenia.trim() !== "") {
-        formData.append("contrasenia", contrasenia);
-    }
 
         try {
-            const response = await fetch("https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/updateUser.php", {
+            const response = await fetch("https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/updateUser.php", {
                 method: "POST",
                 body: formData,
             });
@@ -220,7 +220,7 @@ const ProfileUser = () => {
             // actualizar existente (flujo previo)
             try {
                 const response = await fetch(
-                    `https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/updatePet.php`,
+                    `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/updatePet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -263,7 +263,7 @@ const ProfileUser = () => {
                 // Asegurarse de que tenga el id del usuario
                 const payload = { ...mascotaEdit, id_usuario: mascotaEdit.id_usuario || userData?.id_usuario };
                 const response = await fetch(
-                    `https://training-elder-held-musician.trycloudflare.com/backend/actions/addPet.php`,
+                    `https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/addPet.php`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -299,7 +299,7 @@ const ProfileUser = () => {
                             uploadForm.append("petId", String(json.id_mascota));
 
                             const uploadResp = await fetch(
-                                "https://training-elder-held-musician.trycloudflare.com/backend/actions/upload_pet_image.php",
+                                "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/upload_pet_image.php",
                                 {
                                     method: "POST",
                                     body: uploadForm,
@@ -340,9 +340,9 @@ const ProfileUser = () => {
                     setEditandoMascota(false);
                     setAddingMascota(true);
                     alert("Mascota agregada correctamente 🐾");
-                    } else {
-                        alert("Error al agregar la mascota");
-                    }
+                } else {
+                    alert("Error al agregar la mascota");
+                }
             } catch (error) {
                 console.error("Error al crear mascota:", error);
             }

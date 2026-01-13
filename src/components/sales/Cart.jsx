@@ -6,6 +6,7 @@ import Pagination from "../common/Pagination";
 import CancelButton from "../common/CancelButton";
 import "./Cart.css";
 import { useNavigate } from "react-router-dom";
+import Alert from "../common/Alert";
 
 const Cart = () => {
   const [cartProducts, setCartProducts] = useState([]);
@@ -112,7 +113,20 @@ const Cart = () => {
               }}
               onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
               onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
-              onClick={() => navigate("/usersaleinfo", { state: { total } })}
+              onClick={() => {
+  if (cartProducts.length === 0) {
+    Alert({
+      Title: "Carrito vacío",
+      Detail: "Agregá al menos un producto al carrito para poder finalizar la compra.",
+      icon: "info",
+      Confirm: "Entendido"
+    });
+    return;
+  }
+
+  navigate("/usersaleinfo", { state: { total } });
+}}
+
             >
               Finalizar compra
             </button>

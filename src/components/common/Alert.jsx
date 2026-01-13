@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 const Alert = ({ 
   Title = "Alerta", 
   Detail = "Ooohh what button you gonna click?", 
-  Confirm = "Confirm it!", 
+  Confirm = "Entendido!", 
   Cancel = "Maybe not",
   icon = "warning",
   OnCancel = null 

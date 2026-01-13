@@ -11,7 +11,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }
 
       await axios.post(
-        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/save_cart.php",
+        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/save_cart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -27,7 +27,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }));
 
       const response = await axios.post(
-        "https://definitions-persons-coated-ist.trycloudflare.com/backend/actions/create_preference.php",
+        "https://reconstruction-parish-establishing-axis.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
