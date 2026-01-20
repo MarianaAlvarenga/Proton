@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://annotation-tue-static-inc.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

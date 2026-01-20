@@ -29,7 +29,7 @@ const ModifyButton = ({ urlImage = ModifyImage, selectedUserId, onNoSelection })
       return;
     }
 
-    fetch("https://annotation-tue-static-inc.trycloudflare.com/backend/actions/getUserById.php", {
+    fetch("https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/getUserById.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedUserId }),
