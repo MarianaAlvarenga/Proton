@@ -2,21 +2,23 @@ import React, { useRef, useState, useEffect } from "react";
 import DefaultPetImage from "../../assets/images/perro.png";
 import Alert from "../common/Alert";
 
-/**
- * Props:
- * - petId: number | undefined
- * - mascotaEdit: object (opcional) -> usado cuando agregás nueva mascota sin id
- * - setMascotaEdit: function (opcional) -> para guardar pendingImageFile / preview
- */
+const BACKEND_URL =
+    "https://annotation-tue-static-inc.trycloudflare.com/backend";
+
 const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(DefaultPetImage);
+
+    const buildImageUrl = (imgUrl) => {
+        if (!imgUrl) return DefaultPetImage;
+        return `${BACKEND_URL}/uploads/${imgUrl}?t=${Date.now()}`;
+    };
 
     const fetchPetImage = async () => {
         try {
             if (petId) {
                 const response = await fetch(
-                    `https://mas-host-least-disciplines.trycloudflare.com/backend/actions/get_pet_image.php?petId=${petId}`,
+                    `${BACKEND_URL}/actions/get_pet_image.php?petId=${petId}`,
                     { credentials: "include" }
                 );
 
@@ -25,14 +27,10 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                 }
 
                 const data = await response.json();
-                setSelectedImage(
-                    data.img_url
-                        ? `https://mas-host-least-disciplines.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
-                        : DefaultPetImage
-                );
+                setSelectedImage(buildImageUrl(data.img_url));
             } else {
-                if (mascotaEdit && mascotaEdit.img_url) {
-                    setSelectedImage(mascotaEdit.img_url);
+                if (mascotaEdit?.img_url) {
+                    setSelectedImage(buildImageUrl(mascotaEdit.img_url));
                 } else {
                     setSelectedImage(DefaultPetImage);
                 }
@@ -62,16 +60,19 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
             return;
         }
 
+        // Mascota nueva (sin ID)
         if (!petId) {
             const previewUrl = URL.createObjectURL(file);
             setSelectedImage(previewUrl);
+
             if (setMascotaEdit) {
                 setMascotaEdit(prev => ({
                     ...prev,
                     pendingImageFile: file,
-                    img_url: previewUrl
+                    img_url: null
                 }));
             }
+
             if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
@@ -82,7 +83,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
 
         try {
             const response = await fetch(
-                "https://mas-host-least-disciplines.trycloudflare.com/backend/actions/upload_pet_image.php",
+                `${BACKEND_URL}/actions/upload_pet_image.php`,
                 {
                     method: "POST",
                     body: formData,
@@ -90,32 +91,13 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
                 }
             );
 
-            const responseText = await response.text();
-            console.log("Respuesta completa del servidor:", responseText);
-
-            if (!response.ok) {
-                let errorData = {};
-                try {
-                    errorData = JSON.parse(responseText);
-                } catch (e) {
-                    console.error("No se pudo parsear la respuesta de error:", e);
-                }
-
-                throw new Error(
-                    errorData.message ||
-                    `Error del servidor (${response.status}): ${responseText || 'Sin detalles'}`
-                );
-            }
-
-            const data = JSON.parse(responseText);
+            const data = await response.json();
 
             if (!data.success) {
-                throw new Error(data.message || "Error al procesar la imagen");
+                throw new Error(data.message || "Error al subir imagen");
             }
 
-            setSelectedImage(
-                `http://localhost:8080/Proton/backend/uploads/${data.img_url}?t=${Date.now()}`
-            );
+            setSelectedImage(buildImageUrl(data.img_url));
 
             Alert({
                 Title: "Imagen actualizada",
@@ -125,41 +107,20 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
             });
 
         } catch (error) {
-            console.error("Detalle completo del error:", {
-                error: error,
-                fileInfo: {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type
-                }
-            });
-
             Alert({
                 Title: "Error al subir imagen",
-                Detail:
-                    `No se pudo subir la imagen.\n\n` +
-                    `Motivo: ${error.message}\n` +
-                    `Tipo: ${file.type}\n` +
-                    `Tamaño: ${Math.round(file.size / 1024)}KB\n` +
-                    `Nombre: ${file.name}`,
+                Detail: error.message,
                 icon: "error",
                 Confirm: "Cerrar"
             });
-
         } finally {
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
-    };
-
-    const handleClick = () => {
-        fileInputRef.current?.click();
     };
 
     return (
         <div>
-            <a onClick={handleClick} style={{ cursor: "pointer" }}>
+            <a onClick={() => fileInputRef.current?.click()} style={{ cursor: "pointer" }}>
                 <figure style={{ padding: "10px" }}>
                     <img
                         src={selectedImage}

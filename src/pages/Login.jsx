@@ -13,7 +13,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://annotation-tue-static-inc.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -56,7 +56,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://mas-host-least-disciplines.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://annotation-tue-static-inc.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,
