@@ -248,3 +248,97 @@
 
 [13-Jan-2026 23:10:56 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6966c2f0b3a558.44231580.jpg
 [13-Jan-2026 23:10:56 Europe/Berlin] Imagen subida y DB actualizada correctamente para petId 7
+[17-Jan-2026 02:49:46 Europe/Berlin] Imagen subida exitosamente para usuario 120: img_696aeabad63e0.png
+[17-Jan-2026 16:24:26 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:24:26 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php7225.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:24:26 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\mascotas\petimg_696ba9aaddc5f.jpg
+[17-Jan-2026 16:24:26 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:27:30 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:27:30 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\php3E17.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:27:30 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\mascotas\petimg_696baa6228d0d.jpg
+[17-Jan-2026 16:27:30 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:29:03 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:29:03 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpAC0F.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:29:03 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\mascotas\petimg_696baabfd218e.jpg
+[17-Jan-2026 16:29:03 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:44:33 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:44:33 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpD9A4.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:44:33 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_696bae61068ef.jpg
+[17-Jan-2026 16:44:33 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:53:18 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:53:18 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpDE23.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:53:18 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_696bb06e72e5a.jpg
+[17-Jan-2026 16:53:18 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:56:12 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:56:12 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => images.png
+    [full_path] => images.png
+    [type] => image/png
+    [tmp_name] => C:\xampp\tmp\php876A.tmp
+    [error] => 0
+    [size] => 12160
+)
+
+[17-Jan-2026 16:56:12 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_696bb11cd00469.75534964.png
+[17-Jan-2026 16:56:12 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 16:56:31 Europe/Berlin] Inicio subida imagen para petId: 7
+[17-Jan-2026 16:56:31 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => perri.jpg
+    [full_path] => perri.jpg
+    [type] => image/jpeg
+    [tmp_name] => C:\xampp\tmp\phpCF22.tmp
+    [error] => 0
+    [size] => 20358
+)
+
+[17-Jan-2026 16:56:31 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_696bb12f3253d5.94602443.jpg
+[17-Jan-2026 16:56:31 Europe/Berlin] Imagen subida correctamente para mascota 7
+[17-Jan-2026 19:14:57 Europe/Berlin] Imagen subida exitosamente para usuario 121: img_696bd1a19be5c.jpg
+[17-Jan-2026 23:50:50 Europe/Berlin] Imagen subida exitosamente para usuario 111: img_696c124a6790e.png

@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import facebookLogo from '../assets/images/facebook.png';
+import cromoLogo from '../assets/images/cromo.png';
 
 import './Login.css';
 
@@ -13,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://mas-host-least-disciplines.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -56,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://mas-host-least-disciplines.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,
@@ -184,19 +186,32 @@ const Login = () => {
           <p >o inicia sesión con:</p>
         </div>
 
-        <div className="buttons" style={{ marginTop: '1rem' }}>
-          <button className="button"
+          <div
             style={{
-              backgroundColor: '#6A0DAD',
-              color: 'white',
-            }}>
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '1rem',
+              marginTop: '1rem',
+              marginBottom: '1rem',
+            }}
+          >
+          <button className="button">
             <span className="icon">
-              <i className="fab fa-google"></i>
+              <img src={cromoLogo} alt="Chrome" />
             </span>
           </button>
           <button className="button">
             <span className="icon">
-              <img src="../assets/images/cromo.png"></img>
+              <img
+                src={facebookLogo}
+                alt="Facebook"
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  objectFit: 'contain'
+                }}
+              />
             </span>
           </button>
         </div>

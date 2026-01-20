@@ -24,7 +24,7 @@ const Landing = () => {
             <div className="column is-half">
               <div className="box" style={{ borderRadius: "20px" }}>
                 <h1 className="title is-3 has-text-weight-bold has-text-centered" style={{ color: "#7C3AED" }}>
-                  Bienvenido a <span style={{ color: "#A78BFA" }}>Patitas Felices</span>
+                  Con <span style={{ color: "#A78BFA" }}>Protón todo es más fácil</span>
                 </h1>
                 <p className="subtitle is-5 has-text-centered mb-5">
                   Gestioná turnos, controlá tus mascotas y comprá productos para tu amigo peludo.

@@ -67,6 +67,7 @@ const FormPet = ({
                     petId={mostrarMascota?.id_mascota}
                     mascotaEdit={mascotaEdit}
                     setMascotaEdit={setMascotaEdit}
+                    size={180}
                 />
 
                 {!editandoMascota && (

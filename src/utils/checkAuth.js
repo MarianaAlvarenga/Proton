@@ -1,9 +1,9 @@
 export const checkAuth = async () => {
   try {
 <<<<<<< Updated upstream
-    const response = await fetch('https://mas-host-least-disciplines.trycloudflare.com/backend/actions/checkSession.php', {
+    const response = await fetch('https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/checkSession.php', {
 =======
-    const response = await fetch('https://mas-host-least-disciplines.trycloudflare.com/backend/actions/checkSession.php', {
+    const response = await fetch('https://jacket-parliament-carl-gem.trycloudflare.com/backend/actions/checkSession.php', {
 >>>>>>> Stashed changes
       method: 'GET',
       credentials: 'include', // MUY IMPORTANTE para que se envíe la cookie de sesión
