@@ -75,11 +75,11 @@ const Shifts = () => {
   }, [selectedEspecialidad, userRole, isAgendarTurno]);
 
   const calendarPeluqueroId =
-  isSettingAvailability || isAsistencia
-    ? user.id_usuario
-    : isAgendarTurno
-      ? (selectedPeluquero || user.id_usuario)
-      : selectedPeluquero;
+    isSettingAvailability || isAsistencia
+      ? user.id_usuario
+      : isAgendarTurno
+        ? (selectedPeluquero || user.id_usuario)
+        : selectedPeluquero;
 
 
   const handleCalendarClose = () => {
