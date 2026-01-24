@@ -1,4 +1,198 @@
+/* ======================
+   BASE
+====================== */
+* {
+  box-sizing: border-box;
+}
+
+.hero {
+  background-color: #f5f3ff;
+}
+
+.hero-body {
+  padding: 2rem 1.5rem;
+}
+
+.container {
+  max-width: 100%;
+}
+
+/* ======================
+   IMAGEN
+====================== */
+.landing-image-col {
+  display: flex;
+  justify-content: center;
+}
+
 .landing-image {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* ======================
+   CONTENIDO
+====================== */
+.landing-box {
   border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.landing-title {
+  text-align: center;
+  color: #7C3AED;
+}
+
+.landing-title span {
+  color: #A78BFA;
+}
+
+.landing-subtitle {
+  text-align: center;
+}
+
+/* ======================
+   BOTONES
+====================== */
+.landing-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ======================
+   MOBILE
+====================== */
+@media (max-width: 768px) {
+
+  .hero-body {
+    padding: 1.5rem 1rem;
+  }
+
+  .landing-image {
+    max-width: 240px;
+    margin-bottom: 1.5rem;
+  }
+
+  .landing-box {
+    padding: 1.25rem;
+  }
+
+  .landing-title {
+    font-size: 1.5rem;
+  }
+
+  .landing-subtitle {
+    font-size: 1rem;
+  }
+
+  .landing-buttons {
+    flex-direction: column;
+  }
+
+  .landing-buttons .button {
+    width: 100%;
+  }
+}
+/* Layout base: desktop */
+.landing-columns {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Mobile: apilar */
+@media (max-width: 768px) {
+  .landing-columns {
+    flex-direction: column;
+  }
+}
+@media (max-width: 768px) {
+  .landing-image-col {
+    margin-bottom: 1.5rem;
+  }
+
+  .landing-content-col {
+    width: 100%;
+  }
+}
+/* ======================
+   BOTONES MOBILE FIX
+====================== */
+@media (max-width: 768px) {
+
+  .landing-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* CENTRADO REAL */
+    gap: 0.75rem;
+  }
+
+  .landing-buttons .button {
+    width: 90%;
+    max-width: 320px;
+
+    /* anula Bulma */
+    border-radius: 10px;     /* NO redondo */
+    font-size: 0.95rem;      /* texto más chico */
+    padding: 0.6rem 1rem;
+    height: auto;
+
+    /* seguridad */
+    white-space: normal;
+    text-align: center;
+  }
+}
+/* ======================
+   BOTONES MOBILE FULL WIDTH
+====================== */
+@media (max-width: 768px) {
+
+  .landing-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .landing-buttons .button {
+    width: 100% !important;   /* ocupa TODO el ancho */
+    margin: 0 !important;     /* anula Bulma */
+    border-radius: 12px;      /* forma normal */
+    font-size: 1rem;          /* texto legible */
+    padding: 0.75rem 1rem;
+    height: auto;
+    justify-content: center;
+    text-align: center;
+  }
+}
+/* ======================
+   LANDSCAPE BAJO (celular horizontal)
+====================== */
+@media (max-height: 420px) {
+
+  .landing-buttons .button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    line-height: 1.2;
+  }
+}
+/* ======================
+   BOTONES EN FILA (LANDSCAPE ANGOSTO)
+====================== */
+@media (min-width: 600px) and (max-height: 420px) {
+
+  .landing-buttons {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .landing-buttons .button {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+  }
+}
+.landing-buttons .button {
+  white-space: nowrap;
 }
