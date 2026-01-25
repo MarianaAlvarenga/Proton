@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://academy-prices-stylish-nevada.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://while-expertise-wed-lately.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

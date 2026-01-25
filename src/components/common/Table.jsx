@@ -10,7 +10,7 @@ const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://academy-prices-stylish-nevada.trycloudflare.com/backend/actions/getUsers.php");
+        const response = await fetch("https://while-expertise-wed-lately.trycloudflare.com/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }

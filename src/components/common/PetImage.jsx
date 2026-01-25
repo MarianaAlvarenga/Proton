@@ -3,7 +3,7 @@ import DefaultPetImage from "../../assets/images/perro.png";
 import Alert from "../common/Alert";
 
 const BACKEND_URL =
-    "https://academy-prices-stylish-nevada.trycloudflare.com/backend";
+    "https://while-expertise-wed-lately.trycloudflare.com/backend";
 
 const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
     const fileInputRef = useRef(null);

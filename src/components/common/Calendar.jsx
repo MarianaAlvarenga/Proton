@@ -33,7 +33,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://academy-prices-stylish-nevada.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://while-expertise-wed-lately.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -178,7 +178,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://academy-prices-stylish-nevada.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://while-expertise-wed-lately.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -292,7 +292,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://academy-prices-stylish-nevada.trycloudflare.com/backend/actions/availability.php",
+        "https://while-expertise-wed-lately.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
