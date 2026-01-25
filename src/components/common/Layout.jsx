@@ -9,9 +9,9 @@ const Layout = ({ children }) => {
   const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="layout-root">
       {/* children = el contenido de cada página, con sus NavBar propios */}
-      <div style={{ flex: 1 }}>
+      <div className="layout-content">
         {children}
       </div>
       {!shouldHideFooter && <Footer />}

@@ -44,20 +44,17 @@ const FormUser = ({
                 ¡HOLA {usuarioEdit?.nombre ? usuarioEdit.nombre.toUpperCase() : "USUARIO"}!
             </h1>
 
-            {/* Imagen + botón editar */}
-            <div className="mb-4">
-                <UserImage userId={usuarioEdit?.id_usuario} size={180} />
-
-                <p className="control mt-3">
-                    <button
-                        className={`button ${
-                            editandoUsuario ? "is-primary is-link" : "is-light"
-                        }`}
-                        onClick={() => setEditandoUsuario(true)}
-                    >
-                        Editar perfil
-                    </button>
-                </p>
+            <div className="field is-grouped user-actions">
+            <p className="control mt-3">
+                <button
+                className={`button ${
+                    editandoUsuario ? "is-light" : "is-primary is-link"
+                }`}
+                onClick={() => setEditandoUsuario(true)}
+                >
+                Editar perfil
+                </button>
+            </p>
             </div>
 
             {/* Nombre */}
@@ -181,11 +178,11 @@ const FormUser = ({
             {/* Botones */}
             {editandoUsuario && (
                 <div className="field is-grouped is-grouped-right mt-4">
-                    <button className="button is-light" onClick={handleCancel}>
+                    <button className="button is-light is-fullwidth" onClick={handleCancel}>
                         Cancelar
                     </button>
                     <button
-                        className="button is-primary is-link"
+                        className="button is-primary is-link is-fullwidth"
                         onClick={() =>
                             handleActualizarUsuario({
                                 ...usuarioEdit,

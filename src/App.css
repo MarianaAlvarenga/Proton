@@ -36,3 +36,41 @@
     transform: rotate(360deg);
   }
 }
+.layout-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-content {
+  flex: 1;
+}
+
+@media screen and (max-width: 360px) {
+  .field.is-grouped {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .field.is-grouped.is-grouped-right {
+    justify-content: center;
+  }
+
+  .field.is-grouped button {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}
+@media screen and (max-width: 360px) {
+  .user-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-actions .button {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}

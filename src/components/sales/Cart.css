@@ -65,12 +65,9 @@
 }
 
 .button{
-    width: 10vw !important;
     align-self: flex-end !important;
 }
 
 .cancel-button{
-    
-    width: 10vw !important;
     align-self: flex-end !important;
 }
