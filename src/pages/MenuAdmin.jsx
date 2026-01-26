@@ -44,7 +44,7 @@ const MenuAdmin = () => {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        height: "100vh",
+        minHeight: "100vh",   // ✅
         textAlign: "center",
         backgroundColor: "white",
       }}
@@ -69,13 +69,13 @@ const MenuAdmin = () => {
       ) : (
         // Vista para móviles
         <div
-        className="columns is-mobile"
-        style={{
-          marginTop: "1em",
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
+          className="columns is-mobile"
+          style={{
+            marginTop: "1em",
+            display: "flex",
+            flexDirection: "column",
+            paddingBottom: "3rem", // 👈 espacio para el footer
+          }}
         >
           {links.map((link, index) => (
             <div

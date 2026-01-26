@@ -35,7 +35,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://while-expertise-wed-lately.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -45,7 +45,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://while-expertise-wed-lately.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -124,8 +124,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://while-expertise-wed-lately.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://while-expertise-wed-lately.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");

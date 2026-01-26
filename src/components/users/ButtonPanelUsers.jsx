@@ -34,7 +34,7 @@ const ButtonPanelUsers = ({ selectedUserId }) => {
 
       try {
         const response = await fetch(
-          "https://while-expertise-wed-lately.trycloudflare.com/backend/actions/deleteUser.php",
+          "https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/deleteUser.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
