@@ -43,7 +43,10 @@ const FormUser = ({
             <h1 className="title is-2">
                 ¡HOLA {usuarioEdit?.nombre ? usuarioEdit.nombre.toUpperCase() : "USUARIO"}!
             </h1>
-
+           {/* Imagen + botón editar */}
+            <div className="mb-4">
+                <UserImage userId={usuarioEdit?.id_usuario} size={180} />
+            </div>
             <div className="field is-grouped user-actions">
             <p className="control mt-3">
                 <button

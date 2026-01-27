@@ -3,6 +3,7 @@ import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
 import Table from "../components/common/Table";
 import ButtonPanelUsers from "../components/users/ButtonPanelUsers";
+import "./UsersAdmin.css";
 
 const UsersAdmin = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,8 +17,10 @@ const UsersAdmin = () => {
         <div>
             <NavBar showSearch onSearch={handleSearch} />
             <SubNavBar showBack currentPage="Gestión de usuarios" />
-            <ButtonPanelUsers selectedUserId={selectedUserId} /> {/* 👈 agregado */}
-            <Table searchQuery={searchQuery} onSelectUser={setSelectedUserId} /> {/* 👈 agregado */}
+            <ButtonPanelUsers selectedUserId={selectedUserId} /> 
+            <div className="table-wrapper">
+                <Table searchQuery={searchQuery} onSelectUser={setSelectedUserId} />
+            </div>
         </div>
     );
 };

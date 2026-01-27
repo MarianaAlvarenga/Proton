@@ -1,2 +1,15 @@
+  .table-wrapper {
+    width: 100%;
+}
 
-  
+@media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrapper table {
+        min-width: 700px; /* ajustá según columnas */
+        border-collapse: collapse;
+    }
+}
