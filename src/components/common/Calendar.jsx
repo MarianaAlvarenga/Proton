@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import esLocale from "@fullcalendar/core/locales/es";
 import { useNavigate } from "react-router-dom";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
@@ -333,16 +334,17 @@ export default function Calendar({
   return (
     <div className="calendar-container">
       <h1 className="title is-3 has-text-centered">Calendario</h1>
-
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView={isAsistencia ? "timeGridDay" : "timeGridWeek"}
-        selectable={!isAsistencia}
-        events={events}
-        select={handleSelect}
-        eventClick={handleEventClick}
-      />
-
+      <div className="calendar-container notranslate">
+        <FullCalendar
+          locale={esLocale}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView={isAsistencia ? "timeGridDay" : "timeGridWeek"}
+          selectable={!isAsistencia}
+          events={events}
+          select={handleSelect}
+          eventClick={handleEventClick}
+        />
+      </div>
       {isSettingAvailability && (
         <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <button
