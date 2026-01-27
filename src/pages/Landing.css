@@ -130,8 +130,6 @@
 
   .landing-buttons .button {
     width: 90%;
-    max-width: 320px;
-
     /* anula Bulma */
     border-radius: 10px;     /* NO redondo */
     font-size: 0.95rem;      /* texto más chico */
@@ -186,11 +184,10 @@
     flex-direction: row;
     gap: 0.75rem;
   }
-
+  
   .landing-buttons .button {
     width: 100%;
     font-size: 0.9rem;
-    padding: 0.6rem 0.75rem;
   }
 }
 .landing-buttons .button {
