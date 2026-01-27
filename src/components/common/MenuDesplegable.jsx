@@ -23,7 +23,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

@@ -1,0 +1,18 @@
+.logout-button {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.logout-button a {
+    display: flex;
+    align-items: center;
+}
+
+.logout-button svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    display: block;
+    cursor: pointer;
+}

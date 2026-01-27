@@ -18,7 +18,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const backendBase = "https://tool-crossing-ranges-flour.trycloudflare.com/backend";
+  const backendBase = "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend";
 
   useEffect(() => {
     const checkSession = async () => {

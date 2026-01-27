@@ -37,7 +37,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/getRoles.php");
+        const response = await fetch("https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/getRoles.php");
         const data = await response.json();
         if (data.error) {
           console.error(data.message);
@@ -98,8 +98,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/auth-chatsito.php";
 
     const userData = {
       ...formData,

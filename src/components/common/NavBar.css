@@ -25,6 +25,7 @@
     align-items: center; /* Centra verticalmente */
     padding: 10px;
     gap: 10px; /* Espacio entre elementos */
+    height: 100%;
 }
 
 .search-container {
@@ -44,31 +45,11 @@
     height: auto;
 }
 
-@media (min-width: 768px) {
-    .navbar-brand {
-        flex-wrap: nowrap; /* Mantén los elementos en una línea */
-    }
-}
 
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column; /* Apila los elementos */
-    }
-
-    .signup-container {
-        padding: 5px;
-    }
-
-    form {
-        padding: 10px; /* Agrega espacio dentro del formulario */
-    }
-}
-  
 .navbar {
     display: flex;
     justify-content: space-between; /* Separación entre elementos principales */
     align-items: center;
-    padding: 0.5rem 1rem; /* Espaciado interno */
     height: 60px; /* Altura fija */
 }
 
@@ -77,6 +58,7 @@
     display: flex;
     align-items: center; /* Centra verticalmente los elementos */
     justify-content: flex-end; /* Alinea a la derecha */
+    height: 100%;
 }
   
 /* Asegura que el botón hamburguesa tenga espacio */
@@ -95,18 +77,25 @@
     align-items: center;
 }
 
+.navbar-brand > *,
+.navbar-end > * {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: row; /* Asegura que los elementos estén en línea */
         flex-wrap: nowrap; /* Evita que se apilen */
         justify-content: space-between; /* Alinea los elementos a los extremos */
+        align-items: center !important;
     }
-
+    
     .navbar-brand {
         flex: 1; /* Ocupa el espacio disponible */
         display: flex;
         align-items: center; /* Centra verticalmente */
-        justify-content: flex-start; /* Alinea el contenido a la izquierda */
     }
 
     .navbar-item {
@@ -114,15 +103,45 @@
         display: flex;
         align-items: center; /* Centra verticalmente */
     }
-
+    
     .navbar-end {
         flex: 0; /* Mantiene su tamaño mínimo */
         display: flex;
-        align-items: center;
         justify-content: flex-end; /* Alinea el menú a la derecha */
+        align-items: center;
+    }
+    
+    .input-text {
+        min-width: 150px; 
+    }
+    .navbar-brand > *,
+    .navbar-end > * {
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+    img {
+        display: block;
+        @media (min-width: 768px) {
+            .navbar-brand {
+                flex-wrap: nowrap; /* Mantén los elementos en una línea */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column; /* Apila los elementos */
+            }
+        
+            .signup-container {
+                padding: 5px;
+            }
+        
+            form {
+                padding: 10px; /* Agrega espacio dentro del formulario */
+            }
+        }
     }
 
-    .input-text {
-        max-width: 200px; /* Ajusta el ancho del buscador para dispositivos pequeños */
-    }
 }
+

@@ -10,7 +10,7 @@ const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/getUsers.php");
+        const response = await fetch("https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }

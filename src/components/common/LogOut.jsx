@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ReactComponent as PowerIcon } from "../../assets/images/boton-de-encendido-apagado.svg";
 import Alert from "./Alert.jsx";
 import Swal from "sweetalert2";
-
+import "./LogOut.css";
 
 const LogOut = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://tool-crossing-ranges-flour.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });
@@ -38,9 +38,9 @@ const LogOut = () => {
   };
 
   return (
-    <div>
+    <div className="logout-button">
       <a href="#" onClick={handleLogout}>
-        <PowerIcon style={{ fill: "white", width: "20px", height: "20px", marginTop: "14px", cursor: "pointer" }} />
+        <PowerIcon />
       </a>
     </div>
   );
