@@ -168,14 +168,14 @@ const ProductCard = ({
 
   return (
     <div className={`card ${ListMode ? "cardList" : ""}`}>
-      <div className="card-image" style={{ borderRadius: "0%" }}>
-        <figure className="image is-16by9">
-          <img
-            src={ProductImage || "https://bulma.io/assets/images/placeholders/640x360.png"}
-            alt="Product"
-            style={{ borderRadius: "0%" }}
-          />
-
+      <div className="card-image">
+        <div className="product-image-wrapper">
+          <figure className="product-image-wrapper">
+            <img
+              src={ProductImage || "https://bulma.io/assets/images/placeholders/640x360.png"}
+              alt="Product"
+            />
+          </figure>
           {ShowAddButton && ProductStock > 0 && (
             <button className="buttonImage add-button" onClick={handleAddClick}>
               <img src={require("../../assets/images/agregar.png")} alt="AddButton" />
@@ -193,8 +193,9 @@ const ProductCard = ({
               <img src={require("../../assets/images/modify.png")} alt="ModifyButton" />
             </button>
           )}
-        </figure>
+        </div>
       </div>
+
 
       <p className="product-name" style={{ fontWeight: "bold" }}>{ProductName}</p>
 
