@@ -1,6 +1,6 @@
 // Products.jsx
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import SubNavBar from "../components/common/SubNavBar";
 import ProductCard from "../components/sales/ProductCard";
@@ -19,6 +19,8 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const backendBase = "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend";
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -112,7 +114,17 @@ const Products = () => {
     <section className="page-wrapper">
       <NavBar showSearch showMenu onSearch={handleSearch} />
       <SubNavBar showBack showCart currentPage="Productos" />
-
+      {isAdmin && (
+        <div className="products-header-actions">
+          <button
+            className="add-product-btn"
+            onClick={() => navigate("/productscreate")}
+            title="Agregar producto"
+          >
+            +
+          </button>
+        </div>
+      )}
       <div className="product-scroll-wrapper">
         <div className="product-container">
           <div className="columns is-mobile is-multiline">
