@@ -40,7 +40,7 @@ const Shifts = () => {
       const fetchEspecialidades = async () => {
         try {
           const res = await axios.get(
-            'https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/getEspecialidades.php'
+            'https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/getEspecialidades.php'
           );
           setEspecialidades(res.data || []);
         } catch (error) {
@@ -62,7 +62,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');

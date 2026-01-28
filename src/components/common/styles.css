@@ -71,3 +71,27 @@
       font-size: 0.9rem; /* Ajusta el tamaño de la fuente en móviles */
   }
 }
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar-link {
+    display: none;
+  }
+}
+/* PRODUCTS: quitar flechita */
+.products-navbar .navbar-link.active::after {
+  content: none;
+}
+.products-navbar .navbar-link {
+  position: relative;
+}
+/* PRODUCTS — mobile: ocultar links de categorías en SubNavBar */
+@media (max-width: 768px) {
+  .products-page .subnav-links {
+    display: none !important;
+  }
+
+  .products-page .current-page {
+    display: block;
+  }
+}
+

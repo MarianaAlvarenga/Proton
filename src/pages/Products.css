@@ -110,3 +110,28 @@
   cursor: pointer;
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
+/* PRODUCTS: eliminar cualquier flecha */
+.products-page li::after,
+.products-page li::before,
+.products-page a::after,
+.products-page a::before {
+  content: none !important;
+  background: none !important;
+}
+
+.products-navbar .navbar-link.active {
+  font-weight: 600;
+}
+
+.products-navbar .navbar-link.active::before {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #fff; /* o tu color */
+}
+.products-navbar .navbar-link::before {
+  transition: all 0.25s ease;
+}

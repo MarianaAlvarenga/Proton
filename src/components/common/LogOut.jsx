@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

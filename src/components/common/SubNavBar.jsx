@@ -11,7 +11,7 @@ const SubNavBar = ({ showBack = false, showCart = false, links = [], currentPage
 
       {/* Si hay enlaces, mostrarlos, sino mostrar el texto de la página actual */}
       {links.length > 0 ? (
-        <div style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+        <div className="subnav-links" style={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
           {links.map((link, index) => (
             <a
               key={index}

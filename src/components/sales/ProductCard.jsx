@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

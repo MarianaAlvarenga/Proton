@@ -34,7 +34,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -179,7 +179,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -293,7 +293,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend/actions/availability.php",
+        "https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

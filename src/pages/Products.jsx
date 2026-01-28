@@ -17,8 +17,9 @@ const Products = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://sheffield-dogs-fiscal-cancelled.trycloudflare.com/backend";
+  const backendBase = "https://indicators-lovers-served-bush.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 
@@ -102,6 +103,15 @@ const Products = () => {
 
     fetchProducts();
   }, [currentPage, searchQuery, selectedCategory]);
+  
+  useEffect(() => {
+    fetch(`${backendBase}/actions/getCategories.php`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setCategories(data);
+      })
+      .catch(console.error);
+  }, []);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -110,10 +120,26 @@ const Products = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
+  const categoryLinks = [
+    {
+      label: "Todos",
+      path: "/Products"
+    },
+    ...categories.map(cat => ({
+      label: cat.nombre_categoria,
+      path: `/Products?category=${cat.id_categoria}`
+    }))
+  ];
+
   return (
-    <section className="page-wrapper">
+    <section className="page-wrapper products-page">
       <NavBar showSearch showMenu onSearch={handleSearch} />
-      <SubNavBar showBack showCart currentPage="Productos" />
+      <SubNavBar
+        showBack
+        showCart
+        links={categoryLinks}
+        className="products-navbar"
+      />
       {isAdmin && (
         <div className="products-header-actions">
           <button
