@@ -116,7 +116,10 @@ const Products = () => {
       <div className="product-scroll-wrapper">
         <div className="product-container">
           <div className="columns is-mobile is-multiline">
-            {products.map((product) => (
+          {products.map((product) => {
+            console.log("IMAGE URL:", product.image_url);
+
+            return (
               <div
                 className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
                 key={product.id}
@@ -124,7 +127,7 @@ const Products = () => {
                 <ProductCard
                   ProductName={product.nombre_producto}
                   ProductPrice={product.precio_producto}
-                  ProductImage={product.image_url}
+                  ProductImage={`${backendBase}/uploads/${product.image_url}`}
                   ProductId={product.id}
                   ProductStock={product.stock_producto}
                   ProductReplenishment={product.punto_reposicion}
@@ -134,7 +137,8 @@ const Products = () => {
                     : { ShowDeleteButton: false, ShowAddButton: true, isAdmin: false })}
                 />
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       </div>

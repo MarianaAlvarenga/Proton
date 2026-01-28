@@ -26,8 +26,13 @@ if ($productId) {
 
     if ($result->num_rows > 0) {
         $product = $result->fetch_assoc();
-        header('Content-Type: application/json');
+
+        if (!empty($product['image_url'])) {
+            $product['image_url'] = basename($product['image_url']);
+        }
+
         echo json_encode($product);
+
     } else {
         header('Content-Type: application/json');
         echo json_encode(["error" => "Producto no encontrado"]);
@@ -59,8 +64,14 @@ if ($productId) {
     if ($result->num_rows > 0) {
         $products = [];
         while ($row = $result->fetch_assoc()) {
+
+            if (!empty($row['image_url'])) {
+                $row['image_url'] = basename($row['image_url']);
+            }
+
             $products[] = $row;
         }
+
 
         $countSql = "SELECT COUNT(*) AS total FROM producto $whereClause";
         $countResult = $conn->query($countSql);
