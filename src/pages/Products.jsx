@@ -19,7 +19,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://indicators-lovers-served-bush.trycloudflare.com/backend";
+  const backendBase = "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 
@@ -139,6 +139,7 @@ const Products = () => {
         showCart
         links={categoryLinks}
         className="products-navbar"
+        currentPage="Productos"
       />
       {isAdmin && (
         <div className="products-header-actions">

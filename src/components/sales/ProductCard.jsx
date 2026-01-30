@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -24,7 +24,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://indicators-lovers-served-bush.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

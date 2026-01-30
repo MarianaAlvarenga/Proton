@@ -88,40 +88,27 @@
 .navbar-menu {
   overflow: visible !important;
 }
-/* Desktop: ocultar menú hamburguesa */
-@media (min-width: 769px) {
-  .menu-container {
-    display: none;
-  }
-}
 
-/* Mobile: mostrar categorías en menú */
-@media (max-width: 768px) {
-  .dropdown-menu .category-item {
+/* Desktop */
+@media (min-width: 1024px) {
+  .menu-container {
     display: block;
   }
 }
-/* =============================== */
-/* DESKTOP: ocultar categorías     */
-/* =============================== */
-@media (min-width: 1024px) {
-  .dropdown-menu .category-item {
-    display: none;
+
+/* Mobile */
+@media (max-width: 1023px) {
+  .menu-container {
+    display: block;
   }
 }
-/* =============================== */
-/* DESKTOP: ocultar items products */
-/* =============================== */
-@media (min-width: 1024px) {
-
-  /* Ocultar categorías */
-  .dropdown-menu .category-item {
-    display: none;
-  }
-
-  /* Ocultar "Todos los productos" */
-  .dropdown-menu .all-products {
-    display: none;
-  }
+/* 🔥 FIX DEFINITIVO: forzar menú por arriba de TODO */
+.menu-container {
+  position: relative !important;
+  z-index: 9999999 !important;
 }
 
+.dropdown-menu {
+  position: absolute !important;
+  z-index: 99999999 !important;
+}

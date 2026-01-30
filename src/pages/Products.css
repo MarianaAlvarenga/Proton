@@ -135,3 +135,32 @@
 .products-navbar .navbar-link::before {
   transition: all 0.25s ease;
 }
+/* PRODUCTS – forzar currentPage visible en mobile */
+@media (max-width: 768px) {
+  .products-page .current-page {
+    display: block !important;
+    text-align: center;
+    font-weight: 600;
+  }
+}
+/* PRODUCTS – mobile */
+@media (max-width: 768px) {
+  .products-page .subnav-links {
+    display: none;
+  }
+
+  .products-page .current-page {
+    display: block;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+    flex-grow: 1;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .products-page .current-page {
+    display: none;
+  }
+}

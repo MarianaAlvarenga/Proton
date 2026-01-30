@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://indicators-lovers-served-bush.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {
