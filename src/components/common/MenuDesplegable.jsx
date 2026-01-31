@@ -9,7 +9,8 @@ const Desplegable = () => {
     const [userRole, setUserRole] = useState(null);
     const [activeOption, setActiveOption] = useState("");
     const location = useLocation();
-    const isProductsPage = location.pathname === "/products";
+    const isProductsPage = location.pathname.toLowerCase().startsWith("/products");
+
 
     const toggleDropdown = (e) => {
         e.preventDefault();
@@ -60,45 +61,44 @@ const Desplegable = () => {
             </a>
 
             <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>
-
-                {/* ADMIN + SOLO EN /products */}
                 {isProductsPage && userRole === 4 && (
-                    <>
-                        <li>
-                            <Link to="/Products" state={{ purchaseMode: true }}>
-                                Realizar compra
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/Products" state={{ purchaseMode: false }}>
-                                Realizar edición
-                            </Link>
-                        </li>
-                    </>
+                <>
+                    <li className="admin-option">
+                    <Link to="/Products" state={{ purchaseMode: true }}>
+                        Realizar compra
+                    </Link>
+                    </li>
+                    <li className="admin-option">
+                    <Link to="/Products" state={{ purchaseMode: false }}>
+                        Realizar edición
+                    </Link>
+                    </li>
+                </>
                 )}
-
-                {/* TODOS LOS USUARIOS */}
-                <li className={`all-products ${activeOption === "/products" ? "disabled" : ""}`}>
-                    <Link to="/products">Todos los Productos</Link>
+                <li
+                className={`mobile-only all-products ${
+                    activeOption === "/products" ? "disabled" : ""
+                }`}
+                >
+                <Link to="/products">Todos los Productos</Link>
                 </li>
-
-                {/* CATEGORÍAS (mobile sí / desktop se ocultan por CSS) */}
                 {categories.length > 0 ? (
-                    categories.map((category) => {
-                        const path = `/products?category=${category.id_categoria}`;
-                        return (
-                            <li
-                                key={category.id_categoria}
-                                className={`category-item ${activeOption === path ? "disabled" : ""}`}
-                            >
-                                <Link to={path}>{category.nombre_categoria}</Link>
-                            </li>
-                        );
-                    })
+                categories.map((category) => {
+                    const path = `/products?category=${category.id_categoria}`;
+                    return (
+                    <li
+                        key={category.id_categoria}
+                        className={`mobile-only category-item ${
+                        activeOption === path ? "disabled" : ""
+                        }`}
+                    >
+                        <Link to={path}>{category.nombre_categoria}</Link>
+                    </li>
+                    );
+                })
                 ) : (
-                    <li>No hay categorías disponibles</li>
+                <li className="mobile-only">No hay categorías disponibles</li>
                 )}
-
             </ul>
         </div>
     );
