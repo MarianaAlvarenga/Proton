@@ -15,6 +15,7 @@ const FormPet = ({
     handleAgregarMascota,
     handleEditarMascota,
     handleActualizarMascota,
+    handleEliminarMascota,
     handleCancel,
     puedeAgregarMascota // 👈 NUEVO
 }) => {
@@ -88,6 +89,16 @@ const FormPet = ({
                                     onClick={handleAgregarMascota}
                                 >
                                     Agregar mascota
+                                </button>
+                            </p>
+                        )}
+                        {puedeAgregarMascota && mascotas.length > 0 && (
+                            <p className="control">
+                                <button
+                                    className="button is-danger is-light"
+                                    onClick={handleEliminarMascota}
+                                >
+                                    Eliminar mascota
                                 </button>
                             </p>
                         )}

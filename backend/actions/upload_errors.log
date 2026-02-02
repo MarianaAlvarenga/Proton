@@ -342,3 +342,16 @@
 [17-Jan-2026 16:56:31 Europe/Berlin] Imagen subida correctamente para mascota 7
 [17-Jan-2026 19:14:57 Europe/Berlin] Imagen subida exitosamente para usuario 121: img_696bd1a19be5c.jpg
 [17-Jan-2026 23:50:50 Europe/Berlin] Imagen subida exitosamente para usuario 111: img_696c124a6790e.png
+[02-Feb-2026 15:11:19 Europe/Berlin] Inicio subida imagen para petId: 8
+[02-Feb-2026 15:11:19 Europe/Berlin] Archivo recibido: Array
+(
+    [name] => images.png
+    [full_path] => images.png
+    [type] => image/png
+    [tmp_name] => C:\xampp\tmp\php637D.tmp
+    [error] => 0
+    [size] => 12160
+)
+
+[02-Feb-2026 15:11:19 Europe/Berlin] Guardando archivo en: C:\xampp\htdocs\Proton\backend\uploads\petimg_6980b08733de63.61469037.png
+[02-Feb-2026 15:11:19 Europe/Berlin] Imagen subida correctamente para mascota 8

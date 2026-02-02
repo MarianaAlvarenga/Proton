@@ -291,6 +291,68 @@ const ProfileUser = () => {
             }
         }
     };
+    
+    const handleEliminarMascota = async () => {
+        const mascota = mascotas[currentIndex];
+        if (!mascota?.id_mascota) return;
+
+        const confirm = await Alert({
+            Title: "Eliminar mascota",
+            Detail: `¿Seguro que querés eliminar a ${mascota.nombre_mascota}?`,
+            icon: "warning",
+            Confirm: "Sí, eliminar",
+            Cancel: "Cancelar"
+        });
+
+        if (!confirm) return;
+
+        try {
+            const response = await fetch(
+                "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/deletePet.php",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_mascota: mascota.id_mascota })
+                }
+            );
+
+            const json = await response.json();
+
+            if (json.success) {
+                setMascotas(prev => {
+                    const updated = prev.filter(
+                        (_, index) => index !== currentIndex
+                    );
+
+                    if (updated.length === 0) {
+                        setCurrentIndex(0);
+                    } else if (currentIndex >= updated.length) {
+                        setCurrentIndex(updated.length - 1);
+                    }
+
+                    return updated;
+                });
+
+                setMascotaEdit(null);
+                setEditandoMascota(false);
+                setAddingMascota(false);
+
+                Alert({
+                    Detail: "Mascota eliminada correctamente 🐾",
+                    icon: "success",
+                    Confirm: "Ok"
+                });
+            } else {
+                Alert({
+                    Detail: "No se pudo eliminar la mascota",
+                    icon: "error",
+                    Confirm: "Ok"
+                });
+            }
+        } catch (error) {
+            console.error("Error al eliminar mascota:", error);
+        }
+    };
 
     if (loading || loadingPet) return <p>Cargando...</p>;
 
@@ -337,6 +399,7 @@ const ProfileUser = () => {
                         handleEditarMascota={handleEditarMascota}
                         handleAgregarMascota={handleAgregarMascota}
                         handleActualizarMascota={handleActualizarMascota}
+                        handleEliminarMascota={handleEliminarMascota} 
                         handleCancel={handleCancel}
                         puedeAgregarMascota={puedeAgregarMascota}
                     />
