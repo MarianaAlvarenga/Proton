@@ -19,7 +19,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://allocated-license-collectibles-supporting.trycloudflare.com/backend";
+  const backendBase = "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 

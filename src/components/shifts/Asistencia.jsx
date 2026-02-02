@@ -18,7 +18,7 @@ const Asistencia = () => {
   useEffect(() => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -29,7 +29,7 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
-    fetch("https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

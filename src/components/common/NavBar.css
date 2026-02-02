@@ -59,6 +59,7 @@
     align-items: center; /* Centra verticalmente los elementos */
     justify-content: flex-end; /* Alinea a la derecha */
     height: 100%;
+    padding: 10px;
 }
   
 /* Asegura que el botón hamburguesa tenga espacio */
@@ -80,8 +81,13 @@
 .navbar-brand > *,
 .navbar-end > * {
     height: 40px;
+}
+
+.navbar button,
+.navbar a {
     display: flex;
     align-items: center;
+    height: 40px;
 }
 
 @media (max-width: 768px) {
