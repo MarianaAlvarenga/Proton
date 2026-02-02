@@ -34,7 +34,7 @@ const ButtonPanelUsers = ({ selectedUserId }) => {
 
       try {
         const response = await fetch(
-          "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/deleteUser.php",
+          "https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/deleteUser.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

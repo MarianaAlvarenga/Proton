@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

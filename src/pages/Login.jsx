@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,

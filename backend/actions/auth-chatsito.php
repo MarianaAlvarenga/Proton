@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://allocated-license-collectibles-supporting.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

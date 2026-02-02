@@ -19,7 +19,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       // 👇 verificar email en la BD si es usuario registrado
       if (isRegistered) {
         const checkEmailResponse = await fetch(
-          "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/checkEmail.php",
+          "https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/checkEmail.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
       // 👇 guardar carrito
       await axios.post(
-        "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/save_cart.php",
+        "https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/save_cart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -59,7 +59,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }));
 
       const response = await axios.post(
-        "https://dover-calculate-alternate-plaintiff.trycloudflare.com/backend/actions/create_preference.php",
+        "https://allocated-license-collectibles-supporting.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },

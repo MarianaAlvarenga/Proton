@@ -175,3 +175,33 @@
 .navbar-item-cart {
   margin-left: auto;
 }
+
+/* Desktop: centrar categorías REAL al centro de la pantalla */
+@media (min-width: 769px) {
+  .products-page .subnav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+  }
+}
+/* Desktop: centrar categorías correctamente */
+@media (min-width: 769px) {
+  .products-page .subnav-links {
+    flex: 0 1 auto;      /* 🔑 deja de empujar */
+    margin: 0 auto;     /* 🔑 centro real */
+  }
+
+  .products-page .current-page {
+    flex: 0 0 auto;     /* no participa del centrado */
+  }
+}
+/* SubNavBar — centrado real de links (todas las pantallas desktop) */
+@media (min-width: 769px) {
+  .subnav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+  }
+}
