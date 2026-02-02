@@ -83,11 +83,10 @@
     height: 40px;
 }
 
-.navbar button,
-.navbar a {
-    display: flex;
-    align-items: center;
-    height: 40px;
+.navbar > .navbar-brand > *,
+.navbar > .navbar-end > * {
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 768px) {
