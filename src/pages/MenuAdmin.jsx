@@ -32,10 +32,15 @@ const MenuAdmin = () => {
     navigate("/UsersAdmin");
   };
   
+  const handleServicesClick = () => {
+    navigate("/Services");
+  };
   const links = [
     { label: "Agendar turno", icon: "agenda.png", onClick: handleAgendarTurnoClick},
     { label: "Ventas", path: "/Products", icon: "ventas.png", onClick: handleVentasClick},
     { label: "Usuarios", path: "/UsersAdmin", icon: "usuarios.png", onClick: handleUsersClick },
+    { label: "Servicios", path: "/Services", icon: "services.png", onClick: handleServicesClick },
+
   ];
   return (
     <div

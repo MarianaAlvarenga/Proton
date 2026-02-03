@@ -17,7 +17,7 @@ $conn->set_charset('utf8');
 
 try {
     // 🔹 Solo traer las especialidades (servicio)
-    $query = "SELECT id_servicio, nombre FROM servicio ORDER BY nombre";
+    $query = "SELECT id_servicio, nombre, precio FROM servicio ORDER BY nombre";
     $result = $conn->query($query);
 
     $especialidades = [];

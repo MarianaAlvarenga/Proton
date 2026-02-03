@@ -22,6 +22,7 @@ import ProfileUser from './components/common/ProfileUser';
 import Landing from './pages/Landing';
 import SuccessPage from './components/common/SuccessPage';
 import Asistencia from './components/shifts/Asistencia';
+import Services from './pages/Services'
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/Asistencia" element={<Asistencia />} />
+          <Route path="/Services" element={<Services />} />
         </Routes>
       </Layout>
     </Router>
