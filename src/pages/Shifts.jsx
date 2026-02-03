@@ -114,7 +114,10 @@ const Shifts = () => {
             onChange={(val) => setSelectedEspecialidad(val)}
             options={especialidades.map((e) => ({
               value: e.id_servicio,
-              label: e.nombre,
+              label:
+                userRole === 1 || userRole === 4
+                  ? `${e.nombre} - $${e.precio}`
+                  : e.nombre,
             }))}
             placeholder="Seleccione una especialidad"
           />

@@ -64,7 +64,7 @@ const Services = () => {
     return (
         <div className="container mt-5 mb-6">
             <NavBar showProfileButton={false} />
-            <SubNavBar />
+            <SubNavBar currentPage="Servicios"/>
             <h1 className="title is-2">Servicios</h1>
             {/* Botón editar */}
             <div className="field is-grouped mb-4">
