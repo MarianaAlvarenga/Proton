@@ -5,6 +5,7 @@ import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
 import ComboBox from '../components/common/ComboBox';
 import axios from 'axios';
+import Alert from '../components/common/Alert'; // ✅ NUEVO
 
 const Shifts = () => {
   const location = useLocation();
@@ -40,7 +41,7 @@ const Shifts = () => {
       const fetchEspecialidades = async () => {
         try {
           const res = await axios.get(
-            'https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/getEspecialidades.php'
+            'https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/getEspecialidades.php'
           );
           setEspecialidades(res.data || []);
         } catch (error) {
@@ -62,7 +63,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
@@ -81,10 +82,29 @@ const Shifts = () => {
         ? (selectedPeluquero || user.id_usuario)
         : selectedPeluquero;
 
-
   const handleCalendarClose = () => {
     if (isSettingAvailability) {
       navigate('/MenuGroomer');
+    }
+  };
+
+  // ✅ NUEVO — alerta de pago
+  const handleReservaExitosa = async (turnoId) => {
+    const result = await Alert({
+      Title: 'Turno reservado ✅',
+      Detail: '¿Cómo querés realizar el pago?',
+      Confirm: 'Pagar ahora',
+      Cancel: 'Pagar el día del turno',
+      icon: 'success',
+      OnCancel: () => {} 
+    });
+
+    if (result.isConfirmed) {
+      navigate(`/pago/${turnoId}`);
+    }
+
+    if (result.isDenied) {
+      navigate('/mis-turnos');
     }
   };
 
@@ -146,6 +166,8 @@ const Shifts = () => {
           selectedClientEmail={emailAdmin}
           isAgendarTurno={isAgendarTurno}
           isAsistencia={isAsistencia}
+
+          onReservaExitosa={handleReservaExitosa} // ✅ NUEVO
         />
       </div>
     </div>

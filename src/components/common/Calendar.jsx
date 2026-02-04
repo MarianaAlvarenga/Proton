@@ -18,7 +18,8 @@ export default function Calendar({
   onClose,
   selectedClientEmail,
   isAgendarTurno,
-  isAsistencia
+  isAsistencia,
+  onReservaExitosa // ✅ NUEVO
 }) {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
@@ -34,7 +35,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -137,7 +138,6 @@ export default function Calendar({
     // ============================
     if (isAgendarTurno) {
       const user = JSON.parse(localStorage.getItem("user"));
-
       let emailClienteFinal = null;
 
       if (userRole === 1) {
@@ -179,7 +179,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -201,11 +201,10 @@ export default function Calendar({
           throw new Error(json.message || "No se pudo reservar el turno");
         }
 
-        Alert({
-          Title: "Turno reservado",
-          Detail: "El turno fue reservado correctamente.",
-          icon: "success"
-        });
+        // ✅ AVISAMOS A SHIFTS PARA MOSTRAR LOS 2 BOTONES
+        if (onReservaExitosa) {
+          onReservaExitosa(json.turno_id || info.event.extendedProps.turno_id);
+        }
 
         fetchDisponibilidades(peluqueroId);
       } catch (error) {
@@ -230,7 +229,7 @@ export default function Calendar({
     }
 
     // ============================
-    // 👉 DISPONIBILIDAD (PELUQUERO)
+    // 👉 DISPONIBILIDAD
     // ============================
     if (isSettingAvailability && userRole === 3) {
       if (estado === "ocupado") {
@@ -293,7 +292,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/availability.php",
+        "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

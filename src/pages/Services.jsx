@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-            "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+            "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }
@@ -60,77 +60,79 @@ const Services = () => {
             console.error("Error al actualizar precios:", error);
         }
     };
-
+    
     return (
-        <div className="container mt-5 mb-6">
+        <div>
             <NavBar showProfileButton={false} />
             <SubNavBar currentPage="Servicios"/>
-            <h1 className="title is-2">Servicios</h1>
-            {/* Botón editar */}
-            <div className="field is-grouped mb-4">
-                <p className="control">
-                    <button
-                        className={`button ${
-                            editando ? "is-light" : "is-primary is-link"
-                        }`}
-                        onClick={() => setEditando(true)}
-                    >
-                        Editar precios
-                    </button>
-                </p>
-            </div>
-
-            {/* Lista de servicios */}
-            <div className="box">
-                {serviciosEdit.map(servicio => (
-                    <div
-                        key={servicio.id_servicio}
-                        className="columns is-vcentered mb-2"
-                    >
-                        <div className="column is-7">
-                            <strong>{servicio.nombre}</strong>
-                        </div>
-
-                        <div className="column is-5">
-                            {editando ? (
-                                <input
-                                    className="input"
-                                    type="number"
-                                    min="0"
-                                    value={servicio.precio || ""}
-                                    onChange={e =>
-                                        handlePrecioChange(
-                                            servicio.id_servicio,
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            ) : (
-                                <span>${servicio.precio}</span>
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Botones actualizar / cancelar */}
-            {editando && (
-                <div className="field is-grouped is-grouped-right mt-4">
-                    <button
-                        className="button is-light is-fullwidth"
-                        onClick={handleCancel}
-                    >
-                        Cancelar
-                    </button>
-
-                    <button
-                        className="button is-primary is-link is-fullwidth"
-                        onClick={handleActualizar}
-                    >
-                        Actualizar
-                    </button>
+            <div className="container mt-5">
+                <h1 className="title is-2">Servicios</h1>
+                {/* Botón editar */}
+                <div className="field is-grouped mb-4">
+                    <p className="control">
+                        <button
+                            className={`button ${
+                                editando ? "is-light" : "is-primary is-link"
+                            }`}
+                            onClick={() => setEditando(true)}
+                            >
+                            Editar precios
+                        </button>
+                    </p>
                 </div>
-            )}
+
+                {/* Lista de servicios */}
+                <div className="box">
+                    {serviciosEdit.map(servicio => (
+                        <div
+                            key={servicio.id_servicio}
+                            className="columns is-vcentered mb-2"
+                        >
+                            <div className="column is-7">
+                                <strong>{servicio.nombre}</strong>
+                            </div>
+
+                            <div className="column is-5">
+                                {editando ? (
+                                    <input
+                                        className="input"
+                                        type="number"
+                                        min="0"
+                                        value={servicio.precio || ""}
+                                        onChange={e =>
+                                            handlePrecioChange(
+                                                servicio.id_servicio,
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                ) : (
+                                    <span>${servicio.precio}</span>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Botones actualizar / cancelar */}
+                {editando && (
+                    <div className="field is-grouped is-grouped-right mt-4">
+                        <button
+                            className="button is-light is-fullwidth"
+                            onClick={handleCancel}
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            className="button is-primary is-link is-fullwidth"
+                            onClick={handleActualizar}
+                        >
+                            Actualizar
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

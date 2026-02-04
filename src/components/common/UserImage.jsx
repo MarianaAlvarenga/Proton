@@ -9,7 +9,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
     const fetchUserImage = async () => {
         try {
             const response = await fetch(
-                `https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
+                `https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/get_user_image.php?userId=${userId}`,
                 { credentials: "include" }
             );
 
@@ -25,7 +25,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
                 setSelectedImage(`${data.img_url}?t=${Date.now()}`);
             } else {
                 setSelectedImage(
-                    `https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
+                    `https://martha-cricket-wide-loose.trycloudflare.com/backend/uploads/${data.img_url}?t=${Date.now()}`
                 );
             }
 
@@ -86,7 +86,7 @@ const UserImage = ({ userId, onTempImageSelected }) => {
 
         try {
             const response = await fetch(
-                "https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/actions/upload_user_image.php",
+                "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/upload_user_image.php",
                 {
                     method: "POST",
                     body: formData,
@@ -116,9 +116,9 @@ const UserImage = ({ userId, onTempImageSelected }) => {
             let fileName = data.img_url;
 
             if (fileName.includes("?")) {
-                setSelectedImage(`https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/uploads/${fileName}`);
+                setSelectedImage(`https://martha-cricket-wide-loose.trycloudflare.com/backend/uploads/${fileName}`);
             } else {
-                setSelectedImage(`https://strategic-detected-childhood-scholarships.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
+                setSelectedImage(`https://martha-cricket-wide-loose.trycloudflare.com/backend/uploads/${fileName}?t=${Date.now()}`);
             }
 
             Alert({
