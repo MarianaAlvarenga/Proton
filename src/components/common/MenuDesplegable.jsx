@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

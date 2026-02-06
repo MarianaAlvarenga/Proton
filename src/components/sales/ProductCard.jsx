@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://martha-cricket-wide-loose.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
