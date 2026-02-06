@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,

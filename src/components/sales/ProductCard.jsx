@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

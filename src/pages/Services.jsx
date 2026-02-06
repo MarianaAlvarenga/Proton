@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-            "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+            "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }

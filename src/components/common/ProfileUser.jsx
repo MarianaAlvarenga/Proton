@@ -41,7 +41,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -95,7 +95,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);
@@ -158,7 +158,7 @@ const ProfileUser = () => {
 
         Object.keys(usuarioEdit).forEach((key) => {
             if (key === "especialidades" && Array.isArray(usuarioEdit[key])) {
-                formData.append("especialidades", JSON.stringify(usuarioEdit.especialidades));
+                formData.append("especialidad", JSON.stringify(usuarioEdit.especialidades));
             } else if (usuarioEdit[key] !== null && usuarioEdit[key] !== undefined) {
                 formData.append(key, usuarioEdit[key]);
             }
@@ -170,7 +170,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/updateUser.php",
+                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updateUser.php",
                 { method: "POST", body: formData }
             );
 
@@ -204,7 +204,7 @@ const ProfileUser = () => {
         if (mascotaEdit.id_mascota) {
             try {
                 const response = await fetch(
-                    "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/updatePet.php",
+                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updatePet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -244,7 +244,7 @@ const ProfileUser = () => {
                 };
 
                 const response = await fetch(
-                    "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/addPet.php",
+                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/addPet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -308,7 +308,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://supplement-arabic-americans-fool.trycloudflare.com/backend/actions/deletePet.php",
+                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/deletePet.php",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
