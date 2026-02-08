@@ -19,7 +19,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend";
+  const backendBase = "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 
@@ -103,7 +103,7 @@ const Products = () => {
 
     fetchProducts();
   }, [currentPage, searchQuery, selectedCategory]);
-  
+
   useEffect(() => {
     fetch(`${backendBase}/actions/getCategories.php`)
       .then(res => res.json())
@@ -155,29 +155,29 @@ const Products = () => {
       <div className="product-scroll-wrapper">
         <div className="product-container">
           <div className="columns is-mobile is-multiline">
-          {products.map((product) => {
-            console.log("IMAGE URL:", product.image_url);
+            {products.map((product) => {
+              console.log("IMAGE URL:", product.image_url);
 
-            return (
-              <div
-                className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
-                key={product.id}
-              >
-                <ProductCard
-                  ProductName={product.nombre_producto}
-                  ProductPrice={product.precio_producto}
-                  ProductImage={`${backendBase}/uploads/${product.image_url}`}
-                  ProductId={product.id}
-                  ProductStock={product.stock_producto}
-                  ProductReplenishment={product.punto_reposicion}
-                  ShowAddButton
-                  {...(isAdmin
-                    ? { ShowModifyButton: true, ShowDeleteButton: true, isAdmin: true }
-                    : { ShowDeleteButton: false, ShowAddButton: true, isAdmin: false })}
-                />
-              </div>
-            );
-          })}
+              return (
+                <div
+                  className="column is-full-mobile is-half-tablet is-one-quarter-desktop"
+                  key={product.id}
+                >
+                  <ProductCard
+                    ProductName={product.nombre_producto}
+                    ProductPrice={product.precio_producto}
+                    ProductImage={`${backendBase}/uploads/${product.image_url}`}
+                    ProductId={product.id}
+                    ProductStock={product.stock_producto}
+                    ProductReplenishment={product.punto_reposicion}
+                    ShowAddButton
+                    {...(isAdmin
+                      ? { ShowModifyButton: true, ShowDeleteButton: true, isAdmin: true }
+                      : { ShowDeleteButton: false, ShowAddButton: true, isAdmin: false })}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

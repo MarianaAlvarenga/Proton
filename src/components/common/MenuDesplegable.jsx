@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);
@@ -62,42 +62,40 @@ const Desplegable = () => {
 
             <ul className={`dropdown-menu ${isDropdownVisible ? "show" : ""}`}>
                 {isProductsPage && userRole === 4 && (
-                <>
-                    <li className="admin-option">
-                    <Link to="/Products" state={{ purchaseMode: true }}>
-                        Realizar compra
-                    </Link>
-                    </li>
-                    <li className="admin-option">
-                    <Link to="/Products" state={{ purchaseMode: false }}>
-                        Realizar edición
-                    </Link>
-                    </li>
-                </>
+                    <>
+                        <li className="admin-option">
+                            <Link to="/Products" state={{ purchaseMode: true }}>
+                                Realizar compra
+                            </Link>
+                        </li>
+                        <li className="admin-option">
+                            <Link to="/Products" state={{ purchaseMode: false }}>
+                                Realizar edición
+                            </Link>
+                        </li>
+                    </>
                 )}
                 <li
-                className={`mobile-only all-products ${
-                    activeOption === "/products" ? "disabled" : ""
-                }`}
+                    className={`mobile-only all-products ${activeOption === "/products" ? "disabled" : ""
+                        }`}
                 >
-                <Link to="/products">Todos los Productos</Link>
+                    <Link to="/products">Todos los Productos</Link>
                 </li>
                 {categories.length > 0 ? (
-                categories.map((category) => {
-                    const path = `/products?category=${category.id_categoria}`;
-                    return (
-                    <li
-                        key={category.id_categoria}
-                        className={`mobile-only category-item ${
-                        activeOption === path ? "disabled" : ""
-                        }`}
-                    >
-                        <Link to={path}>{category.nombre_categoria}</Link>
-                    </li>
-                    );
-                })
+                    categories.map((category) => {
+                        const path = `/products?category=${category.id_categoria}`;
+                        return (
+                            <li
+                                key={category.id_categoria}
+                                className={`mobile-only category-item ${activeOption === path ? "disabled" : ""
+                                    }`}
+                            >
+                                <Link to={path}>{category.nombre_categoria}</Link>
+                            </li>
+                        );
+                    })
                 ) : (
-                <li className="mobile-only">No hay categorías disponibles</li>
+                    <li className="mobile-only">No hay categorías disponibles</li>
                 )}
             </ul>
         </div>

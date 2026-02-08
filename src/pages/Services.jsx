@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-            "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }
@@ -60,22 +60,21 @@ const Services = () => {
             console.error("Error al actualizar precios:", error);
         }
     };
-    
+
     return (
         <div>
             <NavBar showProfileButton={false} />
-            <SubNavBar currentPage="Servicios"/>
+            <SubNavBar currentPage="Servicios" />
             <div className="container mt-5">
                 <h1 className="title is-2">Servicios</h1>
                 {/* Botón editar */}
                 <div className="field is-grouped mb-4">
                     <p className="control">
                         <button
-                            className={`button ${
-                                editando ? "is-light" : "is-primary is-link"
-                            }`}
+                            className={`button ${editando ? "is-light" : "is-primary is-link"
+                                }`}
                             onClick={() => setEditando(true)}
-                            >
+                        >
                             Editar precios
                         </button>
                     </p>

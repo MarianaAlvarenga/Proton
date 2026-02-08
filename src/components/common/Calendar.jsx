@@ -35,7 +35,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -179,7 +179,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -292,7 +292,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/availability.php",
+        "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

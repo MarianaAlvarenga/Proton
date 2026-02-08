@@ -41,7 +41,7 @@ const Shifts = () => {
       const fetchEspecialidades = async () => {
         try {
           const res = await axios.get(
-            'https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getEspecialidades.php'
+            'https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getEspecialidades.php'
           );
           setEspecialidades(res.data || []);
         } catch (error) {
@@ -63,7 +63,7 @@ const Shifts = () => {
     const fetchPeluqueros = async () => {
       try {
         const res = await axios.get(
-          `https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
+          `https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
         );
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
@@ -96,7 +96,7 @@ const Shifts = () => {
       Confirm: 'Pagar ahora',
       Cancel: 'Pagar el día del turno',
       icon: 'success',
-      OnCancel: () => {} 
+      OnCancel: () => { }
     });
 
     if (result.isConfirmed) {
@@ -135,7 +135,7 @@ const Shifts = () => {
             options={especialidades.map((e) => ({
               value: e.id_servicio,
               label:
-                userRole === 1 || userRole === 4
+                userRole === 1 || userRole === 3 || userRole === 4
                   ? `${e.nombre} - $${e.precio}`
                   : e.nombre,
             }))}

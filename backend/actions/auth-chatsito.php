@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

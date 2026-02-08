@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/auth-chatsito.php',
         {
           action: 'login',
           email,
@@ -186,16 +186,16 @@ const Login = () => {
           <p >o inicia sesión con:</p>
         </div>
 
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '1rem',
-              marginTop: '1rem',
-              marginBottom: '1rem',
-            }}
-          >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '1rem',
+            marginTop: '1rem',
+            marginBottom: '1rem',
+          }}
+        >
           <button className="button">
             <span className="icon">
               <img src={cromoLogo} alt="Chrome" />

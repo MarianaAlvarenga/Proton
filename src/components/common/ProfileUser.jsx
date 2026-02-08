@@ -41,7 +41,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -95,7 +95,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);
@@ -170,7 +170,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updateUser.php",
+                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/updateUser.php",
                 { method: "POST", body: formData }
             );
 
@@ -204,7 +204,7 @@ const ProfileUser = () => {
         if (mascotaEdit.id_mascota) {
             try {
                 const response = await fetch(
-                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/updatePet.php",
+                    "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/updatePet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -244,7 +244,7 @@ const ProfileUser = () => {
                 };
 
                 const response = await fetch(
-                    "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/addPet.php",
+                    "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/addPet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -291,7 +291,7 @@ const ProfileUser = () => {
             }
         }
     };
-    
+
     const handleEliminarMascota = async () => {
         const mascota = mascotas[currentIndex];
         if (!mascota?.id_mascota) return;
@@ -308,7 +308,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://sally-paintings-perfectly-procurement.trycloudflare.com/backend/actions/deletePet.php",
+                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/deletePet.php",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -399,7 +399,7 @@ const ProfileUser = () => {
                         handleEditarMascota={handleEditarMascota}
                         handleAgregarMascota={handleAgregarMascota}
                         handleActualizarMascota={handleActualizarMascota}
-                        handleEliminarMascota={handleEliminarMascota} 
+                        handleEliminarMascota={handleEliminarMascota}
                         handleCancel={handleCancel}
                         puedeAgregarMascota={puedeAgregarMascota}
                     />
