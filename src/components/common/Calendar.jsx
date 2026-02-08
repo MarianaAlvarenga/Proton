@@ -19,12 +19,14 @@ export default function Calendar({
   selectedClientEmail,
   isAgendarTurno,
   isAsistencia,
-  onReservaExitosa // ✅ NUEVO
+  onReservaExitosa
 }) {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
   const fetchDisponibilidades = (idPeluquero) => {
     if (!idPeluquero) {
@@ -54,6 +56,7 @@ export default function Calendar({
           extendedProps: {
             estado: avail.estado || "disponible",
             turno_id: avail.id_turno,
+            cliente_id: avail.cliente_id, // <--- Importante para validar el dueño
             fecha_disponible: avail.fecha_disponible,
             hora_inicial: avail.hora_inicial,
             hora_final: avail.hora_final,
@@ -131,23 +134,48 @@ export default function Calendar({
   };
 
   const handleEventClick = async (info) => {
-    const estado = info.event.extendedProps?.estado || "disponible";
+    const props = info.event.extendedProps;
+    const estado = props?.estado || "disponible";
 
     // ============================
-    // 👉 AGENDAR TURNO
+    // 👉 AGENDAR TURNO / ELIMINAR PROPIO
     // ============================
     if (isAgendarTurno) {
-      const user = JSON.parse(localStorage.getItem("user"));
-      let emailClienteFinal = null;
+      const currentUserId = user?.id_usuario;
 
+      // SI ESTÁ OCUPADO
+      if (estado === "ocupado") {
+        // ¿Es mío? (Comparamos con el ID guardado en la DB)
+        if (Number(props.cliente_id) === Number(currentUserId)) {
+          const confirmCancel = await Alert({
+            Title: "Cancelar mi turno",
+            Detail: "¿Deseas eliminar tu reserva para este horario?",
+            Confirm: "Sí, eliminar",
+            Cancel: "No, mantener",
+            icon: "warning"
+          });
+
+          if (confirmCancel.isConfirmed) {
+            // Aquí llamarías a un endpoint para borrar el turno (ej: delete_appointment.php)
+            // Por ahora asumo que quieres la lógica de UI.
+            handleDeleteTurno(props.turno_id);
+          }
+        } else {
+          Alert({
+            Title: "Turno no disponible",
+            Detail: "Este horario ya fue reservado por otro usuario.",
+            icon: "error"
+          });
+        }
+        return;
+      }
+
+      // SI ESTÁ DISPONIBLE -> Reservar (Lógica original)
+      let emailClienteFinal = null;
       if (userRole === 1) {
         emailClienteFinal = user?.email;
       } else {
-        if (
-          !selectedClientEmail ||
-          typeof selectedClientEmail !== "string" ||
-          !selectedClientEmail.includes("@")
-        ) {
+        if (!selectedClientEmail || !selectedClientEmail.includes("@")) {
           Alert({
             Title: "Cliente no seleccionado",
             Detail: "Debes seleccionar un email válido antes de agendar un turno.",
@@ -156,15 +184,6 @@ export default function Calendar({
           return;
         }
         emailClienteFinal = selectedClientEmail;
-      }
-
-      if (estado === "ocupado") {
-        Alert({
-          Title: "Turno no disponible",
-          Detail: "Este horario ya fue reservado.",
-          icon: "error"
-        });
-        return;
       }
 
       const confirm = await Alert({
@@ -184,10 +203,10 @@ export default function Calendar({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id_peluquero: info.event.extendedProps.id_peluquero,
-              fecha: info.event.extendedProps.fecha_disponible,
-              hora_inicio: info.event.extendedProps.hora_inicial,
-              hora_fin: info.event.extendedProps.hora_final,
+              id_peluquero: props.id_peluquero,
+              fecha: props.fecha_disponible,
+              hora_inicio: props.hora_inicial,
+              hora_fin: props.hora_final,
               email_cliente: emailClienteFinal,
               id: user?.id_usuario,
               userRole: userRole
@@ -196,25 +215,13 @@ export default function Calendar({
         );
 
         const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message || "No se pudo reservar.");
 
-        if (!res.ok || !json.success) {
-          throw new Error(json.message || "No se pudo reservar el turno");
-        }
-
-        // ✅ AVISAMOS A SHIFTS PARA MOSTRAR LOS 2 BOTONES
-        if (onReservaExitosa) {
-          onReservaExitosa(json.turno_id || info.event.extendedProps.turno_id);
-        }
-
+        if (onReservaExitosa) onReservaExitosa(json.turno_id || props.turno_id);
         fetchDisponibilidades(peluqueroId);
       } catch (error) {
-        Alert({
-          Title: "Error",
-          Detail: error.message,
-          icon: "error"
-        });
+        Alert({ Title: "Error", Detail: error.message, icon: "error" });
       }
-
       return;
     }
 
@@ -223,19 +230,19 @@ export default function Calendar({
     // ============================
     if (isAsistencia) {
       navigate("/Asistencia", {
-        state: { turno: { id_turno: info.event.extendedProps.turno_id } }
+        state: { turno: { id_turno: props.turno_id } }
       });
       return;
     }
 
     // ============================
-    // 👉 DISPONIBILIDAD
+    // 👉 DISPONIBILIDAD (Groomer)
     // ============================
     if (isSettingAvailability && userRole === 3) {
       if (estado === "ocupado") {
         Alert({
           Title: "Acción no permitida",
-          Detail: "No podés eliminar un turno ya reservado.",
+          Detail: "No podés eliminar un turno ya reservado por un cliente.",
           icon: "error"
         });
         return;
@@ -243,24 +250,23 @@ export default function Calendar({
 
       const confirmDelete = await Alert({
         Title: "Eliminar horario",
-        Detail: "¿Seguro que querés eliminar este horario?",
+        Detail: "¿Seguro que querés eliminar este horario de tu oferta?",
         Confirm: "Eliminar",
         Cancel: "Cancelar",
-        icon: "warning",
-        OnCancel: () => Swal.close()
+        icon: "warning"
       });
 
       if (!confirmDelete.isConfirmed) return;
 
-      if (info.event.extendedProps?.isTemp) {
+      if (props?.isTemp) {
         setEvents((prev) => prev.filter((e) => e.id !== info.event.id));
         setSelectedSlots((prev) =>
           prev.filter(
             (s) =>
               !(
-                s.fecha_disponible === info.event.extendedProps.fecha_disponible &&
-                s.hora_inicial === info.event.extendedProps.hora_inicial &&
-                s.hora_final === info.event.extendedProps.hora_final
+                s.fecha_disponible === props.fecha_disponible &&
+                s.hora_inicial === props.hora_inicial &&
+                s.hora_final === props.hora_final
               )
           )
         );
@@ -268,27 +274,34 @@ export default function Calendar({
     }
   };
 
+  // Función auxiliar para eliminar el turno
+  const handleDeleteTurno = async (turnoId) => {
+    try {
+      const res = await fetch("https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/delete_availability.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_turno: turnoId })
+      });
+      const json = await res.json();
+      if (json.success) {
+        Alert({ Title: "Eliminado", Detail: "El turno ha sido cancelado.", icon: "success" });
+        fetchDisponibilidades(peluqueroId);
+      } else {
+        throw new Error(json.message);
+      }
+    } catch (error) {
+      Alert({ Title: "Error", Detail: "No se pudo eliminar el turno.", icon: "error" });
+    }
+  };
+
   const handleSave = async () => {
     if (selectedSlots.length === 0) {
-      Alert({
-        Title: "Atención",
-        Detail: "No hay horarios seleccionados para guardar.",
-        icon: "warning"
-      });
+      Alert({ Title: "Atención", Detail: "No hay horarios seleccionados.", icon: "warning" });
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
     const id_peluquero = user?.id_usuario;
-
-    if (!id_peluquero) {
-      Alert({
-        Title: "Sesión requerida",
-        Detail: "Debes iniciar sesión para guardar disponibilidad.",
-        icon: "warning"
-      });
-      return;
-    }
+    if (!id_peluquero) return;
 
     try {
       const res = await fetch(
@@ -296,35 +309,19 @@ export default function Calendar({
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id_peluquero,
-            disponibilidades: selectedSlots,
-          }),
+          body: JSON.stringify({ id_peluquero, disponibilidades: selectedSlots }),
         }
       );
 
       const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message);
 
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "No se pudo guardar la disponibilidad.");
-      }
-
-      Alert({
-        Title: "Guardado",
-        Detail: "Disponibilidad guardada correctamente.",
-        icon: "success"
-      });
-
+      Alert({ Title: "Guardado", Detail: "Disponibilidad guardada.", icon: "success" });
       setSelectedSlots([]);
       fetchDisponibilidades(id_peluquero);
-
       if (onClose) onClose();
     } catch (error) {
-      Alert({
-        Title: "Error",
-        Detail: error.message,
-        icon: "error"
-      });
+      Alert({ Title: "Error", Detail: error.message, icon: "error" });
     }
   };
 
@@ -348,11 +345,7 @@ export default function Calendar({
         <div style={{ marginTop: "1rem", marginBottom: "2rem" }}>
           <button
             className="button is-fullwidth"
-            style={{
-              backgroundColor: "#9b59b6",
-              color: "white",
-              fontWeight: "bold"
-            }}
+            style={{ backgroundColor: "#9b59b6", color: "white", fontWeight: "bold" }}
             onClick={handleSave}
           >
             Guardar disponibilidad

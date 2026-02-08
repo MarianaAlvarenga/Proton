@@ -28,6 +28,7 @@ try {
             hd.hora_final,
             dhd.id_usuario AS id_peluquero,
             t.id_turno,
+            t.cliente_id,
             CASE 
                 WHEN t.id_turno IS NOT NULL THEN 'ocupado'
                 ELSE 'disponible'
