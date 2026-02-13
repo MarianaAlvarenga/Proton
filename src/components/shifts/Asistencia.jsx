@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
+import PaymentQRModal from '../sales/PaymentQRModal'; 
 import "./Asistencia.css";
 
 const Asistencia = () => {
@@ -14,18 +15,25 @@ const Asistencia = () => {
   const [horaLlegada, setHoraLlegada] = useState("");
   const [horaFin, setHoraFin] = useState("");
   const [observaciones, setObservaciones] = useState("");
+  
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  useEffect(() => {
+  const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
     fetch(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
+          // Guardamos el turno que ya viene con el precio correcto desde PHP
           setTurno(data.turno);
         }
       })
-      .catch(console.error);
+      .catch(err => console.error("Error fetching turno:", err));
+  };
+
+  useEffect(() => {
+    fetchTurno();
   }, []);
 
   const handleSubmit = () => {
@@ -36,7 +44,7 @@ const Asistencia = () => {
         id_turno: turno.id_turno,
         asistio,
         hora_llegada: asistio ? horaLlegada : null,
-        hora_finalizacion: asistio ? horaFin : null,
+        hora_finalization: asistio ? horaFin : null,
         observaciones: asistio ? observaciones : null
       })
     })
@@ -88,8 +96,24 @@ const Asistencia = () => {
               />
               NO
             </label>
-
           </div>
+        </div>
+
+        {/* --- SECCIÓN DE PAGO DINÁMICA --- */}
+        <div className={`notification ${turno.pagado ? 'is-success' : 'is-danger'} is-light mt-4 is-flex is-align-items-center is-justify-content-space-between`}>
+          <span className="has-text-weight-bold">
+            <i className={`fas ${turno.pagado ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2`}></i> 
+            {turno.pagado ? 'YA ABONADO' : 'NO ABONADO'}
+          </span>
+          
+          {!turno.pagado && (
+            <button 
+              className="button is-danger is-small"
+              onClick={() => setShowPaymentModal(true)}
+            >
+              Pagar ahora (${turno.precio})
+            </button>
+          )}
         </div>
 
         {asistio === true && (
@@ -121,6 +145,29 @@ const Asistencia = () => {
           </button>
         </div>
       </div>
+
+      {showPaymentModal && (
+        <PaymentQRModal
+          paymentDataInput={{
+            turnoId: String(turno.id_turno),
+            items: [{
+              title: "Servicio de Peluquería",
+              quantity: 1,
+              // Usamos el precio real que viene de getTurnoById.php
+              unit_price: Number(parseFloat(turno.precio).toFixed(2)), 
+              currency_id: "ARS"
+            }],
+            payer: {
+              name: `${turno.cliente_nombre} ${turno.cliente_apellido}`.trim(),
+              email: "test_user@example.com"
+            }
+          }}
+          onClose={(wasPaid) => {
+            setShowPaymentModal(false);
+            if (wasPaid) fetchTurno(); // Recarga los datos para actualizar el estado del pago
+          }}
+        />
+      )}
     </>
   );
 };

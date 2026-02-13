@@ -56,7 +56,7 @@ export default function Calendar({
           extendedProps: {
             estado: avail.estado || "disponible",
             turno_id: avail.id_turno,
-            cliente_id: avail.cliente_id, // <--- Importante para validar el dueño
+            cliente_id: avail.cliente_id,
             fecha_disponible: avail.fecha_disponible,
             hora_inicial: avail.hora_inicial,
             hora_final: avail.hora_final,
@@ -137,15 +137,10 @@ export default function Calendar({
     const props = info.event.extendedProps;
     const estado = props?.estado || "disponible";
 
-    // ============================
-    // 👉 AGENDAR TURNO / ELIMINAR PROPIO
-    // ============================
     if (isAgendarTurno) {
       const currentUserId = user?.id_usuario;
 
-      // SI ESTÁ OCUPADO
       if (estado === "ocupado") {
-        // ¿Es mío? (Comparamos con el ID guardado en la DB)
         if (Number(props.cliente_id) === Number(currentUserId)) {
           const confirmCancel = await Alert({
             Title: "Cancelar mi turno",
@@ -156,8 +151,6 @@ export default function Calendar({
           });
 
           if (confirmCancel.isConfirmed) {
-            // Aquí llamarías a un endpoint para borrar el turno (ej: delete_appointment.php)
-            // Por ahora asumo que quieres la lógica de UI.
             handleDeleteTurno(props.turno_id);
           }
         } else {
@@ -170,7 +163,16 @@ export default function Calendar({
         return;
       }
 
-      // SI ESTÁ DISPONIBLE -> Reservar (Lógica original)
+      // Validar que se haya seleccionado una especialidad antes de reservar
+      if (!selectedServicioId) {
+        Alert({
+          Title: "Servicio no seleccionado",
+          Detail: "Por favor, selecciona una especialidad arriba antes de reservar el turno.",
+          icon: "warning"
+        });
+        return;
+      }
+
       let emailClienteFinal = null;
       if (userRole === 1) {
         emailClienteFinal = user?.email;
@@ -209,7 +211,8 @@ export default function Calendar({
               hora_fin: props.hora_final,
               email_cliente: emailClienteFinal,
               id: user?.id_usuario,
-              userRole: userRole
+              userRole: userRole,
+              id_servicio: selectedServicioId // <--- ENVIADO AL PHP
             })
           }
         );
@@ -225,9 +228,6 @@ export default function Calendar({
       return;
     }
 
-    // ============================
-    // 👉 ASISTENCIA
-    // ============================
     if (isAsistencia) {
       navigate("/Asistencia", {
         state: { turno: { id_turno: props.turno_id } }
@@ -235,9 +235,6 @@ export default function Calendar({
       return;
     }
 
-    // ============================
-    // 👉 DISPONIBILIDAD (Groomer)
-    // ============================
     if (isSettingAvailability && userRole === 3) {
       if (estado === "ocupado") {
         Alert({
@@ -274,7 +271,6 @@ export default function Calendar({
     }
   };
 
-  // Función auxiliar para eliminar el turno
   const handleDeleteTurno = async (turnoId) => {
     try {
       const res = await fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/delete_availability.php", {

@@ -26,6 +26,8 @@ $query = "
         t.fecha,
         t.hora_inicio,
         t.hora_fin,
+        t.pagado,
+        COALESCE(SUM(s.precio), 0) AS precio,
         uc.nombre  AS cliente_nombre,
         uc.apellido AS cliente_apellido,
         up.nombre  AS peluquero_nombre,
@@ -33,7 +35,10 @@ $query = "
     FROM turno t
     JOIN usuario uc ON uc.id_usuario = t.cliente_id
     JOIN usuario up ON up.id_usuario = t.id_peluquero
+    LEFT JOIN servicio_prestado_en_turno spt ON t.id_turno = spt.turno_id_turno
+    LEFT JOIN servicio s ON spt.servicio_id_servicio = s.id_servicio
     WHERE t.id_turno = ?
+    GROUP BY t.id_turno
 ";
 
 $stmt = $conn->prepare($query);
@@ -48,6 +53,10 @@ if ($result->num_rows === 0) {
 }
 
 $data = $result->fetch_assoc();
+
+// Forzamos tipos de datos limpios
+$data['pagado'] = (int)$data['pagado'] === 1;
+$data['precio'] = (float)$data['precio'];
 
 echo json_encode([
     "success" => true,

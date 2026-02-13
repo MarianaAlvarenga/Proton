@@ -1,11 +1,8 @@
 <?php
-
 require_once '../includes/session_config.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
 
 header("Content-Type: application/json");
 
@@ -15,13 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// ---- DEBUG: VER RAW BODY ----
 $raw = file_get_contents("php://input");
-error_log("RAW BODY ===> " . $raw);
 $body = json_decode($raw, true);
-// ------------------------------
 
-// Cargar variables de entorno
+// --- BLINDAJE PARA ERROR 400: Convertir unit_price a float ---
+if (isset($body['items']) && is_array($body['items'])) {
+    foreach ($body['items'] as &$item) {
+        if (isset($item['unit_price'])) {
+            $item['unit_price'] = (float)$item['unit_price'];
+        }
+    }
+}
+// -------------------------------------------------------------
+
 require_once __DIR__ . '/../load_env.php';
 $access_token = getenv('MP_ACCESS_TOKEN');
 
@@ -39,10 +42,8 @@ if (!isset($body['items']) || !is_array($body['items'])) {
     exit;
 }
 
-// Obtenemos el turnoId
 $turnoId = isset($body['turnoId']) ? (string)$body['turnoId'] : null;
 
-// Crear la preferencia
 $preference = [
     "items" => $body["items"],
     "payer" => [
@@ -56,12 +57,10 @@ $preference = [
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
-    "external_reference" => $turnoId, // Importante: debe ser el ID del turno
-    // Se recomienda que la URL no tenga parámetros raros
+    "external_reference" => $turnoId, 
     "notification_url" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
 ];
 
-// cURL
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -75,17 +74,10 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($preference));
 
 $response = curl_exec($ch);
 $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-if ($response === false) {
-    $error = curl_error($ch);
-    error_log("ERROR CURL ===> " . $error);
-}
-
 curl_close($ch);
 
 $data = json_decode($response, true);
 
-// GUARDAR CARRITO TEMPORAL
 if (isset($data["id"])) {
     $prefId = $data["id"];
     if (!is_dir("../tmp")) mkdir("../tmp", 0777, true);
