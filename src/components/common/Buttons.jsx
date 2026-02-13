@@ -29,7 +29,7 @@ const ModifyButton = ({ urlImage = ModifyImage, selectedUserId, onNoSelection })
       return;
     }
 
-    fetch("https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getUserById.php", {
+    fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getUserById.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedUserId }),

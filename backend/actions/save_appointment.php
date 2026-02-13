@@ -48,23 +48,28 @@ try {
         $cliente_id = $row['id_usuario'];
     }
 
-    // 💾 Insertar turno
+    // 💾 Insertar turno (Se agrega columna pagado, por defecto 0 / false)
+    $pagado = 0; 
     $stmt = $conn->prepare("
-        INSERT INTO turno (fecha, hora_inicio, hora_fin, cliente_id, id_peluquero)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO turno (fecha, hora_inicio, hora_fin, cliente_id, id_peluquero, pagado)
+        VALUES (?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "sssii",
+        "sssiii",
         $data['fecha'],
         $data['hora_inicio'],
         $data['hora_fin'],
         $cliente_id,
-        $data['id_peluquero']
+        $data['id_peluquero'],
+        $pagado
     );
     $stmt->execute();
+    
+    // Obtenemos el ID del turno que se acaba de crear
+    $nuevo_id_turno = $conn->insert_id;
     $stmt->close();
 
-    echo json_encode(["success" => true]);
+    echo json_encode(["success" => true, "turno_id" => $nuevo_id_turno]);
 
 } catch (Exception $e) {
     http_response_code(500);

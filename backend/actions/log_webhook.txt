@@ -1,0 +1,19 @@
+
+[2026-02-13 13:58:49] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38134142509","topic":"merchant_order"}
+[2026-02-13 13:58:58] Recibido: {"resource":"145403816387","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 253 actualizado.
+[2026-02-13 13:58:59] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145403816387"},"date_created":"2026-02-13T12:58:58Z","id":129080552286,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 253 actualizado.
+[2026-02-13 13:58:59] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38134142509","topic":"merchant_order"}
+[2026-02-13 13:59:58] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38160515540","topic":"merchant_order"}
+[2026-02-13 14:00:07] Recibido: {"resource":"145403899037","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 254 actualizado.
+[2026-02-13 14:00:07] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145403899037"},"date_created":"2026-02-13T13:00:07Z","id":128964658377,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 254 actualizado.
+[2026-02-13 14:00:08] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38160515540","topic":"merchant_order"}
+[2026-02-13 14:01:37] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38134208159","topic":"merchant_order"}
+[2026-02-13 14:01:46] Recibido: {"resource":"145404049413","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 255 actualizado.
+[2026-02-13 14:01:47] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145404049413"},"date_created":"2026-02-13T13:01:46Z","id":128964621615,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 255 actualizado.
+[2026-02-13 14:01:48] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38134208159","topic":"merchant_order"}

@@ -37,7 +37,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -198,7 +198,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -277,7 +277,7 @@ export default function Calendar({
   // Función auxiliar para eliminar el turno
   const handleDeleteTurno = async (turnoId) => {
     try {
-      const res = await fetch("https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/delete_availability.php", {
+      const res = await fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/delete_availability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_turno: turnoId })
@@ -305,7 +305,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/availability.php",
+        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -25,8 +25,6 @@ $body = json_decode($raw, true);
 require_once __DIR__ . '/../load_env.php';
 $access_token = getenv('MP_ACCESS_TOKEN');
 
-error_log("TOKEN QUE LLEGA ===> " . $access_token);
-
 if (!$access_token) {
     http_response_code(500);
     echo json_encode(["error" => "No se pudo cargar el Access Token."]);
@@ -41,6 +39,9 @@ if (!isset($body['items']) || !is_array($body['items'])) {
     exit;
 }
 
+// Obtenemos el turnoId
+$turnoId = isset($body['turnoId']) ? (string)$body['turnoId'] : null;
+
 // Crear la preferencia
 $preference = [
     "items" => $body["items"],
@@ -49,12 +50,15 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/success.php",
-        "failure" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/failure.php",
-        "pending" => "https://warnings-excited-scenario-offline.trycloudflare.com/backend/actions/pending.php"
+        "success" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/success.php",
+        "failure" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/failure.php",
+        "pending" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/pending.php"
     ],
     "auto_return" => "approved",
-    "binary_mode" => true
+    "binary_mode" => true,
+    "external_reference" => $turnoId, // Importante: debe ser el ID del turno
+    // Se recomienda que la URL no tenga parámetros raros
+    "notification_url" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
 ];
 
 // cURL
@@ -75,27 +79,24 @@ $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 if ($response === false) {
     $error = curl_error($ch);
     error_log("ERROR CURL ===> " . $error);
-    file_put_contents("mp_log.txt", "ERROR CURL: " . $error . PHP_EOL, FILE_APPEND);
-} else {
-    file_put_contents("mp_log.txt", "RESPONSE: " . $response . PHP_EOL, FILE_APPEND);
 }
 
 curl_close($ch);
 
-// ✨ NUEVO: GUARDAR CARRITO PARA USARLO EN completePurchase.php
 $data = json_decode($response, true);
+
+// GUARDAR CARRITO TEMPORAL
 if (isset($data["id"])) {
     $prefId = $data["id"];
-
     if (!is_dir("../tmp")) mkdir("../tmp", 0777, true);
-
+    
     file_put_contents("../tmp/cart_" . $prefId . ".json", json_encode([
         "cart" => $body["items"],
-        "payer" => $preference["payer"]
+        "payer" => $preference["payer"],
+        "turnoId" => $turnoId
     ]));
 }
 
-// Responder
 http_response_code($http_status);
-file_put_contents("mp_log.txt", $response . PHP_EOL, FILE_APPEND);
 echo $response;
+?>

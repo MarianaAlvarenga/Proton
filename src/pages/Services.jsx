@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-                "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+                "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }

@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

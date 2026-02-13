@@ -4,31 +4,21 @@ import Calendar from '../components/common/Calendar';
 import NavBar from '../components/common/NavBar';
 import SubNavBar from '../components/common/SubNavBar';
 import ComboBox from '../components/common/ComboBox';
+import PaymentQRModal from '../components/sales/PaymentQRModal';
 import axios from 'axios';
-import Alert from '../components/common/Alert'; // ✅ NUEVO
+import Swal from 'sweetalert2';
 
 const Shifts = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const locationState = location.state || {};
 
-  const isSettingAvailability =
-    locationState.isSettingAvailability ?? locationState.mode === 'disponibilidad';
-  const isAgendarTurno =
-    locationState.isAgendarTurno ?? locationState.mode === 'agendar';
+  const isSettingAvailability = locationState.isSettingAvailability ?? locationState.mode === 'disponibilidad';
+  const isAgendarTurno = locationState.isAgendarTurno ?? locationState.mode === 'agendar';
   const isAsistencia = locationState.mode === 'asistencia';
 
   const user = JSON.parse(localStorage.getItem('user')) || {};
-
-  const userRole = Number(
-    locationState.userRole ??
-    user.rol ??
-    user.role ??
-    3
-  );
-
-  const isRange = false;
+  const userRole = Number(locationState.userRole ?? user.rol ?? user.role ?? 3);
 
   const [especialidades, setEspecialidades] = useState([]);
   const [selectedEspecialidad, setSelectedEspecialidad] = useState('');
@@ -36,13 +26,15 @@ const Shifts = () => {
   const [selectedPeluquero, setSelectedPeluquero] = useState('');
   const [emailAdmin, setEmailAdmin] = useState('');
 
+  // Estados para manejar el Modal de Pago
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [currentPaymentData, setCurrentPaymentData] = useState(null);
+
   useEffect(() => {
     if (userRole === 1 || userRole === 4 || isAgendarTurno) {
       const fetchEspecialidades = async () => {
         try {
-          const res = await axios.get(
-            'https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getEspecialidades.php'
-          );
+          const res = await axios.get('https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getEspecialidades.php');
           setEspecialidades(res.data || []);
         } catch (error) {
           console.error('Error obteniendo especialidades:', error);
@@ -59,52 +51,67 @@ const Shifts = () => {
       setSelectedPeluquero('');
       return;
     }
-
     const fetchPeluqueros = async () => {
       try {
-        const res = await axios.get(
-          `https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`
-        );
+        const res = await axios.get(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`);
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
       } catch (error) {
         console.error('Error obteniendo peluqueros:', error);
       }
     };
-
     fetchPeluqueros();
   }, [selectedEspecialidad, userRole, isAgendarTurno]);
 
-  const calendarPeluqueroId =
-    isSettingAvailability || isAsistencia
-      ? user.id_usuario
-      : isAgendarTurno
-        ? (selectedPeluquero || user.id_usuario)
-        : selectedPeluquero;
+  const calendarPeluqueroId = isSettingAvailability || isAsistencia ? user.id_usuario : (isAgendarTurno ? (selectedPeluquero || user.id_usuario) : selectedPeluquero);
 
   const handleCalendarClose = () => {
-    if (isSettingAvailability) {
-      navigate('/MenuGroomer');
-    }
+    if (isSettingAvailability) navigate('/MenuGroomer');
   };
 
-  // ✅ NUEVO — alerta de pago
   const handleReservaExitosa = async (turnoId) => {
-    const result = await Alert({
-      Title: 'Turno reservado ✅',
-      Detail: '¿Cómo querés realizar el pago?',
-      Confirm: 'Pagar ahora',
-      Cancel: 'Pagar el día del turno',
+    const servicio = especialidades.find(e => String(e.id_servicio) === String(selectedEspecialidad));
+
+    const result = await Swal.fire({
+      title: 'Turno reservado ✅',
+      text: '¿Cómo querés realizar el pago?',
       icon: 'success',
-      OnCancel: () => { }
+      showDenyButton: true,
+      confirmButtonText: 'Pagar ahora',
+      denyButtonText: 'Pagar el día del turno',
+      denyButtonColor: "#6c757d",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      reverseButtons: true
     });
 
     if (result.isConfirmed) {
-      navigate(`/pago/${turnoId}`);
+      setCurrentPaymentData({
+        items: [{
+          title: `Turno: ${servicio?.nombre || 'Servicio Peluquería'}`,
+          quantity: 1,
+          unit_price: Number(servicio?.precio || 0),
+          currency_id: "ARS"
+        }],
+        payer: {
+          name: user.nombre || "Cliente",
+          email: user.email || emailAdmin || "test_user@example.com"
+        },
+        turnoId: turnoId
+      });
+      setShowQRModal(true);
+    } else if (result.isDenied) {
+      const routes = { 1: '/MenuClient', 3: '/MenuGroomer', 4: '/MenuAdmin' };
+      navigate(routes[userRole] || '/');
     }
+  };
 
-    if (result.isDenied) {
-      navigate('/mis-turnos');
+  // NUEVA FUNCIÓN: Maneja el cierre del modal y la redirección
+  const handlePaymentModalClose = (wasPaid) => {
+    setShowQRModal(false);
+    if (wasPaid) {
+      const routes = { 1: '/MenuClient', 3: '/MenuGroomer', 4: '/MenuAdmin' };
+      navigate(routes[userRole] || '/');
     }
   };
 
@@ -114,7 +121,6 @@ const Shifts = () => {
       <SubNavBar showBack currentPage="Turnos" />
 
       <div className="box" style={{ paddingTop: '0px', paddingBottom: '0px' }}>
-
         {!isAsistencia && ((userRole === 4) || (userRole === 3 && isAgendarTurno)) && (
           <div style={{ marginBottom: '1em' }}>
             <label className="label">Email del cliente</label>
@@ -134,10 +140,7 @@ const Shifts = () => {
             onChange={(val) => setSelectedEspecialidad(val)}
             options={especialidades.map((e) => ({
               value: e.id_servicio,
-              label:
-                userRole === 1 || userRole === 3 || userRole === 4
-                  ? `${e.nombre} - $${e.precio}`
-                  : e.nombre,
+              label: `${e.nombre} - $${e.precio}`,
             }))}
             placeholder="Seleccione una especialidad"
           />
@@ -157,7 +160,7 @@ const Shifts = () => {
 
         <Calendar
           peluqueroId={calendarPeluqueroId}
-          isRange={isRange}
+          isRange={false}
           isMultiple={userRole === 3}
           onClose={handleCalendarClose}
           isSettingAvailability={isSettingAvailability}
@@ -166,10 +169,16 @@ const Shifts = () => {
           selectedClientEmail={emailAdmin}
           isAgendarTurno={isAgendarTurno}
           isAsistencia={isAsistencia}
-
-          onReservaExitosa={handleReservaExitosa} // ✅ NUEVO
+          onReservaExitosa={handleReservaExitosa}
         />
       </div>
+
+      {showQRModal && (
+        <PaymentQRModal
+          paymentDataInput={currentPaymentData}
+          onClose={handlePaymentModalClose}
+        />
+      )}
     </div>
   );
 };

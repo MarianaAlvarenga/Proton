@@ -34,7 +34,7 @@ const ButtonPanelUsers = ({ selectedUserId }) => {
 
       try {
         const response = await fetch(
-          "https://acknowledged-components-pipe-dominant.trycloudflare.com/backend/actions/deleteUser.php",
+          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/deleteUser.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
