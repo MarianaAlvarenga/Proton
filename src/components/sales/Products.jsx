@@ -1,10 +1,10 @@
 // Products.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import NavBar from "../components/common/NavBar";
-import SubNavBar from "../components/common/SubNavBar";
-import ProductCard from "../components/sales/ProductCard";
-import Pagination from "../components/common/Pagination";
+import NavBar from "../common/NavBar";
+import SubNavBar from "../common/SubNavBar";
+import ProductCard from "./ProductCard";
+import Pagination from "../common/Pagination";
 import "./Products.css";
 
 const Products = () => {
@@ -19,7 +19,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://independent-intent-telephone-printer.trycloudflare.com/backend";
+  const backendBase = "https://verde-holders-sequences-developers.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 

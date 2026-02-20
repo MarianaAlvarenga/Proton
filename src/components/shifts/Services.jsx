@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Alert from "../components/common/Alert.jsx";
-import NavBar from "../components/common/NavBar.jsx";
-import SubNavBar from "../components/common/SubNavBar.jsx";
+import Alert from "../common/Alert.jsx";
+import NavBar from "../common/NavBar.jsx";
+import SubNavBar from "../common/SubNavBar.jsx";
 
 const Services = () => {
     const [servicios, setServicios] = useState([]);
@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-                "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+                "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }

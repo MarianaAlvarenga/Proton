@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

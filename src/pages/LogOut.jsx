@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { ReactComponent as PowerIcon } from "../../assets/images/boton-de-encendido-apagado.svg";
-import Alert from "./Alert.jsx";
+import { ReactComponent as PowerIcon } from "../assets/images/boton-de-encendido-apagado.svg";
+import Alert from "../components/common/Alert.jsx";
 import Swal from "sweetalert2";
 import "./LogOut.css";
 
@@ -21,7 +21,7 @@ const LogOut = () => {
     if (!result.isConfirmed) return; // No cerrar sesión si canceló
 
     try {
-      const response = await fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/logout.php", {
+      const response = await fetch("https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/logout.php", {
         method: "POST",
         credentials: "include",
       });

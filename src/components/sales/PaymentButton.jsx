@@ -19,7 +19,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       // 👇 verificar email en la BD si es usuario registrado
       if (isRegistered) {
         const checkEmailResponse = await fetch(
-          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/checkEmail.php",
+          "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/checkEmail.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
       // 👇 guardar carrito
       await axios.post(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/save_cart.php",
+        "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/saveCart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -59,7 +59,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }));
 
       const response = await axios.post(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/create_preference.php",
+        "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/createPreference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },

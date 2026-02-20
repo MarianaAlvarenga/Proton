@@ -14,7 +14,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/create_preference.php",
+          "https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/createPreference.php",
           {
             items: paymentDataInput.items,
             payer: paymentDataInput.payer,
@@ -44,7 +44,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
   const startPolling = (turnoId) => {
     pollingInterval.current = setInterval(async () => {
       try {
-        const res = await axios.get(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/get_payment_status.php?turnoId=${turnoId}`);
+        const res = await axios.get(`https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
         if (res.data && res.data.pagado === true) {
           setIsPaid(true);
           stopPolling();

@@ -6,10 +6,10 @@ import Layout from '././components/common/Layout';
 
 // Importa tus componentes
 import Login from './pages/Login';
-import SignUp from './components/common/SignUp';
+import SignUp from './pages/SignUp';
 import ProductsCreate from './components/sales/ProductsCreate';
-import Products from './pages/Products';
-import Shifts from './pages/Shifts';
+import Products from './components/sales/Products';
+import Shifts from './components/shifts/Shifts';
 import MenuClient from './pages/MenuClient';
 import MenuGroomer from './pages/MenuGroomer';
 import MenuAdmin from './pages/MenuAdmin';
@@ -21,8 +21,8 @@ import UserSaleInfo from './components/sales/UserSaleInfo';
 import ProfileUser from './components/common/ProfileUser';
 import Landing from './pages/Landing';
 import SuccessPage from './components/common/SuccessPage';
-import Asistencia from './components/shifts/Asistencia';
-import Services from './pages/Services'
+import Asistencia from './components/shifts/Attendance';
+import Services from './components/shifts/Services'
 
 function App() {
   return (

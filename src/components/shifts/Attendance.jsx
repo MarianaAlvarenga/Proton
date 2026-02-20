@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
 import PaymentQRModal from '../sales/PaymentQRModal'; 
-import "./Asistencia.css";
+import "./Attendance.css";
 
 const Asistencia = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Asistencia = () => {
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -37,7 +37,7 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
-    fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

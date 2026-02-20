@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/authentication.php',
         {
           action: 'login',
           email,

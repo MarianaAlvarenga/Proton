@@ -1,9 +1,9 @@
 export const checkAuth = async () => {
   try {
 <<<<<<< Updated upstream
-    const response = await fetch('https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/checkSession.php', {
+    const response = await fetch('https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/checkSession.php', {
 =======
-    const response = await fetch('https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/checkSession.php', {
+    const response = await fetch('https://verde-holders-sequences-developers.trycloudflare.com/backend/actions/checkSession.php', {
 >>>>>>> Stashed changes
       method: 'GET',
       credentials: 'include', // MUY IMPORTANTE para que se envíe la cookie de sesión
