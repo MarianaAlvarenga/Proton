@@ -23,7 +23,7 @@ export default function CheckoutButton() {
 
 
     // 🔵 Llamada normal al backend
-    const res = await fetch("/api/create_preference.php", {
+    const res = await fetch("/api/createPreference.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

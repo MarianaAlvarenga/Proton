@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { ReactComponent as PowerIcon } from "../../assets/images/boton-de-encendido-apagado.svg";
-import Alert from "./Alert.jsx";
+import { ReactComponent as PowerIcon } from "../assets/images/boton-de-encendido-apagado.svg";
+import Alert from "../components/common/Alert.jsx";
 import Swal from "sweetalert2";
 import "./LogOut.css";
 

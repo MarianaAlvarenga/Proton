@@ -5,7 +5,7 @@ require_once '../includes/session_config.php';
 // Habilitar logging de errores
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/upload_errors.log');
+ini_set('error_log', __DIR__ . '/../logs/upload_errors.log');
 
 // Verificar si el archivo de includes/db.php existe
 if (!file_exists(__DIR__ . '/../includes/db.php')) {
@@ -191,7 +191,7 @@ $stmt->bind_param("si", $relativePath, $userId);
 
 } catch (Exception $e) {
     // Log del error
-    error_log("ERROR en upload_user_image.php: " . $e->getMessage() . " en " . $e->getFile() . ":" . $e->getLine());
+    error_log("ERROR en uploadUserImage.php: " . $e->getMessage() . " en " . $e->getFile() . ":" . $e->getLine());
     
     // Enviar respuesta de error
     http_response_code($e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 500);

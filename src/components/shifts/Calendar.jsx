@@ -7,7 +7,7 @@ import esLocale from "@fullcalendar/core/locales/es";
 import { useNavigate } from "react-router-dom";
 import "bulma/css/bulma.min.css";
 import "./Calendar.css";
-import Alert from "./Alert";
+import Alert from "../common/Alert";
 import Swal from "sweetalert2";
 
 export default function Calendar({

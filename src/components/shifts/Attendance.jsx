@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
-import PaymentQRModal from '../sales/PaymentQRModal';
-import "./Asistencia.css";
+import PaymentQRModal from '../sales/PaymentQRModal'; 
+import "./Attendance.css";
 
 const Asistencia = () => {
   const navigate = useNavigate();

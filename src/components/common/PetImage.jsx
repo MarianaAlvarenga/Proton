@@ -18,7 +18,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
         try {
             if (petId) {
                 const response = await fetch(
-                    `${BACKEND_URL}/actions/get_pet_image.php?petId=${petId}`,
+                    `${BACKEND_URL}/actions/getPetImage.php?petId=${petId}`,
                     { credentials: "include" }
                 );
 
@@ -83,7 +83,7 @@ const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
 
         try {
             const response = await fetch(
-                `${BACKEND_URL}/actions/upload_pet_image.php`,
+                `${BACKEND_URL}/actions/uploadPetImage.php`,
                 {
                     method: "POST",
                     body: formData,

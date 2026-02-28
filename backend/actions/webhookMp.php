@@ -1,6 +1,6 @@
 <?php
 /**
- * webhook_mp.php - SOLUCIÓN ERROR 0 (SSL BYPASS)
+ * webhookMp.php - SOLUCIÓN ERROR 0 (SSL BYPASS)
  */
 require_once '../includes/db.php';
 
@@ -13,7 +13,8 @@ $raw_body = file_get_contents('php://input');
 $data = json_decode($raw_body, true);
 if (!$data) exit;
 
-file_put_contents("log_webhook.txt", "[" . date("Y-m-d H:i:s") . "] Recibido: " . $raw_body . PHP_EOL, FILE_APPEND);
+file_put_contents(__DIR__ . '/../logs/log_webhook.txt', "[" . date("Y-m-d H:i:s") . "] Recibido: " . $raw_body . PHP_EOL, FILE_APPEND);
+
 
 $payment_id = null;
 if (isset($data['data']['id'])) $payment_id = $data['data']['id'];
@@ -40,14 +41,14 @@ if ($payment_id && is_numeric($payment_id)) {
     // Si cURL falla (Error 0), capturamos el mensaje específico de cURL
     if ($response === false) {
         $curl_error = curl_error($ch);
-        file_put_contents("log_webhook.txt", "[ERROR CURL] " . $curl_error . PHP_EOL, FILE_APPEND);
+        file_put_contents("/../logs/log_webhook.txt", "[ERROR CURL] " . $curl_error . PHP_EOL, FILE_APPEND);
         curl_close($ch);
         exit;
     }
     curl_close($ch);
 
     if ($http_code !== 200) {
-        file_put_contents("log_webhook.txt", "[ERROR API] Código $http_code. Mensaje: " . ($payment_info['message'] ?? 'Sin mensaje') . PHP_EOL, FILE_APPEND);
+        file_put_contents("/../logs/log_webhook.txt", "[ERROR API] Código $http_code. Mensaje: " . ($payment_info['message'] ?? 'Sin mensaje') . PHP_EOL, FILE_APPEND);
         exit;
     }
 
@@ -304,7 +305,7 @@ if ($payment_id && is_numeric($payment_id)) {
 
         file_put_contents("log_webhook.txt", "[ALERTA] Pago $payment_id sin external_reference usable. Data: " . json_encode($externalRefRaw) . PHP_EOL, FILE_APPEND);
     } else {
-        file_put_contents("log_webhook.txt", "[INFO] Pago $payment_id status: " . ($payment_info['status'] ?? 'unknown') . PHP_EOL, FILE_APPEND);
+        file_put_contents("/../logs/log_webhook.txt", "[INFO] Pago $payment_id status: " . ($payment_info['status'] ?? 'unknown') . PHP_EOL, FILE_APPEND);
     }
 }
 echo json_encode(["status" => "processed"]);

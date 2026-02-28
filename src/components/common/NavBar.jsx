@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import MenuDesplegable from "./MenuDesplegable.jsx";
+import MenuDesplegable from "./DropdownMenu.jsx";
 import './NavBar.css';
-import LogOut from "./LogOut.jsx";
+import LogOut from "../../pages/LogOut.jsx";
 import ProfileButton from "./ProfileButton.jsx";
 import HomeButton from "./HomeButton.jsx";
 

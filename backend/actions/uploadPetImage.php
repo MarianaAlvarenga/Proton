@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 // Habilitar logging de errores
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/upload_errors.log');
+ini_set('error_log', __DIR__ . '/../logs/upload_errors.log');
 
 require_once __DIR__ . '/../includes/db.php';
 
@@ -126,7 +126,7 @@ try {
 
 } catch (Exception $e) {
     http_response_code($e->getCode() >= 400 ? $e->getCode() : 500);
-    error_log("ERROR en upload_pet_image.php: " . $e->getMessage());
+    error_log("ERROR en uploadPetImage.php: " . $e->getMessage());
 
     echo json_encode([
         'success' => false,

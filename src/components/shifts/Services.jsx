@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Alert from "../components/common/Alert.jsx";
-import NavBar from "../components/common/NavBar.jsx";
-import SubNavBar from "../components/common/SubNavBar.jsx";
+import Alert from "../common/Alert.jsx";
+import NavBar from "../common/NavBar.jsx";
+import SubNavBar from "../common/SubNavBar.jsx";
 
 const Services = () => {
     const [servicios, setServicios] = useState([]);
