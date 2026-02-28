@@ -30,3 +30,70 @@
 [2026-02-13 15:06:36] Recibido: {"resource":"146105297060","topic":"payment"}
 [OK] !!! ÉXITO !!! Turno 258 actualizado.
 [2026-02-13 15:06:37] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38162324916","topic":"merchant_order"}
+[2026-02-14 03:19:28] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38186881550","topic":"merchant_order"}
+[2026-02-14 03:19:38] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146212959262"},"date_created":"2026-02-14T02:19:38Z","id":129103172242,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 261 actualizado.
+[2026-02-14 03:19:38] Recibido: {"resource":"146212959262","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 261 actualizado.
+[2026-02-14 03:19:39] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38186881550","topic":"merchant_order"}
+[2026-02-13 14:22:47] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38186963152","topic":"merchant_order"}
+[2026-02-13 14:22:55] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145520464997"},"date_created":"2026-02-14T02:23:03Z","id":129103258186,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 262 actualizado.
+[2026-02-13 14:22:55] Recibido: {"resource":"145520464997","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 262 actualizado.
+[2026-02-13 14:22:56] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38186963152","topic":"merchant_order"}
+[2026-02-16 20:46:28] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38262584464","topic":"merchant_order"}
+[2026-02-16 20:46:40] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146538966160"},"date_created":"2026-02-16T19:46:44Z","id":129180431450,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 265 actualizado.
+[2026-02-16 20:46:41] Recibido: {"resource":"146538966160","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 265 actualizado.
+[2026-02-16 20:46:41] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38262584464","topic":"merchant_order"}
+[2026-02-16 20:47:38] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38236221013","topic":"merchant_order"}
+[2026-02-16 20:47:46] Recibido: {"resource":"146539058746","topic":"payment"}
+[OK] !!! ÉXITO !!! Turno 266 actualizado.
+[2026-02-16 20:47:46] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146539058746"},"date_created":"2026-02-16T19:47:49Z","id":129063979261,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] !!! ÉXITO !!! Turno 266 actualizado.
+[2026-02-16 20:47:47] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38236221013","topic":"merchant_order"}
+[2026-02-17 21:55:19] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38263808653","topic":"merchant_order"}
+[2026-02-17 21:55:29] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145971111341"},"date_created":"2026-02-17T20:55:30Z","id":129093032349,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[ALERTA] Pago 145971111341 sin external_reference. Data: null
+[2026-02-17 21:55:30] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38263808653","topic":"merchant_order"}
+[2026-02-17 21:55:30] Recibido: {"resource":"145971111341","topic":"payment"}
+[ALERTA] Pago 145971111341 sin external_reference. Data: null
+[2026-02-17 22:12:32] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290659026","topic":"merchant_order"}
+[2026-02-17 22:12:32] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290659044","topic":"merchant_order"}
+[2026-02-17 22:12:44] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146669267020"},"date_created":"2026-02-17T21:12:45Z","id":129210110898,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] Compra ECOM-1771362735214-e5266e47b9c8e completada. carritoId=116
+[2026-02-17 22:12:44] Recibido: {"resource":"146669267020","topic":"payment"}
+[OK] Compra ECOM-1771362735214-e5266e47b9c8e ya completada (idempotente).
+[2026-02-17 22:12:45] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290659044","topic":"merchant_order"}
+[2026-02-17 22:13:53] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290688774","topic":"merchant_order"}
+[2026-02-17 22:13:53] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38264287065","topic":"merchant_order"}
+[2026-02-17 22:14:12] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38264298507","topic":"merchant_order"}
+[2026-02-17 22:14:26] Recibido: {"resource":"146669397570","topic":"payment"}
+[OK] Compra ECOM-1771362823307-13fb63c04f1988 completada. carritoId=117
+[2026-02-17 22:14:27] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146669397570"},"date_created":"2026-02-17T21:14:27Z","id":129210216058,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[OK] Compra ECOM-1771362823307-13fb63c04f1988 ya completada (idempotente).
+[2026-02-17 22:14:28] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38264298507","topic":"merchant_order"}
+[2026-02-17 22:19:53] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38264445075","topic":"merchant_order"}
+[2026-02-17 22:20:03] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146670086122"},"date_created":"2026-02-17T21:20:05Z","id":129210342230,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[ERROR] Compra ECOM-1771363180357-28b3ec1f8d9798 rollback: Stock insuficiente para el producto ID 7788
+[2026-02-17 22:20:04] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38264445075","topic":"merchant_order"}
+[2026-02-17 22:20:04] Recibido: {"resource":"146670086122","topic":"payment"}
+[ERROR] Compra ECOM-1771363180357-28b3ec1f8d9798 rollback: Stock insuficiente para el producto ID 7788
+[2026-02-17 22:23:59] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290943234","topic":"merchant_order"}
+[2026-02-17 22:24:11] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"146670325818"},"date_created":"2026-02-17T21:24:12Z","id":129093651821,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[DEBUG] external_reference recibido: "ECOM-1771363373341-0a317ddc00a9d8" -> procesado como: ECOM-1771363373341-0a317ddc00a9d8
+[OK] Compra ECOM-1771363373341-0a317ddc00a9d8 completada. carritoId=118
+[2026-02-17 22:24:11] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290943234","topic":"merchant_order"}
+[2026-02-17 22:24:11] Recibido: {"resource":"146670325818","topic":"payment"}
+[DEBUG] external_reference recibido: "ECOM-1771363373341-0a317ddc00a9d8" -> procesado como: ECOM-1771363373341-0a317ddc00a9d8
+[OK] Compra ECOM-1771363373341-0a317ddc00a9d8 ya completada (idempotente).
+[2026-02-17 22:26:08] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290993140","topic":"merchant_order"}
+[2026-02-17 22:26:17] Recibido: {"action":"payment.created","api_version":"v1","data":{"id":"145974440009"},"date_created":"2026-02-17T21:26:18Z","id":129093695801,"live_mode":true,"type":"payment","user_id":"2663873362"}
+[DEBUG] external_reference recibido: "ECOM-1771363562922-d8581b28d7cbe8" -> procesado como: ECOM-1771363562922-d8581b28d7cbe8
+[OK] Compra ECOM-1771363562922-d8581b28d7cbe8 completada. carritoId=119
+[2026-02-17 22:26:17] Recibido: {"resource":"145974440009","topic":"payment"}
+[DEBUG] external_reference recibido: "ECOM-1771363562922-d8581b28d7cbe8" -> procesado como: ECOM-1771363562922-d8581b28d7cbe8
+[OK] Compra ECOM-1771363562922-d8581b28d7cbe8 ya completada (idempotente).
+[2026-02-17 22:26:18] Recibido: {"resource":"https://api.mercadolibre.com/merchant_orders/38290993140","topic":"merchant_order"}

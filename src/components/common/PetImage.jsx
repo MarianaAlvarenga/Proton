@@ -3,7 +3,7 @@ import DefaultPetImage from "../../assets/images/perro.png";
 import Alert from "../common/Alert";
 
 const BACKEND_URL =
-    "https://independent-intent-telephone-printer.trycloudflare.com/backend";
+    "https://dash-nonprofit-special-scoring.trycloudflare.com/backend";
 
 const PetImage = ({ petId, mascotaEdit, setMascotaEdit }) => {
     const fileInputRef = useRef(null);

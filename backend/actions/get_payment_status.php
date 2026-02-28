@@ -1,5 +1,19 @@
 <?php
-header("Access-Control-Allow-Origin: https://independent-intent-telephone-printer.trycloudflare.com");
+// CORS dinámico: permitir múltiples orígenes válidos
+$allowedOrigins = [
+    'https://financial-probably-motor-armed.trycloudflare.com',
+    'https://dash-nonprofit-special-scoring.trycloudflare.com',
+    'https://gen-dubai-anytime-asks.trycloudflare.com'
+];
+
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    // Fallback al primero si no coincide
+    header("Access-Control-Allow-Origin: " . $allowedOrigins[0]);
+}
+
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 

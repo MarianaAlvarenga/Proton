@@ -43,6 +43,23 @@ if (!isset($body['items']) || !is_array($body['items'])) {
 }
 
 $turnoId = isset($body['turnoId']) ? (string)$body['turnoId'] : null;
+$purchaseRef = isset($body['purchaseRef']) ? (string)$body['purchaseRef'] : null;
+
+// Log para debug
+$logFile = __DIR__ . "/../tmp/create_pref_debug.log";
+file_put_contents($logFile, "[" . date("Y-m-d H:i:s") . "] create_preference.php - turnoId: " . ($turnoId ?? "null") . ", purchaseRef: " . ($purchaseRef ?? "null") . PHP_EOL, FILE_APPEND);
+
+// External reference:
+// - Turnos: usamos el ID numérico del turno (compatibilidad con el flujo actual)
+// - E-commerce: usamos purchaseRef (ej: "ECOM-...") para trackear pago sin redirección (QR)
+$externalReference = null;
+if (!empty($turnoId)) {
+    $externalReference = (string)$turnoId;
+} elseif (!empty($purchaseRef)) {
+    $externalReference = (string)$purchaseRef;
+}
+
+file_put_contents($logFile, "[" . date("Y-m-d H:i:s") . "] external_reference final: " . ($externalReference ?? "null") . PHP_EOL, FILE_APPEND);
 
 $preference = [
     "items" => $body["items"],
@@ -51,14 +68,14 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/success.php",
-        "failure" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/failure.php",
-        "pending" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/pending.php"
+        "success" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/success.php",
+        "failure" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/failure.php",
+        "pending" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/pending.php"
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
-    "external_reference" => $turnoId, 
-    "notification_url" => "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
+    "external_reference" => $externalReference,
+    "notification_url" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
 ];
 
 $ch = curl_init($url);
@@ -85,8 +102,24 @@ if (isset($data["id"])) {
     file_put_contents("../tmp/cart_" . $prefId . ".json", json_encode([
         "cart" => $body["items"],
         "payer" => $preference["payer"],
-        "turnoId" => $turnoId
+        "turnoId" => $turnoId,
+        "purchaseRef" => $purchaseRef,
+        "external_reference" => $externalReference
     ]));
+
+    // Archivo de tracking por external_reference (para webhook + polling de compras)
+    if (!empty($externalReference)) {
+        file_put_contents("../tmp/pref_" . $externalReference . ".json", json_encode([
+            "mp_preference_id" => $prefId,
+            "items" => $body["items"],
+            "cart" => $body["cart"] ?? null,
+            "payer" => $preference["payer"],
+            "turnoId" => $turnoId,
+            "purchaseRef" => $purchaseRef,
+            "external_reference" => $externalReference,
+            "seller" => $body["seller"] ?? null
+        ]));
+    }
 }
 
 http_response_code($http_status);

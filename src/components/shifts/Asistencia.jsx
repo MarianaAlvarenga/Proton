@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
-import PaymentQRModal from '../sales/PaymentQRModal'; 
+import PaymentQRModal from '../sales/PaymentQRModal';
 import "./Asistencia.css";
 
 const Asistencia = () => {
@@ -15,13 +15,13 @@ const Asistencia = () => {
   const [horaLlegada, setHoraLlegada] = useState("");
   const [horaFin, setHoraFin] = useState("");
   const [observaciones, setObservaciones] = useState("");
-  
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -37,7 +37,7 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
-    fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -102,12 +102,12 @@ const Asistencia = () => {
         {/* --- SECCIÓN DE PAGO DINÁMICA --- */}
         <div className={`notification ${turno.pagado ? 'is-success' : 'is-danger'} is-light mt-4 is-flex is-align-items-center is-justify-content-space-between`}>
           <span className="has-text-weight-bold">
-            <i className={`fas ${turno.pagado ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2`}></i> 
+            <i className={`fas ${turno.pagado ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2`}></i>
             {turno.pagado ? 'YA ABONADO' : 'NO ABONADO'}
           </span>
-          
+
           {!turno.pagado && (
-            <button 
+            <button
               className="button is-danger is-small"
               onClick={() => setShowPaymentModal(true)}
             >
@@ -154,7 +154,7 @@ const Asistencia = () => {
               title: "Servicio de Peluquería",
               quantity: 1,
               // Usamos el precio real que viene de getTurnoById.php
-              unit_price: Number(parseFloat(turno.precio).toFixed(2)), 
+              unit_price: Number(parseFloat(turno.precio).toFixed(2)),
               currency_id: "ARS"
             }],
             payer: {

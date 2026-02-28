@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Alert from "../common/Alert";
+import PaymentQRModal from "./PaymentQRModal";
+import { useNavigate } from "react-router-dom";
 
 const PaymentButton = ({ cart, userEmail, isRegistered }) => {
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
   const handlePayment = async () => {
     try {
       // 👇 si es usuario registrado, el email es obligatorio
@@ -19,7 +26,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       // 👇 verificar email en la BD si es usuario registrado
       if (isRegistered) {
         const checkEmailResponse = await fetch(
-          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/checkEmail.php",
+          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/checkEmail.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -40,9 +47,9 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         }
       }
 
-      // 👇 guardar carrito
+      // 👇 guardar carrito (siempre, independientemente de cómo se pague)
       await axios.post(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/save_cart.php",
+        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/save_cart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -52,14 +59,43 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
       // 👇 items para MercadoPago
       const mpItems = cart.map(item => ({
+        id: String(item.id),
         title: item.name,
         quantity: item.quantity,
         unit_price: Number(item.price),
         currency_id: "ARS",
       }));
 
+      // 👇 detectar rol del usuario que realiza la venta
+      const storedRole = localStorage.getItem("userRole");
+      const userRole = storedRole ? Number(storedRole) : null;
+      const isAdminOrSeller = userRole === 4 || userRole === 2;
+
+      // 👇 Si el admin/vendedor indica que el cliente NO está registrado,
+      // mostramos un QR en lugar de redirigir directamente a Mercado Pago
+      if (!isRegistered && isAdminOrSeller) {
+        const purchaseRef = `ECOM-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        setPaymentData({
+          items: mpItems,
+          cart: cart.map(i => ({ id: i.id, quantity: i.quantity, price: Number(i.price) })),
+          payer: {
+            name: "Cliente no registrado",
+            email: "guest@noemail.com"
+          },
+          purchaseRef,
+          seller: {
+            id: user?.id_usuario ?? null,
+            role: userRole,
+            userEmail: null
+          }
+        });
+        setShowQRModal(true);
+        return;
+      }
+
+      // 👉 Resto de los casos: flujo clásico con redirección
       const response = await axios.post(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/create_preference.php",
+        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/create_preference.php",
         {
           items: mpItems,
           payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
@@ -94,19 +130,43 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
   };
 
   return (
-    <button
-      className="button is-primary center"
-      style={{
-        backgroundColor: "#6A0DAD",
-        color: "white",
-        transition: "transform 0.15s ease",
-      }}
-      onMouseEnter={e => (e.target.style.transform = "scale(1.05)")}
-      onMouseLeave={e => (e.target.style.transform = "scale(1)")}
-      onClick={handlePayment}
-    >
-      Confirmar compra
-    </button>
+    <>
+      <button
+        className="button is-primary center"
+        style={{
+          backgroundColor: "#6A0DAD",
+          color: "white",
+          transition: "transform 0.15s ease",
+        }}
+        onMouseEnter={e => (e.target.style.transform = "scale(1.05)")}
+        onMouseLeave={e => (e.target.style.transform = "scale(1)")}
+        onClick={handlePayment}
+      >
+        Confirmar compra
+      </button>
+
+      {showQRModal && paymentData && (
+        <PaymentQRModal
+          paymentDataInput={paymentData}
+          onClose={(wasPaid) => {
+            setShowQRModal(false);
+
+            if (wasPaid) {
+              // limpiar carrito del front
+              localStorage.removeItem("cart");
+              window.dispatchEvent(new Event("cartUpdated"));
+
+              const storedRole = localStorage.getItem("userRole");
+              const role = storedRole ? Number(storedRole) : null;
+
+              if (role === 4) navigate("/MenuAdmin");
+              else if (role === 2) navigate("/Products");
+              else navigate("/");
+            }
+          }}
+        />
+      )}
+    </>
   );
 };
 

@@ -14,18 +14,41 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/create_preference.php",
+          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/create_preference.php",
           {
             items: paymentDataInput.items,
             payer: paymentDataInput.payer,
-            turnoId: paymentDataInput.turnoId
+            turnoId: paymentDataInput.turnoId,
+            purchaseRef: paymentDataInput.purchaseRef,
+            cart: paymentDataInput.cart,
+            seller: paymentDataInput.seller
           },
           { withCredentials: true }
         );
 
         if (response.data && response.data.init_point) {
           setInitPoint(response.data.init_point);
-          startPolling(paymentDataInput.turnoId);
+
+          console.log("📋 paymentDataInput completo:", {
+            turnoId: paymentDataInput.turnoId,
+            purchaseRef: paymentDataInput.purchaseRef,
+            hasTurnoId: !!paymentDataInput.turnoId,
+            hasPurchaseRef: !!paymentDataInput.purchaseRef
+          });
+
+          // Turnos: polling por DB (turno.pagado)
+          if (paymentDataInput.turnoId) {
+            console.log("🟡 Iniciando polling de TURNO con ID:", paymentDataInput.turnoId);
+            startPolling(paymentDataInput.turnoId);
+          }
+
+          // E-commerce: polling por referencia de compra (webhook -> tmp status)
+          if (!paymentDataInput.turnoId && paymentDataInput.purchaseRef) {
+            console.log("🔵 Iniciando polling de COMPRA con ref:", paymentDataInput.purchaseRef);
+            startPurchasePolling(paymentDataInput.purchaseRef);
+          } else if (!paymentDataInput.turnoId && !paymentDataInput.purchaseRef) {
+            console.warn("⚠️ No hay turnoId ni purchaseRef, no se iniciará polling");
+          }
         } else {
           throw new Error("Respuesta inválida del servidor");
         }
@@ -37,14 +60,20 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
       }
     };
 
-    if (paymentDataInput) generatePreference();
-    return () => stopPolling();
+    if (paymentDataInput) {
+      console.log("🔄 useEffect ejecutado, paymentDataInput:", paymentDataInput);
+      generatePreference();
+    }
+    return () => {
+      console.log("🧹 Limpiando polling en cleanup");
+      stopPolling();
+    };
   }, [paymentDataInput]);
 
   const startPolling = (turnoId) => {
     pollingInterval.current = setInterval(async () => {
       try {
-        const res = await axios.get(`https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/get_payment_status.php?turnoId=${turnoId}`);
+        const res = await axios.get(`https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_payment_status.php?turnoId=${turnoId}`);
         if (res.data && res.data.pagado === true) {
           setIsPaid(true);
           stopPolling();
@@ -55,6 +84,37 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
         console.error("Error verificando pago:", err);
       }
     }, 3000);
+  };
+
+  const startPurchasePolling = (purchaseRef) => {
+    console.log("🟢 startPurchasePolling llamado con:", purchaseRef);
+    // Limpiar cualquier polling anterior
+    stopPolling();
+
+    pollingInterval.current = setInterval(async () => {
+      try {
+        const url = `https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
+        console.log("🔄 Polling compra, consultando:", url);
+        const res = await axios.get(url);
+        console.log("📥 Respuesta polling compra:", res.data);
+
+        if (res.data && res.data.paid === true) {
+          console.log("✅ Pago detectado como aprobado!");
+          setIsPaid(true);
+          stopPolling();
+          // Notificamos éxito al componente padre tras un breve delay visual
+          setTimeout(() => {
+            console.log("🚀 Cerrando modal y redirigiendo...");
+            onClose(true);
+          }, 3500);
+        }
+      } catch (err) {
+        console.error("❌ Error verificando pago de compra:", err);
+        console.error("Detalles:", err.response?.data || err.message);
+      }
+    }, 3000);
+
+    console.log("⏰ Polling iniciado, intervalo ID:", pollingInterval.current);
   };
 
   const stopPolling = () => {
@@ -86,6 +146,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
     position: 'relative'
   };
 
+  // Vista de éxito aplica tanto para turnos como para compras (cuando se detecta pago)
   if (isPaid) {
     return (
       <div style={overlayStyle}>
@@ -98,7 +159,11 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-800 mb-2">¡Pago Aprobado!</h3>
-          <p className="text-gray-500">Tu turno ha sido confirmado. <br />Redirigiendo...</p>
+          <p className="text-gray-500">
+            {paymentDataInput?.turnoId ? "Tu turno ha sido confirmado." : "Tu compra ha sido confirmada."}
+            <br />
+            Redirigiendo...
+          </p>
         </div>
       </div>
     );
@@ -118,13 +183,17 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
         <div className="mb-4 flex justify-center">
           <div className="bg-blue-50 p-3 rounded-full inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#009EE3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ width: '32px', height: '32px' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
           </div>
         </div>
 
         <h3 className="text-2xl font-bold text-gray-800 mb-1" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Pago con QR</h3>
-        <p className="text-gray-500 text-sm mb-6">Escaneá para abonar tu turno</p>
+        <p className="text-gray-500 text-sm mb-6">
+          {paymentDataInput?.turnoId
+            ? "Escaneá para abonar tu turno"
+            : "Escaneá para abonar tu compra"}
+        </p>
 
         {loading ? (
           <div className="py-12 flex flex-col items-center">
@@ -147,9 +216,17 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
               />
             </div>
 
-            <p className="text-[10px] text-gray-400 mb-6 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
-              ID Turno: {paymentDataInput.turnoId}
-            </p>
+            {paymentDataInput?.turnoId && (
+              <p className="text-[10px] text-gray-400 mb-6 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
+                ID Turno: {paymentDataInput.turnoId}
+              </p>
+            )}
+
+            {!paymentDataInput?.turnoId && paymentDataInput?.purchaseRef && (
+              <p className="text-[10px] text-gray-400 mb-6 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
+                Ref compra: {paymentDataInput.purchaseRef}
+              </p>
+            )}
 
             <div className="flex items-center gap-2 text-blue-500 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
               <div className="relative flex h-2 w-2">

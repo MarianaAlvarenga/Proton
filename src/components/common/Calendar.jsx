@@ -37,7 +37,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -139,12 +139,16 @@ export default function Calendar({
 
     if (isAgendarTurno) {
       const currentUserId = user?.id_usuario;
+      const isClienteOwner = Number(props.cliente_id) === Number(currentUserId);
+      const isPeluqueroOwner = Number(props.id_peluquero) === Number(currentUserId);
+      const isAdmin = Number(userRole) === 4;
 
       if (estado === "ocupado") {
-        if (Number(props.cliente_id) === Number(currentUserId)) {
+        // Permitir cancelar el turno tanto al cliente como al peluquero que lo agendó (y opcionalmente al admin)
+        if (isClienteOwner || isPeluqueroOwner || isAdmin) {
           const confirmCancel = await Alert({
-            Title: "Cancelar mi turno",
-            Detail: "¿Deseas eliminar tu reserva para este horario?",
+            Title: "Cancelar turno",
+            Detail: "¿Deseás eliminar la reserva para este horario?",
             Confirm: "Sí, eliminar",
             Cancel: "No, mantener",
             icon: "warning"
@@ -200,7 +204,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/save_appointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -255,6 +259,7 @@ export default function Calendar({
 
       if (!confirmDelete.isConfirmed) return;
 
+      // Si es un slot temporal aún no guardado, sólo lo quitamos del estado local
       if (props?.isTemp) {
         setEvents((prev) => prev.filter((e) => e.id !== info.event.id));
         setSelectedSlots((prev) =>
@@ -267,13 +272,49 @@ export default function Calendar({
               )
           )
         );
+        return;
+      }
+
+      // Si la disponibilidad ya estaba guardada en la base, llamamos al backend para eliminarla
+      try {
+        const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/delete_availability.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_peluquero: props.id_peluquero || peluqueroId || user?.id_usuario,
+            fecha: props.fecha_disponible,
+            hora_inicio: props.hora_inicial,
+            hora_fin: props.hora_final
+          })
+        });
+
+        const json = await res.json();
+
+        if (!res.ok || !json.success) {
+          throw new Error(json.message || "No se pudo eliminar la disponibilidad.");
+        }
+
+        Alert({
+          Title: "Eliminado",
+          Detail: "La disponibilidad ha sido eliminada.",
+          icon: "success"
+        });
+
+        fetchDisponibilidades(peluqueroId);
+      } catch (error) {
+        console.error("Error eliminando disponibilidad:", error);
+        Alert({
+          Title: "Error",
+          Detail: error.message || "No se pudo eliminar la disponibilidad.",
+          icon: "error"
+        });
       }
     }
   };
 
   const handleDeleteTurno = async (turnoId) => {
     try {
-      const res = await fetch("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/delete_availability.php", {
+      const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/delete_availability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_turno: turnoId })
@@ -301,7 +342,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/availability.php",
+        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

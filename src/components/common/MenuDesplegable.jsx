@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://independent-intent-telephone-printer.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);
