@@ -47,7 +47,7 @@ $purchaseRef = isset($body['purchaseRef']) ? (string)$body['purchaseRef'] : null
 
 // Log para debug
 $logFile = __DIR__ . "/../tmp/create_pref_debug.log";
-file_put_contents($logFile, "[" . date("Y-m-d H:i:s") . "] create_preference.php - turnoId: " . ($turnoId ?? "null") . ", purchaseRef: " . ($purchaseRef ?? "null") . PHP_EOL, FILE_APPEND);
+file_put_contents($logFile, "[" . date("Y-m-d H:i:s") . "] createPreference.php - turnoId: " . ($turnoId ?? "null") . ", purchaseRef: " . ($purchaseRef ?? "null") . PHP_EOL, FILE_APPEND);
 
 // External reference:
 // - Turnos: usamos el ID numérico del turno (compatibilidad con el flujo actual)
@@ -68,14 +68,14 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/success.php",
-        "failure" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/failure.php",
-        "pending" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/pending.php"
+        "success" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/success.php",
+        "failure" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/failure.php",
+        "pending" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/pending.php"
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
     "external_reference" => $externalReference,
-    "notification_url" => "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
+    "notification_url" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
 ];
 
 $ch = curl_init($url);

@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/auth-chatsito.php',
+        'https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/authentication.php',
         {
           action: 'login',
           email,

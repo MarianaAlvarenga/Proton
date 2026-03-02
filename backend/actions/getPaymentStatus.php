@@ -1,8 +1,8 @@
 <?php
 // CORS dinámico: permitir múltiples orígenes válidos
 $allowedOrigins = [
-    'https://financial-probably-motor-armed.trycloudflare.com',
-    'https://dash-nonprofit-special-scoring.trycloudflare.com',
+    'https://consciousness-healthy-aaron-ist.trycloudflare.com',
+    'https://finite-yrs-dover-therapist.trycloudflare.com',
     'https://gen-dubai-anytime-asks.trycloudflare.com'
 ];
 

@@ -19,20 +19,20 @@ $email = $_POST["userEmail"] ?? $_SESSION["email"] ?? null;
 // 2) VALIDACIONES
 // =======================================================
 if (empty($cart)) {
-    $frontend = "https://financial-probably-motor-armed.trycloudflare.com";
+    $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=CarritoVacio");
     exit;
 }
 
 if (!$currentUserId || !$currentUserRole) {
-    $frontend = "https://financial-probably-motor-armed.trycloudflare.com";
+    $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=SesionIncompleta");
     exit;
 }
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 if ($conn->connect_error) {
-    $frontend = "https://financial-probably-motor-armed.trycloudflare.com";
+    $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=ConexionBD");
     exit;
 }
@@ -66,7 +66,7 @@ try {
     }
 
     // =======================================================
-    // 4) CREAR CARRITO SEGÚN ROL DEL USUARIO
+    // 4) CREAR CARRITO SEGÚN ROL DEL USUARIO (INCLUYE CAMPO PAGADO)
     // =======================================================
     $clienteField = null;
     $vendedorField = null;
@@ -83,17 +83,19 @@ try {
         throw new Exception("Rol no autorizado para realizar compras.");
     }
 
+    // Se agrega 'pagado' a la lista de campos y el valor '1' en VALUES
     $insertCarrito = $conn->prepare("
         INSERT INTO carrito (
             fecha_carrito,
             hora_carrito,
             total,
+            pagado,
             cliente_id_usuario1,
             vendedor_id_usuario,
             administrador_id_usuario,
             cliente_id_usuario_no_registrado
         ) VALUES (
-            CURDATE(), CURTIME(), ?, ?, ?, ?, NULL
+            CURDATE(), CURTIME(), ?, 1, ?, ?, ?, NULL
         )
     ");
 
@@ -176,13 +178,13 @@ try {
     $conn->commit();
     unset($_SESSION["cart"]);
 
-    $frontend = "https://financial-probably-motor-armed.trycloudflare.com";
+    $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
     header("Location: $frontend/success?ok=1&carritoId={$carritoId}");
     exit;
 
 } catch (Exception $e) {
     $conn->rollback();
-    $frontend = "https://financial-probably-motor-armed.trycloudflare.com";
+    $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
     $msg = urlencode($e->getMessage());
     header("Location: $frontend/success?error=1&msg=$msg");
     exit;

@@ -37,7 +37,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_availabilities.php?id_peluquero=${idPeluquero}`
+      `https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getAvailabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -46,7 +46,8 @@ export default function Calendar({
         return res.json();
       })
       .then((data) => {
-        let mapped = (data || []).map((avail) => ({
+        const list = Array.isArray(data) ? data : [];
+        let mapped = list.map((avail) => ({
           id: avail.id_turno || `avail-${avail.fecha_disponible}-${avail.hora_inicial}`,
           title: avail.estado === "ocupado" ? "Ocupado" : "Disponible",
           start: `${avail.fecha_disponible}T${avail.hora_inicial}`,
@@ -204,7 +205,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/save_appointment.php",
+          "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/saveAppointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -277,7 +278,7 @@ export default function Calendar({
 
       // Si la disponibilidad ya estaba guardada en la base, llamamos al backend para eliminarla
       try {
-        const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/delete_availability.php", {
+        const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deleteAvailability.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -314,7 +315,7 @@ export default function Calendar({
 
   const handleDeleteTurno = async (turnoId) => {
     try {
-      const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/delete_availability.php", {
+      const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deleteAvailability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_turno: turnoId })
@@ -342,7 +343,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/availability.php",
+        "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

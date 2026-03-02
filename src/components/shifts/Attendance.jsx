@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavBar from '../common/NavBar';
 import SubNavBar from '../common/SubNavBar';
-import PaymentQRModal from '../sales/PaymentQRModal'; 
+import PaymentQRModal from '../sales/PaymentQRModal';
 import "./Attendance.css";
 
 const Asistencia = () => {
@@ -21,7 +21,7 @@ const Asistencia = () => {
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -37,7 +37,7 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
-    fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

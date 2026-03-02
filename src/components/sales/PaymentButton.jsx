@@ -12,7 +12,6 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
   const handlePayment = async () => {
     try {
-      // 👇 si es usuario registrado, el email es obligatorio
       if (isRegistered && !userEmail) {
         Alert({
           Title: "Email requerido",
@@ -23,10 +22,9 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         return;
       }
 
-      // 👇 verificar email en la BD si es usuario registrado
       if (isRegistered) {
         const checkEmailResponse = await fetch(
-          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/checkEmail.php",
+          "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/checkEmail.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -47,9 +45,8 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         }
       }
 
-      // 👇 guardar carrito (siempre, independientemente de cómo se pague)
       await axios.post(
-        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/save_cart.php",
+        "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/saveCart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -57,7 +54,6 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         }
       );
 
-      // 👇 items para MercadoPago
       const mpItems = cart.map(item => ({
         id: String(item.id),
         title: item.name,
@@ -66,63 +62,56 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
         currency_id: "ARS",
       }));
 
-      // 👇 detectar rol del usuario que realiza la venta
       const storedRole = localStorage.getItem("userRole");
       const userRole = storedRole ? Number(storedRole) : null;
+      // Admin (4) o Vendedor (2)
       const isAdminOrSeller = userRole === 4 || userRole === 2;
 
-      // 👇 Si el admin/vendedor indica que el cliente NO está registrado,
-      // mostramos un QR en lugar de redirigir directamente a Mercado Pago
-      if (!isRegistered && isAdminOrSeller) {
+      // COMPORTAMIENTO ESPERADO: Si es Staff (Admin/Vendedor), SIEMPRE QR
+      if (isAdminOrSeller) {
         const purchaseRef = `ECOM-${Date.now()}-${Math.random().toString(16).slice(2)}`;
         setPaymentData({
           items: mpItems,
           cart: cart.map(i => ({ id: i.id, quantity: i.quantity, price: Number(i.price) })),
           payer: {
-            name: "Cliente no registrado",
-            email: "guest@noemail.com"
+            name: isRegistered ? "Cliente Registrado" : "Cliente no registrado",
+            email: isRegistered ? userEmail : "guest@noemail.com"
           },
           purchaseRef,
           seller: {
             id: user?.id_usuario ?? null,
             role: userRole,
-            userEmail: null
+            userEmail: isRegistered ? userEmail : null
           }
         });
         setShowQRModal(true);
         return;
       }
 
-      // 👉 Resto de los casos: flujo clásico con redirección
+      // Si es CLIENTE (no es admin ni vendedor), Redirección directa
       const response = await axios.post(
-        "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/create_preference.php",
+        "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/createPreference.php",
         {
           items: mpItems,
-          payer: { email: isRegistered ? userEmail : "guest@noemail.com" },
+          payer: { email: userEmail || "guest@noemail.com" },
         },
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
-          maxRedirects: 0,
         }
       );
 
       if (response.data.init_point) {
         window.location.href = response.data.init_point;
       } else {
-        Alert({
-          Title: "Error",
-          Detail: "Hubo un problema al iniciar el pago.",
-          icon: "error",
-          Confirm: "Entendido"
-        });
+        throw new Error("No se obtuvo init_point");
       }
 
     } catch (error) {
       console.error("Error al procesar la compra:", error);
       Alert({
-        Title: "Error de conexión",
-        Detail: "No se pudo conectar con el servidor.",
+        Title: "Error",
+        Detail: "No se pudo procesar el pago.",
         icon: "error",
         Confirm: "Entendido"
       });
@@ -150,15 +139,10 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
           paymentDataInput={paymentData}
           onClose={(wasPaid) => {
             setShowQRModal(false);
-
             if (wasPaid) {
-              // limpiar carrito del front
               localStorage.removeItem("cart");
               window.dispatchEvent(new Event("cartUpdated"));
-
-              const storedRole = localStorage.getItem("userRole");
-              const role = storedRole ? Number(storedRole) : null;
-
+              const role = Number(localStorage.getItem("userRole"));
               if (role === 4) navigate("/MenuAdmin");
               else if (role === 2) navigate("/Products");
               else navigate("/");

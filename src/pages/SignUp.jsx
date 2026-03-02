@@ -35,7 +35,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getRoles.php");
+        const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getRoles.php");
         const data = await res.json();
         if (!data.error) setRoles(data);
       } catch (error) {
@@ -45,7 +45,7 @@ const SignUp = () => {
 
     const fetchEspecialidades = async () => {
       try {
-        const res = await fetch("https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/getEspecialidades.php");
+        const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getEspecialidades.php");
         const data = await res.json();
         setEspecialidades(data);
       } catch (error) {
@@ -124,8 +124,8 @@ const SignUp = () => {
     }
 
     const endpoint = isEditMode
-      ? "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/updateUser.php"
-      : "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/auth-chatsito.php";
+      ? "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/updateUser.php"
+      : "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/authentication.php";
 
     const fd = new FormData();
     fd.append("action", isEditMode ? "update" : "register");

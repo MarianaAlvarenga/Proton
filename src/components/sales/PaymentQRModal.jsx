@@ -9,12 +9,27 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
 
   const pollingInterval = useRef(null);
 
+  // --- NUEVO: Efecto para redirección automática de clientes ---
+  useEffect(() => {
+    if (initPoint) {
+      const storedRole = localStorage.getItem("userRole");
+      const userRole = storedRole ? Number(storedRole) : null;
+      
+      // Si NO es Admin (4) ni Vendedor (2), redirigir directamente
+      if (userRole !== 4 && userRole !== 2) {
+        console.log("🚀 Rol Cliente detectado, redirigiendo a Mercado Pago...");
+        window.location.href = initPoint;
+      }
+    }
+  }, [initPoint]);
+  // -------------------------------------------------------------
+
   useEffect(() => {
     const generatePreference = async () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/create_preference.php",
+          "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/createPreference.php",
           {
             items: paymentDataInput.items,
             payer: paymentDataInput.payer,
@@ -73,7 +88,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
   const startPolling = (turnoId) => {
     pollingInterval.current = setInterval(async () => {
       try {
-        const res = await axios.get(`https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_payment_status.php?turnoId=${turnoId}`);
+        const res = await axios.get(`https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
         if (res.data && res.data.pagado === true) {
           setIsPaid(true);
           stopPolling();
@@ -88,33 +103,24 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
 
   const startPurchasePolling = (purchaseRef) => {
     console.log("🟢 startPurchasePolling llamado con:", purchaseRef);
-    // Limpiar cualquier polling anterior
     stopPolling();
 
     pollingInterval.current = setInterval(async () => {
       try {
-        const url = `https://dash-nonprofit-special-scoring.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
-        console.log("🔄 Polling compra, consultando:", url);
+        const url = `https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
         const res = await axios.get(url);
-        console.log("📥 Respuesta polling compra:", res.data);
 
         if (res.data && res.data.paid === true) {
-          console.log("✅ Pago detectado como aprobado!");
           setIsPaid(true);
           stopPolling();
-          // Notificamos éxito al componente padre tras un breve delay visual
           setTimeout(() => {
-            console.log("🚀 Cerrando modal y redirigiendo...");
             onClose(true);
           }, 3500);
         }
       } catch (err) {
         console.error("❌ Error verificando pago de compra:", err);
-        console.error("Detalles:", err.response?.data || err.message);
       }
     }, 3000);
-
-    console.log("⏰ Polling iniciado, intervalo ID:", pollingInterval.current);
   };
 
   const stopPolling = () => {
@@ -146,7 +152,6 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
     position: 'relative'
   };
 
-  // Vista de éxito aplica tanto para turnos como para compras (cuando se detecta pago)
   if (isPaid) {
     return (
       <div style={overlayStyle}>
@@ -164,6 +169,20 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
             <br />
             Redirigiendo...
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Si es cliente, mientras se redirige, mostramos solo el loader ---
+  const storedRole = localStorage.getItem("userRole");
+  const userRole = storedRole ? Number(storedRole) : null;
+  if (userRole !== 4 && userRole !== 2 && initPoint) {
+    return (
+      <div style={overlayStyle}>
+        <div style={modalStyle}>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-100 border-t-[#009EE3] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Redirigiendo a Mercado Pago...</p>
         </div>
       </div>
     );
