@@ -17,6 +17,7 @@ const Asistencia = () => {
   const [observaciones, setObservaciones] = useState("");
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showNoPagadoModal, setShowNoPagadoModal] = useState(false);
 
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
@@ -37,6 +38,12 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
+    // Si marcó que SÍ asistió pero el turno no está pagado, no permitir guardar y mostrar modal
+    if (asistio === true && !turno.pagado) {
+      setShowNoPagadoModal(true);
+      return;
+    }
+
     fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,6 +175,35 @@ const Asistencia = () => {
             if (wasPaid) fetchTurno(); // Recarga los datos para actualizar el estado del pago
           }}
         />
+      )}
+
+      {/* Modal: no se puede guardar asistencia si asistió pero no pagó */}
+      {showNoPagadoModal && (
+        <div className="modal is-active">
+          <div className="modal-background" onClick={() => setShowNoPagadoModal(false)} />
+          <div className="modal-card">
+            <header className="modal-card-head has-background-warning">
+              <p className="modal-card-title has-text-dark">
+                <i className="fas fa-exclamation-triangle mr-2" />
+                No se puede guardar la asistencia
+              </p>
+              <button className="delete" aria-label="close" onClick={() => setShowNoPagadoModal(false)} />
+            </header>
+            <section className="modal-card-body">
+              <p className="mb-4">
+                El cliente está marcado como <strong>asistió</strong>, pero el turno <strong>no está abonado</strong>.
+              </p>
+              <p>
+                Para registrar la asistencia, primero debe registrarse el pago del servicio (por ejemplo con &quot;Pagar ahora&quot;) o marcar que el cliente <strong>no asistió</strong> si corresponde.
+              </p>
+            </section>
+            <footer className="modal-card-foot is-justify-content-flex-end">
+              <button className="button is-warning" onClick={() => setShowNoPagadoModal(false)}>
+                Entendido
+              </button>
+            </footer>
+          </div>
+        </div>
       )}
     </>
   );
