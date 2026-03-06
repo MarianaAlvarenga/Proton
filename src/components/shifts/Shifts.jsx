@@ -34,7 +34,7 @@ const Shifts = () => {
     if (userRole === 1 || userRole === 4 || isAgendarTurno) {
       const fetchEspecialidades = async () => {
         try {
-          const res = await axios.get('https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getEspecialidades.php');
+          const res = await axios.get('https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getEspecialidades.php');
           setEspecialidades(res.data || []);
         } catch (error) {
           console.error('Error obteniendo especialidades:', error);
@@ -53,7 +53,7 @@ const Shifts = () => {
     }
     const fetchPeluqueros = async () => {
       try {
-        const res = await axios.get(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`);
+        const res = await axios.get(`https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getPeluquerosByServicio.php?id_servicio=${selectedEspecialidad}`);
         setPeluqueros(res.data || []);
         setSelectedPeluquero('');
       } catch (error) {

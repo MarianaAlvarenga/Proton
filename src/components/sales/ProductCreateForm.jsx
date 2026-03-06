@@ -8,7 +8,7 @@ import SubNavBar from "../common/SubNavBar";
 import axios from "axios";
 import Alert from "../common/Alert";
 
-const BACKEND_BASE = "https://unless-scene-secrets-burst.trycloudflare.com/backend";
+const BACKEND_BASE = "https://research-entire-infectious-collectables.trycloudflare.com/backend";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
@@ -28,12 +28,12 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getCategories.php')
+        axios.get('https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getCategories.php')
             .then(response => setCategories(response.data))
             .catch(error => console.error("Hubo un error al obtener las categorías:", error));
 
         if (productId) {
-            axios.get(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -95,13 +95,13 @@ const ProductCreateForm = () => {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
                 response = await axios.post(
-                    'https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/addProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
@@ -153,108 +153,108 @@ const ProductCreateForm = () => {
             <NavBar showSearch showMenu />
             <SubNavBar showBack currentPage={productId ? "Editar producto" : "Nuevo producto"} showCart={false} />
             <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
-            <ProductImage onImageUpload={handleFileChange} imageUrl={preview} />
+                <ProductImage onImageUpload={handleFileChange} imageUrl={preview} />
 
-            <div className="box">
-                <form onSubmit={handleSubmit}>
-                    <input type="hidden" name="codigo_producto" value={formData.codigo_producto} />
+                <div className="box">
+                    <form onSubmit={handleSubmit}>
+                        <input type="hidden" name="codigo_producto" value={formData.codigo_producto} />
 
-                    <div className="field">
-                        <label className="label">Categoría</label>
-                        <div className="control">
-                            <div className="select is-fullwidth">
-                                <select
-                                    name="categoria_id_categoria"
-                                    value={formData.categoria_id_categoria}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Seleccionar categoría</option>
-                                    {categories.map((category) => (
-                                        <option key={category.id_categoria} value={category.id_categoria}>
-                                            {category.nombre_categoria}
-                                        </option>
-                                    ))}
-                                </select>
+                        <div className="field">
+                            <label className="label">Categoría</label>
+                            <div className="control">
+                                <div className="select is-fullwidth">
+                                    <select
+                                        name="categoria_id_categoria"
+                                        value={formData.categoria_id_categoria}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="">Seleccionar categoría</option>
+                                        {categories.map((category) => (
+                                            <option key={category.id_categoria} value={category.id_categoria}>
+                                                {category.nombre_categoria}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label className="label">Nombre del producto</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                name="nombre_producto"
-                                value={formData.nombre_producto}
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="field">
+                            <label className="label">Nombre del producto</label>
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type="text"
+                                    name="nombre_producto"
+                                    value={formData.nombre_producto}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label className="label">Descripción del producto</label>
-                        <div className="control">
-                            <textarea
-                                className="textarea is-small"
-                                name="descripcion_producto"
-                                value={formData.descripcion_producto}
-                                onChange={handleChange}
-                            />
+                        <div className="field">
+                            <label className="label">Descripción del producto</label>
+                            <div className="control">
+                                <textarea
+                                    className="textarea is-small"
+                                    name="descripcion_producto"
+                                    value={formData.descripcion_producto}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label className="label">Stock</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="number"
-                                name="stock_producto"
-                                value={formData.stock_producto}
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="field">
+                            <label className="label">Stock</label>
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type="number"
+                                    name="stock_producto"
+                                    value={formData.stock_producto}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label className="label">Precio</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="number"
-                                name="precio_producto"
-                                value={formData.precio_producto}
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="field">
+                            <label className="label">Precio</label>
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type="number"
+                                    name="precio_producto"
+                                    value={formData.precio_producto}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label className="label">Punto de reposición</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="number"
-                                name="punto_reposicion"
-                                value={formData.punto_reposicion}
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="field">
+                            <label className="label">Punto de reposición</label>
+                            <div className="control">
+                                <input
+                                    className="input"
+                                    type="number"
+                                    name="punto_reposicion"
+                                    value={formData.punto_reposicion}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <CancelButton onClick={handleCancel} />
-                        <OkButton NameButton={productId ? "Actualizar" : "Agregar"} />
-                    </div>
-                </form>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <CancelButton onClick={handleCancel} />
+                            <OkButton NameButton={productId ? "Actualizar" : "Agregar"} />
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
         </>
     );
 };

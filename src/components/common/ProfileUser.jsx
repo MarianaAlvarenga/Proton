@@ -41,7 +41,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -95,7 +95,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);
@@ -170,7 +170,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updateUser.php",
+                "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/updateUser.php",
                 { method: "POST", body: formData }
             );
 
@@ -204,7 +204,7 @@ const ProfileUser = () => {
         if (mascotaEdit.id_mascota) {
             try {
                 const response = await fetch(
-                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updatePet.php",
+                    "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/updatePet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -246,7 +246,7 @@ const ProfileUser = () => {
                 };
 
                 const response = await fetch(
-                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/addPet.php",
+                    "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/addPet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -264,7 +264,7 @@ const ProfileUser = () => {
                             formData.append("image", pendingFile);
                             formData.append("petId", String(json.id_mascota));
                             const uploadRes = await fetch(
-                                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/uploadPetImage.php",
+                                "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/uploadPetImage.php",
                                 { method: "POST", body: formData, credentials: "include" }
                             );
                             const uploadJson = await uploadRes.json();
@@ -327,7 +327,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deletePet.php",
+                "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/deletePet.php",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

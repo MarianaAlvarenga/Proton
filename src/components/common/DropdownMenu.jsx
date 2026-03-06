@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

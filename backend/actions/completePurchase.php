@@ -19,20 +19,20 @@ $email = $_POST["userEmail"] ?? $_SESSION["email"] ?? null;
 // 2) VALIDACIONES
 // =======================================================
 if (empty($cart)) {
-    $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
+    $frontend = "https://matt-beer-substitute-satin.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=CarritoVacio");
     exit;
 }
 
 if (!$currentUserId || !$currentUserRole) {
-    $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
+    $frontend = "https://matt-beer-substitute-satin.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=SesionIncompleta");
     exit;
 }
 
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 if ($conn->connect_error) {
-    $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
+    $frontend = "https://matt-beer-substitute-satin.trycloudflare.com";
     header("Location: $frontend/success?error=1&msg=ConexionBD");
     exit;
 }
@@ -178,13 +178,13 @@ try {
     $conn->commit();
     unset($_SESSION["cart"]);
 
-    $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
+    $frontend = "https://matt-beer-substitute-satin.trycloudflare.com";
     header("Location: $frontend/success?ok=1&carritoId={$carritoId}");
     exit;
 
 } catch (Exception $e) {
     $conn->rollback();
-    $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
+    $frontend = "https://matt-beer-substitute-satin.trycloudflare.com";
     $msg = urlencode($e->getMessage());
     header("Location: $frontend/success?error=1&msg=$msg");
     exit;

@@ -17,7 +17,7 @@ const Services = () => {
     const fetchServicios = async () => {
         try {
             const res = await axios.post(
-                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getEspecialidades.php"
+                "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getEspecialidades.php"
             );
 
             setServicios(res.data);
@@ -48,7 +48,7 @@ const Services = () => {
     const handleActualizar = async () => {
         try {
             await axios.post(
-                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
+                "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/updatePreciosEspecialidades.php",
                 {
                     servicios: serviciosEdit,
                 }

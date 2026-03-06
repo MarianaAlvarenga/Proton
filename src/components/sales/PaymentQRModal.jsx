@@ -25,7 +25,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose, redirectToMP = false }) => 
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/createPreference.php",
+          "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/createPreference.php",
           {
             items: paymentDataInput.items,
             payer: paymentDataInput.payer,
@@ -83,7 +83,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose, redirectToMP = false }) => 
 
   const checkTurnoPaid = async (turnoId) => {
     try {
-      const res = await axios.get(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
+      const res = await axios.get(`https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
       const pagado = res.data && (res.data.pagado === true || res.data.pagado === 1);
       if (pagado) {
         setIsPaid(true);
@@ -104,7 +104,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose, redirectToMP = false }) => 
 
   const checkPurchasePaid = async (purchaseRef) => {
     try {
-      const url = `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
+      const url = `https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
       const res = await axios.get(url);
       const paid = res.data && (res.data.paid === true || res.data.paid === 1);
       if (paid) {

@@ -24,7 +24,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
       if (isRegistered) {
         const checkEmailResponse = await fetch(
-          "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/checkEmail.php",
+          "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/checkEmail.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -46,7 +46,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
       }
 
       await axios.post(
-        "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/saveCart.php",
+        "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/saveCart.php",
         { cart, userEmail: isRegistered ? userEmail : null },
         {
           withCredentials: true,
@@ -90,7 +90,7 @@ const PaymentButton = ({ cart, userEmail, isRegistered }) => {
 
       // Si es CLIENTE (no es admin ni vendedor), Redirección directa
       const response = await axios.post(
-        "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/createPreference.php",
+        "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/createPreference.php",
         {
           items: mpItems,
           payer: { email: userEmail || "guest@noemail.com" },

@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        const response = await axios.get('https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getUserRole.php', {
+        const response = await axios.get('https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getUserRole.php', {
           withCredentials: true,
         });
 
@@ -58,7 +58,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/authentication.php',
+        'https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/authentication.php',
         {
           action: 'login',
           email,

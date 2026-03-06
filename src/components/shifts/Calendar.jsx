@@ -46,7 +46,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getAvailabilities.php?id_peluquero=${idPeluquero}`
+      `https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getAvailabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -214,7 +214,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/saveAppointment.php",
+          "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/saveAppointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -287,7 +287,7 @@ export default function Calendar({
 
       // Si la disponibilidad ya estaba guardada en la base, llamamos al backend para eliminarla
       try {
-        const res = await fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deleteAvailability.php", {
+        const res = await fetch("https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/deleteAvailability.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -324,7 +324,7 @@ export default function Calendar({
 
   const handleDeleteTurno = async (turnoId) => {
     try {
-      const res = await fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deleteAvailability.php", {
+      const res = await fetch("https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/deleteAvailability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_turno: turnoId })
@@ -352,7 +352,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/availability.php",
+        "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
