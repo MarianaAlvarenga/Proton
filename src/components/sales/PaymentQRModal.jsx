@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const PaymentQRModal = ({ paymentDataInput, onClose }) => {
+/**
+ * redirectToMP: true = redirigir a MercadoPago (solo cuando el CLIENTE paga su propio turno o su compra).
+ * redirectToMP: false o no pasado = mostrar QR (admin/peluquero/vendedor cobrando, o pago desde Asistencia).
+ */
+const PaymentQRModal = ({ paymentDataInput, onClose, redirectToMP = false }) => {
   const [loading, setLoading] = useState(true);
   const [initPoint, setInitPoint] = useState(null);
   const [error, setError] = useState(null);
@@ -9,27 +13,19 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
 
   const pollingInterval = useRef(null);
 
-  // --- NUEVO: Efecto para redirección automática de clientes ---
+  // Redirigir a MercadoPago solo cuando el padre indica redirectToMP (ej: cliente pagando su turno desde "Pagar ahora" post-reserva)
   useEffect(() => {
-    if (initPoint) {
-      const storedRole = localStorage.getItem("userRole");
-      const userRole = storedRole ? Number(storedRole) : null;
-      
-      // Si NO es Admin (4) ni Vendedor (2), redirigir directamente
-      if (userRole !== 4 && userRole !== 2) {
-        console.log("🚀 Rol Cliente detectado, redirigiendo a Mercado Pago...");
-        window.location.href = initPoint;
-      }
+    if (initPoint && redirectToMP) {
+      window.location.href = initPoint;
     }
-  }, [initPoint]);
-  // -------------------------------------------------------------
+  }, [initPoint, redirectToMP]);
 
   useEffect(() => {
     const generatePreference = async () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/createPreference.php",
+          "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/createPreference.php",
           {
             items: paymentDataInput.items,
             payer: paymentDataInput.payer,
@@ -85,42 +81,48 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
     };
   }, [paymentDataInput]);
 
-  const startPolling = (turnoId) => {
-    pollingInterval.current = setInterval(async () => {
-      try {
-        const res = await axios.get(`https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
-        if (res.data && res.data.pagado === true) {
-          setIsPaid(true);
-          stopPolling();
-          // Notificamos éxito al componente padre tras un breve delay visual
-          setTimeout(() => onClose(true), 3500);
-        }
-      } catch (err) {
-        console.error("Error verificando pago:", err);
+  const checkTurnoPaid = async (turnoId) => {
+    try {
+      const res = await axios.get(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getPaymentStatus.php?turnoId=${turnoId}`);
+      const pagado = res.data && (res.data.pagado === true || res.data.pagado === 1);
+      if (pagado) {
+        setIsPaid(true);
+        stopPolling();
+        setTimeout(() => onClose(true), 2500);
+        return true;
       }
-    }, 3000);
+    } catch (err) {
+      console.error("Error verificando pago:", err);
+    }
+    return false;
+  };
+
+  const startPolling = (turnoId) => {
+    checkTurnoPaid(turnoId); // primera comprobación inmediata
+    pollingInterval.current = setInterval(() => checkTurnoPaid(turnoId), 3000);
+  };
+
+  const checkPurchasePaid = async (purchaseRef) => {
+    try {
+      const url = `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
+      const res = await axios.get(url);
+      const paid = res.data && (res.data.paid === true || res.data.paid === 1);
+      if (paid) {
+        setIsPaid(true);
+        stopPolling();
+        setTimeout(() => onClose(true), 2500);
+        return true;
+      }
+    } catch (err) {
+      console.error("❌ Error verificando pago de compra:", err);
+    }
+    return false;
   };
 
   const startPurchasePolling = (purchaseRef) => {
-    console.log("🟢 startPurchasePolling llamado con:", purchaseRef);
     stopPolling();
-
-    pollingInterval.current = setInterval(async () => {
-      try {
-        const url = `https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/get_purchase_payment_status.php?ref=${encodeURIComponent(purchaseRef)}`;
-        const res = await axios.get(url);
-
-        if (res.data && res.data.paid === true) {
-          setIsPaid(true);
-          stopPolling();
-          setTimeout(() => {
-            onClose(true);
-          }, 3500);
-        }
-      } catch (err) {
-        console.error("❌ Error verificando pago de compra:", err);
-      }
-    }, 3000);
+    checkPurchasePaid(purchaseRef);
+    pollingInterval.current = setInterval(() => checkPurchasePaid(purchaseRef), 3000);
   };
 
   const stopPolling = () => {
@@ -128,7 +130,7 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
   };
 
   const qrImageUrl = initPoint
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(initPoint)}`
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(initPoint)}`
     : null;
 
   const overlayStyle = {
@@ -143,9 +145,11 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
 
   const modalStyle = {
     backgroundColor: 'white',
-    padding: '2rem',
+    padding: '1.25rem',
     borderRadius: '1.5rem',
     maxWidth: '400px',
+    maxHeight: '92vh',
+    overflow: 'auto',
     width: '90%',
     textAlign: 'center',
     boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
@@ -174,10 +178,8 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
     );
   }
 
-  // --- Si es cliente, mientras se redirige, mostramos solo el loader ---
-  const storedRole = localStorage.getItem("userRole");
-  const userRole = storedRole ? Number(storedRole) : null;
-  if (userRole !== 4 && userRole !== 2 && initPoint) {
+  // Si se va a redirigir a MP, mostrar solo el loader mientras tanto
+  if (redirectToMP && initPoint) {
     return (
       <div style={overlayStyle}>
         <div style={modalStyle}>
@@ -189,65 +191,65 @@ const PaymentQRModal = ({ paymentDataInput, onClose }) => {
   }
 
   return (
-    <div style={overlayStyle} className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div style={modalStyle} className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100">
+    <div style={overlayStyle} className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-3">
+      <div style={modalStyle} className="bg-white rounded-3xl p-5 max-w-sm w-full text-center shadow-2xl border border-gray-100">
         <button
           onClick={() => onClose(false)}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
           style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}
         >
           &times;
         </button>
 
-        <div className="mb-4 flex justify-center">
-          <div className="bg-blue-50 p-3 rounded-full inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#009EE3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ width: '32px', height: '32px' }}>
+        <div className="mb-2 flex justify-center">
+          <div className="bg-blue-50 p-2 rounded-full inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-[#009EE3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ width: '28px', height: '28px' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
           </div>
         </div>
 
-        <h3 className="text-2xl font-bold text-gray-800 mb-1" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Pago con QR</h3>
-        <p className="text-gray-500 text-sm mb-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-0.5" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Pago con QR</h3>
+        <p className="text-gray-500 text-sm mb-3">
           {paymentDataInput?.turnoId
             ? "Escaneá para abonar tu turno"
             : "Escaneá para abonar tu compra"}
         </p>
 
         {loading ? (
-          <div className="py-12 flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-100 border-t-[#009EE3]"></div>
-            <p className="mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Generando código...</p>
+          <div className="py-8 flex flex-col items-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-100 border-t-[#009EE3]"></div>
+            <p className="mt-3 text-xs font-bold text-gray-400 uppercase tracking-widest">Generando código...</p>
           </div>
         ) : error ? (
-          <div className="py-8 text-red-500 bg-red-50 rounded-2xl border border-red-100">
+          <div className="py-5 text-red-500 bg-red-50 rounded-2xl border border-red-100">
             <p className="text-sm font-bold">{error}</p>
             <button onClick={() => onClose(false)} className="mt-4 text-xs underline font-bold uppercase tracking-widest text-red-700">Cerrar</button>
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <div className="bg-white p-3 border-4 border-blue-50 rounded-3xl mb-6 shadow-sm inline-block">
+            <div className="bg-white p-2 border-4 border-blue-50 rounded-2xl mb-3 shadow-sm inline-block">
               <img
                 src={qrImageUrl}
                 alt="QR de Pago"
-                style={{ width: '220px', height: '220px', display: 'block' }}
+                style={{ width: '180px', height: '180px', display: 'block' }}
                 className="mx-auto rounded-lg"
               />
             </div>
 
             {paymentDataInput?.turnoId && (
-              <p className="text-[10px] text-gray-400 mb-6 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
+              <p className="text-[10px] text-gray-400 mb-2 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
                 ID Turno: {paymentDataInput.turnoId}
               </p>
             )}
 
             {!paymentDataInput?.turnoId && paymentDataInput?.purchaseRef && (
-              <p className="text-[10px] text-gray-400 mb-6 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
+              <p className="text-[10px] text-gray-400 mb-2 px-4 uppercase font-bold tracking-tighter" style={{ fontSize: '11px' }}>
                 Ref compra: {paymentDataInput.purchaseRef}
               </p>
             )}
 
-            <div className="flex items-center gap-2 text-blue-500 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
+            <div className="flex items-center gap-2 text-blue-500 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
               <div className="relative flex h-2 w-2">
                 <div className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></div>
                 <div className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></div>

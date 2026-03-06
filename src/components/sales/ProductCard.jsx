@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

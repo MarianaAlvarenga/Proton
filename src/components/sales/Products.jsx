@@ -19,7 +19,7 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const backendBase = "https://finite-yrs-dover-therapist.trycloudflare.com/backend";
+  const backendBase = "https://unless-scene-secrets-burst.trycloudflare.com/backend";
 
   const navigate = useNavigate();
 
@@ -136,7 +136,7 @@ const Products = () => {
       <NavBar showSearch showMenu onSearch={handleSearch} />
       <SubNavBar
         showBack
-        showCart
+        showCart={!isAdmin}
         links={categoryLinks}
         className="products-navbar"
         currentPage="Productos"

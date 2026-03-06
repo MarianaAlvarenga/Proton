@@ -3,8 +3,12 @@ import OkButton from "../common/OkButton";
 import CancelButton from "../common/CancelButton";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductImage from "./ProductImage";
+import NavBar from "../common/NavBar";
+import SubNavBar from "../common/SubNavBar";
 import axios from "axios";
-import Alert from "../common/Alert"; // 👈 agregado
+import Alert from "../common/Alert";
+
+const BACKEND_BASE = "https://unless-scene-secrets-burst.trycloudflare.com/backend";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
@@ -24,18 +28,18 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getCategories.php')
+        axios.get('https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getCategories.php')
             .then(response => setCategories(response.data))
             .catch(error => console.error("Hubo un error al obtener las categorías:", error));
 
         if (productId) {
-            axios.get(`https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
                         setFormData({
                             nombre_producto: product.nombre_producto,
-                            descripcion_producto: product.descripcion_producto,
+                            descripcion_producto: product.descripcion_producto ?? "",
                             stock_producto: product.stock_producto,
                             punto_reposicion: product.punto_reposicion,
                             categoria_id_categoria: product.categoria_id_categoria,
@@ -44,7 +48,7 @@ const ProductCreateForm = () => {
                         });
 
                         setImage(product.image_url);
-                        setPreview(product.image_url);
+                        setPreview(product.image_url ? `${BACKEND_BASE}/uploads/${product.image_url}` : null);
                     }
                 })
                 .catch(async (error) => {
@@ -91,13 +95,13 @@ const ProductCreateForm = () => {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
                 response = await axios.post(
-                    'https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/addProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
@@ -145,7 +149,10 @@ const ProductCreateForm = () => {
     };
 
     return (
-        <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
+        <>
+            <NavBar showSearch showMenu />
+            <SubNavBar showBack currentPage={productId ? "Editar producto" : "Nuevo producto"} showCart={false} />
+            <div className="container" style={{ maxWidth: '400px', textAlign: 'center' }}>
             <ProductImage onImageUpload={handleFileChange} imageUrl={preview} />
 
             <div className="box">
@@ -248,6 +255,7 @@ const ProductCreateForm = () => {
                 </form>
             </div>
         </div>
+        </>
     );
 };
 

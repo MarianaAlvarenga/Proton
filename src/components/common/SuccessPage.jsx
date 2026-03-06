@@ -50,16 +50,16 @@ const SuccessPage = () => {
     const redirectByRol = () => {
       switch (rolNumber) {
         case 1:
+          navigate("/MenuClient", { replace: true });
+          break;
         case 2:
           navigate("/Products", { replace: true });
           break;
-
         case 4:
           navigate("/MenuAdmin", { replace: true });
           break;
-
         default:
-          navigate("/", { replace: true });
+          navigate("/MenuGroomer", { replace: true });
       }
     };
 

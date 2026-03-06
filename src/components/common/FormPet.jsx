@@ -195,7 +195,7 @@ const FormPet = ({
                 }
             />
 
-            <label className="label">Peso (gr):</label>
+            <label className="label">Peso (kg):</label>
             <input
                 className="input"
                 type="number"

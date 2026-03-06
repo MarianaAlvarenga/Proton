@@ -28,6 +28,15 @@ export default function Calendar({
 
   const user = JSON.parse(localStorage.getItem("user")) || {};
 
+  /** Fecha en hora local YYYY-MM-DD (evita que después de las 20hs UTC-3 se pase al día siguiente) */
+  const toLocalDateString = (date) => {
+    const d = new Date(date);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
   const fetchDisponibilidades = (idPeluquero) => {
     if (!idPeluquero) {
       setEvents([]);
@@ -37,7 +46,7 @@ export default function Calendar({
 
     setLoading(true);
     fetch(
-      `https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getAvailabilities.php?id_peluquero=${idPeluquero}`
+      `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getAvailabilities.php?id_peluquero=${idPeluquero}`
     )
       .then((res) => {
         if (!res.ok) {
@@ -66,7 +75,7 @@ export default function Calendar({
         }));
 
         if (isAsistencia) {
-          const hoy = new Date().toISOString().split("T")[0];
+          const hoy = toLocalDateString(new Date());
           mapped = mapped.filter(
             (e) =>
               e.extendedProps.estado === "ocupado" &&
@@ -97,7 +106,7 @@ export default function Calendar({
 
     let current = new Date(startDate);
     while (current < endDate) {
-      const fechaStr = current.toISOString().split("T")[0];
+      const fechaStr = toLocalDateString(current);
       const horaInicio = current.toTimeString().substring(0, 5);
       const next = new Date(current.getTime() + 30 * 60 * 1000);
       const horaFin = next.toTimeString().substring(0, 5);
@@ -205,7 +214,7 @@ export default function Calendar({
 
       try {
         const res = await fetch(
-          "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/saveAppointment.php",
+          "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/saveAppointment.php",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -278,7 +287,7 @@ export default function Calendar({
 
       // Si la disponibilidad ya estaba guardada en la base, llamamos al backend para eliminarla
       try {
-        const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deleteAvailability.php", {
+        const res = await fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deleteAvailability.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -315,7 +324,7 @@ export default function Calendar({
 
   const handleDeleteTurno = async (turnoId) => {
     try {
-      const res = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deleteAvailability.php", {
+      const res = await fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deleteAvailability.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_turno: turnoId })
@@ -343,7 +352,7 @@ export default function Calendar({
 
     try {
       const res = await fetch(
-        "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/availability.php",
+        "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/availability.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -88,17 +88,15 @@ try {
         throw new Exception("La imagen no debe exceder 2MB", 400);
     }
 
-    // Configurar directorio de uploads
-    $uploadDir = realpath(__DIR__ . '/../uploads/usuarios');
-
-    if ($uploadDir === false) {
-        // Intentar crear el directorio si no existe
-        $uploadDir = __DIR__ . '/../uploads';
-        if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-            throw new Exception("No se pudo crear el directorio de uploads", 500);
+    // Configurar directorio de uploads (usuarios)
+    $uploadBase = __DIR__ . '/../uploads';
+    $uploadDir = $uploadBase . '/usuarios';
+    if (!is_dir($uploadDir)) {
+        if (!mkdir($uploadDir, 0755, true)) {
+            throw new Exception("No se pudo crear el directorio de uploads/usuarios", 500);
         }
-        $uploadDir = realpath($uploadDir);
     }
+    $uploadDir = realpath($uploadDir);
 
     if (!is_writable($uploadDir)) {
         throw new Exception("El directorio de uploads no tiene permisos de escritura", 500);

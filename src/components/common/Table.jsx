@@ -10,7 +10,7 @@ const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getUsers.php");
+        const response = await fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getUsers.php");
         if (!response.ok) {
           throw new Error("Error al obtener los datos.");
         }
@@ -29,11 +29,14 @@ const Table = ({ searchQuery, onSelectUser }) => { // 👈 agregado onSelectUser
   if (loading) return <p>Cargando usuarios...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const filteredUsers = users.filter((user) =>
-    user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.apellido.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.rol.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const currentUserId = localStorage.getItem("userId");
+  const filteredUsers = users
+    .filter((user) => String(user.id_usuario) !== String(currentUserId))
+    .filter((user) =>
+      user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.apellido.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (user.rol && user.rol.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
   const handleCheckboxChange = (id) => {
     const newValue = id === selectedCheckbox ? null : id;

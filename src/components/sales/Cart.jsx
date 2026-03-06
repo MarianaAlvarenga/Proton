@@ -99,6 +99,7 @@ const Cart = () => {
               className="cancel-button button is-primary"
               NameButton="Cancelar"
               clearCart={clearCart}
+              confirmDiscardCart
             />
           </p>
 

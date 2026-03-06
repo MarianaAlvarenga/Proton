@@ -27,20 +27,20 @@ if ($external_reference) {
         }
 
         // Redirigir al frontend del cliente con mensaje de éxito de turno
-        $frontend = "https://consciousness-healthy-aaron-ist.trycloudflare.com";
+        $frontend = "https://skin-kevin-whatever-program.trycloudflare.com";
         header("Location: $frontend/success?ok=1&type=turno&id=$external_reference");
         exit;
     }
 
     // CASO B: Es E-COMMERCE (El external_reference empieza con ECOM- o es una compra normal)
     // Redirigimos al proceso de guardado de productos que ya tienes
-    $redirect = "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
+    $redirect = "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
     header("Location: $redirect");
     exit;
 
 } else {
     // Si no hay referencia, asumimos flujo estándar de carrito por compatibilidad
-    $redirect = "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
+    $redirect = "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/completePurchase.php?from=mp";
     header("Location: $redirect");
     exit;
 }

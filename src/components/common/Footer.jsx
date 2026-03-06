@@ -20,16 +20,18 @@ const Footer = () => {
         {/* Íconos redes sociales */}
         <div style={{ marginBottom: "1rem" }}>
           {[
-            FaLinkedin,
-            FaYoutube,
-            FaFacebook,
-            FaPinterest,
-            FaTwitter,
-            FaInstagram,
-          ].map((Icon, i) => (
+            { Icon: FaLinkedin, url: "https://www.linkedin.com" },
+            { Icon: FaYoutube, url: "https://www.youtube.com" },
+            { Icon: FaFacebook, url: "https://www.facebook.com" },
+            { Icon: FaPinterest, url: "https://www.pinterest.com" },
+            { Icon: FaTwitter, url: "https://x.com" },
+            { Icon: FaInstagram, url: "https://www.instagram.com" },
+          ].map(({ Icon, url }, i) => (
             <a
               key={i}
-              href="#"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
               className="icon"
               style={iconStyle}
               onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.2)")}

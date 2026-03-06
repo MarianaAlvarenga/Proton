@@ -41,7 +41,7 @@ const ProfileUser = () => {
         const fetchUser = async () => {
             try {
                 const response = await fetch(
-                    "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getUserById.php",
+                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getUserById.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ const ProfileUser = () => {
         const fetchMascotas = async () => {
             try {
                 const response = await fetch(
-                    `https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
+                    `https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getPetsByClientId.php?userId=${id_usuario}`
                 );
                 const data = await response.json();
                 setMascotas(data.mascotas || []);
@@ -95,7 +95,7 @@ const ProfileUser = () => {
         const fetchEspecialidades = async () => {
             try {
                 const response = await fetch(
-                    "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getEspecialidades.php"
+                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getEspecialidades.php"
                 );
                 const data = await response.json();
                 setEspecialidades(data || []);
@@ -170,7 +170,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/updateUser.php",
+                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updateUser.php",
                 { method: "POST", body: formData }
             );
 
@@ -204,7 +204,7 @@ const ProfileUser = () => {
         if (mascotaEdit.id_mascota) {
             try {
                 const response = await fetch(
-                    "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/updatePet.php",
+                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/updatePet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -222,12 +222,14 @@ const ProfileUser = () => {
                     setEditandoMascota(false);
                     setAddingMascota(false);
                     return Alert({
+                        Title: "Edición de mascota",
                         Detail: "Mascota actualizada correctamente 🐾",
                         icon: "success",
                         Confirm: "Ok"
                     });
                 } else {
                     return Alert({
+                        Title: "Edición de mascota",
                         Detail: "Error al actualizar la mascota",
                         icon: "error",
                         Confirm: "Ok"
@@ -237,14 +239,14 @@ const ProfileUser = () => {
         } else {
             try {
                 const pendingFile = mascotaEdit?.pendingImageFile || null;
-
+                const { pendingImageFile: _, ...restMascota } = mascotaEdit || {};
                 const payload = {
-                    ...mascotaEdit,
+                    ...restMascota,
                     id_usuario: mascotaEdit.id_usuario || userData?.id_usuario
                 };
 
                 const response = await fetch(
-                    "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/addPet.php",
+                    "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/addPet.php",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -255,11 +257,28 @@ const ProfileUser = () => {
                 const json = await response.json();
 
                 if (json.success) {
+                    let imgUrl = json.img_url ?? null;
+                    if (pendingFile && json.id_mascota) {
+                        try {
+                            const formData = new FormData();
+                            formData.append("image", pendingFile);
+                            formData.append("petId", String(json.id_mascota));
+                            const uploadRes = await fetch(
+                                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/uploadPetImage.php",
+                                { method: "POST", body: formData, credentials: "include" }
+                            );
+                            const uploadJson = await uploadRes.json();
+                            if (uploadJson.success && uploadJson.img_url) imgUrl = uploadJson.img_url;
+                        } catch (e) {
+                            console.error("Error subiendo imagen de mascota:", e);
+                        }
+                    }
                     const newPet = {
                         id_mascota: json.id_mascota,
                         id_usuario: usuarioEdit.id_usuario,
                         ...payload,
-                        img_url: json.img_url ?? null
+                        img_url: imgUrl,
+                        pendingImageFile: undefined
                     };
 
                     setMascotas(prev => {
@@ -308,7 +327,7 @@ const ProfileUser = () => {
 
         try {
             const response = await fetch(
-                "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/deletePet.php",
+                "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/deletePet.php",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -338,12 +357,14 @@ const ProfileUser = () => {
                 setAddingMascota(false);
 
                 Alert({
+                    Title: "Eliminación de mascota",
                     Detail: "Mascota eliminada correctamente 🐾",
                     icon: "success",
                     Confirm: "Ok"
                 });
             } else {
                 Alert({
+                    Title: "Eliminación de mascota",
                     Detail: "No se pudo eliminar la mascota",
                     icon: "error",
                     Confirm: "Ok"
@@ -379,7 +400,9 @@ const ProfileUser = () => {
 
                 {mascotas.length === 0 && !addingMascota ? (
                     <div className="has-text-centered mt-5">
-                        <p className="mb-4">Este usuario no tiene mascotas registradas.</p>
+                        {usuario?.rol === 1 && (
+                            <p className="mb-4">Este usuario no tiene mascotas registradas.</p>
+                        )}
                         {puedeAgregarMascota && (
                             <button className="button is-primary" onClick={handleAgregarMascota}>
                                 Agregar mascota

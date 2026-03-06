@@ -36,7 +36,7 @@ $nombre = $conn->real_escape_string($data['nombre']);
 $apellido = $conn->real_escape_string($data['apellido']);
 $email = $conn->real_escape_string($data['email']);
 $telefono = $conn->real_escape_string($data['telefono']);
-$fecha_nacimiento = !empty($data['fecha_nacimiento']) ? $conn->real_escape_string($data['fecha_nacimiento']) : null;
+$fecha_nacimiento = (isset($data['fecha_nacimiento']) && $data['fecha_nacimiento'] !== '') ? $conn->real_escape_string($data['fecha_nacimiento']) : null;
 $rol = intval($data['rol']);
 
 /* =========================

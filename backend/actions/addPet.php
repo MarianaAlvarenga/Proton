@@ -31,9 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $largo_pelo = $conn->real_escape_string($data['largo_pelo']);
         $especie = $conn->real_escape_string($data['especie']);
         $sexo = $conn->real_escape_string($data['sexo']);
-        $color = $conn->real_escape_string($data['color']);
-        $detalle = $conn->real_escape_string($data['detalle']);
-        $img_url = $conn->real_escape_string($data['img_url']);
+        $color = $conn->real_escape_string($data['color'] ?? '');
+        $detalle = $conn->real_escape_string($data['detalle'] ?? '');
+        $img_url = (isset($data['img_url']) && $data['img_url'] !== '' && $data['img_url'] !== null)
+            ? $conn->real_escape_string($data['img_url']) : '';
     } else {
         echo json_encode(["success" => false, "message" => "Datos incompletos para actualizar el usuario"]);
     }

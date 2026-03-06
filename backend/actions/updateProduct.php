@@ -18,19 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria_id_categoria = $_POST['categoria_id_categoria'] ?? null;
     $precio_producto = $_POST['precio_producto'] ?? null;
 
-    // ✅ Validación correcta (0 es válido)
+    // ✅ Validación: descripción puede estar vacía; el resto obligatorio
     if (
-        trim($codigo_producto) === "" ||
-        trim($nombre_producto) === "" ||
-        trim($descripcion_producto) === "" ||
-        $stock_producto === null ||
-        $punto_reposicion === null ||
-        $categoria_id_categoria === null ||
-        $precio_producto === null
+        trim($codigo_producto ?? "") === "" ||
+        trim($nombre_producto ?? "") === "" ||
+        $stock_producto === null || $stock_producto === "" ||
+        $punto_reposicion === null || $punto_reposicion === "" ||
+        $categoria_id_categoria === null || $categoria_id_categoria === "" ||
+        $precio_producto === null || $precio_producto === ""
     ) {
-        echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
+        echo json_encode(["success" => false, "message" => "Nombre, stock, punto de reposición, categoría y precio son obligatorios."]);
         exit;
     }
+    $descripcion_producto = $descripcion_producto ?? "";
 
     // =============================
     //  Manejo de imagen

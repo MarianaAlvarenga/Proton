@@ -68,14 +68,14 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/success.php",
-        "failure" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/failure.php",
-        "pending" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/pending.php"
+        "success" => "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/success.php",
+        "failure" => "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/failure.php",
+        "pending" => "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/pending.php"
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
     "external_reference" => $externalReference,
-    "notification_url" => "https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/webhook_mp.php?source=mp"
+    "notification_url" => "https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/webhookMp.php?source=mp"
 ];
 
 $ch = curl_init($url);

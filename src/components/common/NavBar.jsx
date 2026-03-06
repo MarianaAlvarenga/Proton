@@ -25,8 +25,8 @@ const NavBar = ({ showMenu = false, showSearch = false, onSearch, showProfileBut
     }
   };
 
-  // No mostrar el menú si el rol es 3 (Peluquero)
-  const shouldShowMenu = showMenu && userRole !== 3;
+  // Mostrar menú hamburguesa solo si showMenu es true Y el usuario es administrador (rol 4). Cliente y vendedor no lo ven en ventas.
+  const shouldShowMenu = showMenu && userRole === 4;
 
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation" style={{ backgroundColor: '#9655C5' }}>

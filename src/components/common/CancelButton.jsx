@@ -1,18 +1,34 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./CancelButton.css"; 
+import Swal from "sweetalert2";
+import "./CancelButton.css";
 
-const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, onClick, End=false }) => {
+const CancelButton = ({ NameButton = "Cancelar", clearCart, className, total, onClick, End = false, confirmDiscardCart = false }) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (onClick) {
-      // Si se pasa una función onClick personalizada, la usamos
       onClick();
       return;
     }
 
-    // Comportamiento por defecto si no se pasa onClick
+    if (NameButton === "Cancelar" && confirmDiscardCart && clearCart) {
+      const result = await Swal.fire({
+        title: "¿Descartar carrito?",
+        text: "¿Estás seguro de que querés deshechar el carrito? Se eliminarán todos los productos.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, descartar",
+        cancelButtonText: "No, mantener",
+        confirmButtonColor: "#6A0DAD",
+      });
+      if (!result.isConfirmed) return;
+      clearCart();
+      const userRole = localStorage.getItem("userRole");
+      navigate("/Products", { state: { role: userRole } });
+      return;
+    }
+
     if (NameButton === "Cancelar") {
       if (clearCart) {
         localStorage.removeItem("cart");

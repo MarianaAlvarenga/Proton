@@ -21,7 +21,7 @@ const Asistencia = () => {
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -37,14 +37,14 @@ const Asistencia = () => {
   }, []);
 
   const handleSubmit = () => {
-    fetch("https://finite-yrs-dover-therapist.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://unless-scene-secrets-burst.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id_turno: turno.id_turno,
         asistio,
         hora_llegada: asistio ? horaLlegada : null,
-        hora_finalization: asistio ? horaFin : null,
+        hora_finalizacion: asistio ? horaFin : null,
         observaciones: asistio ? observaciones : null
       })
     })
@@ -148,6 +148,7 @@ const Asistencia = () => {
 
       {showPaymentModal && (
         <PaymentQRModal
+          redirectToMP={false}
           paymentDataInput={{
             turnoId: String(turno.id_turno),
             items: [{
