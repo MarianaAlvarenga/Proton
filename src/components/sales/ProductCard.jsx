@@ -137,7 +137,7 @@ const ProductCard = ({
       const payload = { codigo_producto: ProductId };
 
       const response = await fetch(
-        "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/deleteProduct.php",
+        "https://explained-branches-post-lease.trycloudflare.com/backend/actions/deleteProduct.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

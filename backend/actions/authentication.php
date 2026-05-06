@@ -60,7 +60,7 @@ function guardarImagen($id_usuario) {
 
     move_uploaded_file($_FILES["img"]["tmp_name"], $path);
 
-    return "https://research-entire-infectious-collectables.trycloudflare.com/backend/uploads/users/" . $fileName;
+    return "https://explained-branches-post-lease.trycloudflare.com/backend/uploads/users/" . $fileName;
 }
 
 function registerUser($data, $conn) {

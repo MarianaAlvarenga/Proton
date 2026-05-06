@@ -68,14 +68,14 @@ $preference = [
         "email" => $body["payer"]["email"] ?? "test_user@example.com"
     ],
     "back_urls" => [
-        "success" => "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/success.php",
-        "failure" => "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/failure.php",
-        "pending" => "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/pending.php"
+        "success" => "https://explained-branches-post-lease.trycloudflare.com/backend/actions/success.php",
+        "failure" => "https://explained-branches-post-lease.trycloudflare.com/backend/actions/failure.php",
+        "pending" => "https://explained-branches-post-lease.trycloudflare.com/backend/actions/pending.php"
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
     "external_reference" => $externalReference,
-    "notification_url" => "https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/webhookMp.php?source=mp"
+    "notification_url" => "https://explained-branches-post-lease.trycloudflare.com/backend/actions/webhookMp.php?source=mp"
 ];
 
 $ch = curl_init($url);

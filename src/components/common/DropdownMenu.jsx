@@ -25,7 +25,7 @@ const Desplegable = () => {
 
     useEffect(() => {
         axios
-            .get("https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getCategories.php")
+            .get("https://explained-branches-post-lease.trycloudflare.com/backend/actions/getCategories.php")
             .then((response) => {
                 if (response.data && Array.isArray(response.data)) {
                     setCategories(response.data);

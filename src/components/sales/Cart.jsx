@@ -62,7 +62,7 @@ const Cart = () => {
         </div>
 
         <div className="ButtonsPanel">
-          <CancelButton className="button" NameButton="Volver" End={true} />
+          <CancelButton className="button" NameButton="Seguir comprando" End={true} />
           <hr />
         </div>
 

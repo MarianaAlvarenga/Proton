@@ -8,7 +8,7 @@ import SubNavBar from "../common/SubNavBar";
 import axios from "axios";
 import Alert from "../common/Alert";
 
-const BACKEND_BASE = "https://research-entire-infectious-collectables.trycloudflare.com/backend";
+const BACKEND_BASE = "https://explained-branches-post-lease.trycloudflare.com/backend";
 
 const ProductCreateForm = () => {
     const navigate = useNavigate();
@@ -28,12 +28,12 @@ const ProductCreateForm = () => {
     });
 
     useEffect(() => {
-        axios.get('https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getCategories.php')
+        axios.get('https://explained-branches-post-lease.trycloudflare.com/backend/actions/getCategories.php')
             .then(response => setCategories(response.data))
             .catch(error => console.error("Hubo un error al obtener las categorías:", error));
 
         if (productId) {
-            axios.get(`https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
+            axios.get(`https://explained-branches-post-lease.trycloudflare.com/backend/actions/getProducts.php?id=${productId}`)
                 .then(response => {
                     const product = response.data;
                     if (product) {
@@ -95,13 +95,13 @@ const ProductCreateForm = () => {
             let response;
             if (productId) {
                 response = await axios.post(
-                    'https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/updateProduct.php',
+                    'https://explained-branches-post-lease.trycloudflare.com/backend/actions/updateProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
                 response = await axios.post(
-                    'https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/addProduct.php',
+                    'https://explained-branches-post-lease.trycloudflare.com/backend/actions/addProduct.php',
                     data,
                     { headers: { 'Content-Type': 'multipart/form-data' } }
                 );

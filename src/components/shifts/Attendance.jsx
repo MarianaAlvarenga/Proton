@@ -22,7 +22,7 @@ const Asistencia = () => {
   const fetchTurno = () => {
     if (!turnoBase?.id_turno) return;
 
-    fetch(`https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
+    fetch(`https://explained-branches-post-lease.trycloudflare.com/backend/actions/getTurnoById.php?id_turno=${turnoBase.id_turno}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -49,7 +49,7 @@ const Asistencia = () => {
       return;
     }
 
-    fetch("https://research-entire-infectious-collectables.trycloudflare.com/backend/actions/saveAsistencia.php", {
+    fetch("https://explained-branches-post-lease.trycloudflare.com/backend/actions/saveAsistencia.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
